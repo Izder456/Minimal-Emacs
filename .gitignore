@@ -9,3 +9,11 @@
 
 # Undo-tree save-files
 *.~undo-tree
+
+# Misc
+*last
+*recentf*
+*elpa*
+*emms*
+*transient*
+*smex*

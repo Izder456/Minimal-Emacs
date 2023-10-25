@@ -10,7 +10,12 @@
 # Undo-tree save-files
 *.~undo-tree
 
+# Cache
+.cache
+
+
 # Misc
+*graphene*
 *last
 *recentf*
 *elpa*

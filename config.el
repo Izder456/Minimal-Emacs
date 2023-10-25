@@ -200,7 +200,6 @@
 ; Global Modes
 ;;
 (require 'linum)
-(global-display-line-numbers-mode -1)
 (global-prettify-symbols-mode t)
 (global-company-mode t)
 (global-flycheck-mode t)

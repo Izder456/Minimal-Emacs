@@ -3,7 +3,6 @@
                    elcord
                    all-the-icons
                    evil
-                   evil-tutor
                    doom-modeline
                    dashboard
                    gruvbox-theme

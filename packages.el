@@ -1,7 +1,9 @@
 ;; Base packages
-(dolist (package '(graphene
+(dolist (package '(compat
+                   graphene
                    elcord
                    all-the-icons
+                   paredit
                    evil
                    doom-modeline
                    dashboard

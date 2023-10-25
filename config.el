@@ -199,7 +199,6 @@
 ;;
 ; Global Modes
 ;;
-(require 'linum)
 (global-prettify-symbols-mode t)
 (global-company-mode t)
 (global-flycheck-mode t)

@@ -62,7 +62,6 @@
 
   (set-face-attribute 'company-tooltip nil :font "Spleen" :weight 'medium :height 120)
 
-
   ;; Make the document title a bit bigger
   (set-face-attribute 'org-document-title nil :font "Spleen" :weight 'bold :height 1.3)
 
@@ -126,9 +125,6 @@
 (setq confirm-kill-processes nil)
 (setq kill-buffer-query-functions nil)
 (treemacs-load-theme "all-the-icons")
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
 (setq inferior-lisp-program "sbcl")
 (setf nyan-animate-nyancat t)
 (setf nyan-animation-frame-interval 0.05)
@@ -185,25 +181,32 @@
 ;; Hide emphasis markers on formatted text
 (setq org-hide-emphasis-markers t)
 
-;;
-; Autostarts
-;;
-
-;; Rainbow
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-(add-hook 'text-mode-hook #'rainbow-delimiters-mode)
-
-(add-hook 'prog-mode-hook #'rainbow-mode)
-(add-hook 'text-mode-hook #'rainbow-mode)
+;; Clear Minibuffer
+(global-set-key [escape] 'keyboard-escape-quit)
 
 ;;
 ; Global Modes
 ;;
+
+;; Set src block automatic indent to 0 instead of 2.
+(setq org-edit-src-content-indentation 0) 
+
+(rainbow-mode 1)
+(rainbow-delimiters-mode 1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode 1)
+(delete-selection-mode 1)
+(electric-pair-mode 1)
+(electric-indent-mode -1)
 (global-prettify-symbols-mode t)
+(global-display-line-numbers-mode t)
 (global-company-mode t)
 (global-flycheck-mode t)
 (which-key-mode t)
 (desktop-save-mode -1)
+(global-auto-revert-mode t)
+(global-visual-line-mode t)
 ;; (elcord-mode)
 (nyan-mode t)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)

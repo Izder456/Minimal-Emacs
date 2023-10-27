@@ -8,21 +8,5 @@
 
 ;; Initialise the package system.
 (package-initialize)
-
-(load "~/.emacs.d/packages.el")
-(load "~/.emacs.d/config.el")
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages '(shx shell-pop)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(fringe ((t :background "#282828")))
- '(window-divider ((t :background "#282828" :foreground "#282828")))
- '(window-divider-first-pixel ((t :background "#282828" :foreground "#282828")))
- '(window-divider-last-pixel ((t :background "#282828" :foreground "#282828"))))
+(load-file "~/.emacs.d/packages.el")
+(load-file "~/.emacs.d/config.el")

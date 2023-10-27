@@ -1,19 +1,29 @@
 ;; Base packages
 (dolist (package '(compat
                    graphene
+                   vterm
+                   vterm-toggle
                    elcord
                    all-the-icons
-                   paredit
                    evil
                    doom-modeline
                    dashboard
+                   beacon
                    gruvbox-theme
-                   default-text-scale))
+                   eshell-syntax-highlighting))
   (unless (package-installed-p package)
     (package-install package)))
 
 ;; Enable Graphene
 (require 'graphene)
+
+;; Eshell Syntax Highlight
+(eshell-syntax-highlighting-global-mode +1)
+
+;; VTerm
+(setq vterm-max-scrollback 5000)
+(setq vterm-toggle-fullscreen-p nil)
+(setq vterm-toggle-scope 'project)
 
 ;; Enable Dashboard
 (require 'dashboard)
@@ -36,11 +46,10 @@
 
 ;; Fonts
 ;; scale entire UI, solves annoying mismatches
-(global-set-key (kbd "C-=") 'default-text-scale-increase)
-(global-set-key (kbd "C--") 'default-text-scale-decrease)
-(global-set-key (kbd "C-0") 'default-text-scale-reset)
-(global-set-key (kbd "<C-mouse-4>") 'default-text-scale-increase)
-(global-set-key (kbd "<C-mouse-5>") 'default-text-scale-decrease)
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
 ;; Dired Packages
 (dolist (package '(dired-hacks-utils
@@ -57,26 +66,54 @@
                    ripgrep
                    sly
                    sly-quicklisp
-                   vterm
-                   which-key
                    tempel
                    tempel-collection
                    projectile
                    projectile-ripgrep
+                   persp-projectile
                    treemacs
                    treemacs-projectile
                    treemacs-all-the-icons
+                   paredit
+                   toc-org
+                   org-bullets
                    emms
                    ement
                    rainbow-mode
                    rainbow-delimiters
                    ligature
                    visual-fill-column
-                   org-bullets
+                   which-key
                    web-mode))
   (unless (package-installed-p package)
     (package-install package))
   (require package))
+
+
+;;
+; Org-Mode                                      ;
+;;
+
+(require 'toc-org)
+(add-hook 'org-mode-hook 'toc-org-enable)
+(add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;;
+; Which-Key                                      ;
+;;
+(setq which-key-side-window-location 'bottom
+      which-key-sort-order #'which-key-key-order-alpha
+      which-key-sort-uppercase-first nil
+      which-key-add-column-padding 1
+      which-key-max-display-columns nil
+      which-key-min-display-lines 6
+      which-key-side-window-slot -10
+      which-key-side-window-max-height 0.25
+      which-key-idle-delay 0.8
+      which-key-max-description-length 25
+      which-key-allow-imprecise-window-fit t
+      which-key-separator " → " )
 
 ;;
 ; Dev
@@ -86,17 +123,24 @@
 (dolist (package '(lsp-mode
                    lsp-treemacs
                    flycheck
-                   company))
+                   company
+                   company-box
+                   yasnippet
+                   hydra
+                   helm
+                   helm-lsp
+                   helm-xref))
   (unless (package-installed-p package)
     (package-install package))
   (require package))
 
-
 (with-eval-after-load 'lsp-mode
   (setq lsp-modeline-diagnostics-scope :workspace)
   (setq lsp-auto-configure t))
-  
- 
+
+;; Company settings
+(add-hook 'company-mode-hook 'company-box-mode)
+(global-company-mode t)
 
 ;; Company Completions
 (defun company-complete-common-or-cycle ()
@@ -113,4 +157,4 @@
 (setq company-insertion-on-trigger 'company-explicit-action-p)
 (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 
-(load "~/.emacs.d/lang.el")
+(load-file "~/.emacs.d/lang.el")

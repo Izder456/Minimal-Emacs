@@ -5,13 +5,11 @@
 (add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode)
 
 ;; Lisp
-
 (add-hook 'lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
 
 ;; Clojure
-(setq package-selected-packages '(clojure-mode clojure-mode cider lsp-treemacs))
-
+(setq package-selected-packages '(clojure-mode clojure-mode cider))
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages))
@@ -24,7 +22,7 @@
 (add-hook 'clojurec-mode-hook 'enable-paredit-mode)
 
 ;; Chicken
-(setq package-selected-packages '(geiser))
+(setq package-selected-packages '(geiser geiser-chicken))
 
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
@@ -39,7 +37,6 @@
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages))
-
 
 ;; Perl
 (setq package-selected-packages '(cperl-mode))
@@ -62,5 +59,15 @@
 (global-set-key (kbd "M-SPC") 'shell-pop)
 
 ;; C/++
+(setq package-selected-packages '(dap-mode))
+(when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages))
+(require 'helm-xref)
+(define-key global-map [remap find-file] #'helm-find-files)
+(define-key global-map [remap execute-extended-command] #'helm-M-x)
+(define-key global-map [remap switch-to-buffer] #'helm-mini)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
 (add-hook 'c-mode-hook #'lsp)
 (add-hook 'c++-mode-hook #'lsp)

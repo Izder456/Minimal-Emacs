@@ -63,12 +63,12 @@
   (set-face-attribute 'company-tooltip nil :font "Spleen" :weight 'medium :height 120)
 
   ;; Make the document title a bit bigger
-  (set-face-attribute 'org-document-title nil :font "Spleen" :weight 'bold :height 1.3)
+  (set-face-attribute 'org-document-title nil :font "Liberation Serif" :weight 'bold :height 1.3)
 
   ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
-  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-block nil :foreground nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil :inherit '(variable-pitch))
+  (set-face-attribute 'org-formula nil :font "Liberation Serif" :weight 'regular :height 1.0)
   (set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
@@ -190,9 +190,8 @@
 
 ;; Set src block automatic indent to 0 instead of 2.
 (setq org-edit-src-content-indentation 0) 
-
-(rainbow-mode 1)
-(rainbow-delimiters-mode 1)
+(rainbow-mode t)
+(rainbow-delimiters-mode t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode 1)
@@ -200,7 +199,9 @@
 (electric-pair-mode 1)
 (electric-indent-mode -1)
 (global-prettify-symbols-mode t)
-(global-display-line-numbers-mode t)
+(require 'linum)
+(setq linum-format "%4d \u2502")
+(global-linum-mode 1)
 (global-company-mode t)
 (global-flycheck-mode t)
 (which-key-mode t)

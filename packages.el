@@ -8,7 +8,6 @@
                    evil
                    doom-modeline
                    dashboard
-                   beacon
                    gruvbox-theme
                    eshell-syntax-highlighting))
   (unless (package-installed-p package)

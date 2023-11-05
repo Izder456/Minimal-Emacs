@@ -67,10 +67,10 @@
 (setq doom-modeline-buffer-modification-icon t)
 
 ;; Whether display the lsp icon. It respects option `doom-modeline-icon'.
-(setq doom-modeline-lsp-icon t)
+(setq doom-modeline-lsp-icon nil)
 
 ;; Whether display the time icon. It respects option `doom-modeline-icon'.
-(setq doom-modeline-time-icon t)
+(setq doom-modeline-time-icon nil)
 
 ;; Whether display the live icons of time.
 ;; It respects option `doom-modeline-icon' and option `doom-modeline-time-icon'.
@@ -147,7 +147,7 @@
 (setq doom-modeline-persp-icon t)
 
 ;; Whether display the `lsp' state. Non-nil to display in the mode-line.
-(setq doom-modeline-lsp t)
+(setq doom-modeline-lsp nil)
 
 ;; Whether display the GitHub notifications. It requires `ghub' package.
 (setq doom-modeline-github nil)

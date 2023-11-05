@@ -65,19 +65,15 @@
                    ripgrep
                    sly
                    sly-quicklisp
-                   tempel
-                   tempel-collection
                    projectile
                    projectile-ripgrep
                    persp-projectile
                    treemacs
                    treemacs-projectile
                    treemacs-all-the-icons
-                   paredit
                    toc-org
                    org-bullets
                    emms
-                   ement
                    rainbow-mode
                    rainbow-delimiters
                    ligature
@@ -119,23 +115,12 @@
 ;;
 
 ;; Lsp
-(dolist (package '(lsp-mode
-                   lsp-treemacs
-                   flycheck
+(dolist (package '(eglot
                    company
-                   company-box
-                   yasnippet
-                   hydra
-                   helm
-                   helm-lsp
-                   helm-xref))
+                   company-box))
   (unless (package-installed-p package)
     (package-install package))
   (require package))
-
-(with-eval-after-load 'lsp-mode
-  (setq lsp-modeline-diagnostics-scope :workspace)
-  (setq lsp-auto-configure t))
 
 ;; Company settings
 (add-hook 'company-mode-hook 'company-box-mode)

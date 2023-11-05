@@ -161,10 +161,8 @@
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
-      company-minimum-prefix-length 1
-      lsp-enable-indentation nil
-      lsp-enable-completion-at-point nil)
-
+      company-minimum-prefix-length 1)
+      
 ;; Fix Unicode in vterm
 (add-hook 'vterm-mode-hook
           (lambda ()
@@ -189,9 +187,10 @@
 ;;
 
 ;; Set src block automatic indent to 0 instead of 2.
+(require 'linum)
 (setq org-edit-src-content-indentation 0) 
-(rainbow-mode t)
-(rainbow-delimiters-mode t)
+(add-hook 'prog-mode-hook 'rainbow-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (menu-bar-mode 1)
 (tool-bar-mode -1)
 (scroll-bar-mode 1)
@@ -199,15 +198,11 @@
 (electric-pair-mode 1)
 (electric-indent-mode -1)
 (global-prettify-symbols-mode t)
-(require 'linum)
-(setq linum-format "%4d \u2502")
-(global-linum-mode -1)
 (global-company-mode t)
 (global-flycheck-mode t)
 (which-key-mode t)
 (desktop-save-mode -1)
 (global-auto-revert-mode t)
 (global-visual-line-mode t)
-;; (elcord-mode)
+(elcord-mode)
 (nyan-mode t)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)

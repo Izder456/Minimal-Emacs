@@ -1,25 +1,48 @@
-;; ELisp
+;; Treesitter
+(setq treesit-font-lock-level 4)
+(setq major-mode-remap-alist 
+      '((yaml-mode . yaml-ts-mode)
+        (bash-mode . bash-ts-mode)
+        (js-mode . js-ts-mode)
+        (rust-mode . rust-ts-mode)
+        (json-mode . json-ts-mode)
+        (css-mode . css-ts-mode)
+        (python-mode . python-ts-mode)
+        (clojure-mode . clojure-ts-mode)
+        (lisp-mode . lisp-ts-mode)))
 
-(autoload 'enable-paredit-mode "paredit" "turn on pseudo-structural editing of Lisp code." t)
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode)
+(setq treesit-language-source-alist
+      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+        (cmake "https://github.com/uyha/tree-sitter-cmake")
+        (css "https://github.com/tree-sitter/tree-sitter-css")
+        (rust "https://github.com/camdencheektree-sitter-rust")
+        (html "https://github.com/tree-sitter/tree-sitter-html")
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+        (json "https://github.com/tree-sitter/tree-sitter-json")
+        (make "https://github.com/alemuller/tree-sitter-make")
+        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+        (python "https://github.com/tree-sitter/tree-sitter-python")
+        (toml "https://github.com/tree-sitter/tree-sitter-toml")
+        (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+        (clojure "https://github.com/sogaiu/tree-sitter-clojure")
+        (lisp "https://github.com/theHamsta/tree-sitter-commonlisp")))
 
+;; Eglot
+(add-to-list 'eglot-server-programs '((clojure-mode . ("clojure-lsp"))
+                                      (c-mode . ("clangd"))
+                                      (cpp-mode . ("clangd"))
+                                      (ruby-mode . ("solargraph"))
+                                      (rust-mode . ("rust-analyzer"))))
+
+       
 ;; Lisp
 (add-hook 'lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
 
 ;; Clojure
-(setq package-selected-packages '(clojure-mode clojure-mode cider))
+(setq package-selected-packages '(clojure-ts-mode cider))
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages))
-
-(add-hook 'clojure-mode-hook 'lsp)
-(add-hook 'clojure-mode-hook 'enable-paredit-mode)
-(add-hook 'clojurescript-mode-hook 'lsp)
-(add-hook 'clojurescript-mode-hook 'enable-paredit-mode)
-(add-hook 'clojurec-mode-hook 'lsp)
-(add-hook 'clojurec-mode-hook 'enable-paredit-mode)
 
 ;; Chicken
 (setq package-selected-packages '(geiser geiser-chicken))
@@ -29,10 +52,9 @@
   (mapc #'package-install package-selected-packages))
 
 (add-hook 'scheme-mode-hook 'setup-chicken-scheme)
-(add-hook 'scheme-mode-hook 'enable-paredit-mode)
 
 ;; Rust
-(setq package-selected-packages '(rust-mode rustic))
+(setq package-selected-packages '(rust-mode))
 
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
@@ -57,17 +79,3 @@
 (setq shell-pop-autocd-to-working-dir t)
 (add-hook 'shell-mode-hook 'shx-mode)
 (global-set-key (kbd "M-SPC") 'shell-pop)
-
-;; C/++
-(setq package-selected-packages '(dap-mode))
-(when (cl-find-if-not #'package-installed-p package-selected-packages)
-  (package-refresh-contents)
-  (mapc #'package-install package-selected-packages))
-(require 'helm-xref)
-(define-key global-map [remap find-file] #'helm-find-files)
-(define-key global-map [remap execute-extended-command] #'helm-M-x)
-(define-key global-map [remap switch-to-buffer] #'helm-mini)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
-(add-hook 'c-mode-hook #'lsp)
-(add-hook 'c++-mode-hook #'lsp)

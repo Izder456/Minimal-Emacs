@@ -62,9 +62,20 @@
 
   (set-face-attribute 'company-tooltip nil :font "Spleen" :weight 'medium :height 120)
 
-  ;; Make the document title a bit bigger
-  (set-face-attribute 'org-document-title nil :font "Liberation Serif" :weight 'bold :height 1.3)
+  ;; Make the document title a bit fancier
+  (set-face-attribute 'org-document-title nil :font "Liberation Serif" :weight 'bold :height 2.0)
+  (set-face-attribute 'org-document-info nil :font "Liberation Serif" :weight 'medium :height 1.7)
+  (set-face-attribute 'org-document-info-keyword nil :font "Liberation Serif" :weight 'regular :height 1.5)
 
+  ;; Headers
+  (set-face-attribute 'org-level-1 nil :font "Liberation Serif" :weight 'bold :height 1.8)
+  (set-face-attribute 'org-level-2 nil :font "Liberation Serif" :weight 'bold :height 1.7)
+  (set-face-attribute 'org-level-3 nil :font "Liberation Serif" :weight 'bold :height 1.6)
+  (set-face-attribute 'org-level-4 nil :font "Liberation Serif" :weight 'bold :height 1.5)
+  (set-face-attribute 'org-level-5 nil :font "Liberation Serif" :weight 'bold :height 1.4)
+  (set-face-attribute 'org-level-6 nil :font "Liberation Serif" :weight 'bold :height 1.3)
+  (set-face-attribute 'org-level-7 nil :font "Liberation Serif" :weight 'bold :height 1.2)
+  
   ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
   (set-face-attribute 'org-block nil :foreground nil :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-table nil :inherit '(variable-pitch))
@@ -189,6 +200,7 @@
 ;; Set src block automatic indent to 0 instead of 2.
 (require 'linum)
 (setq org-edit-src-content-indentation 0) 
+(setq org-odd-levels-only t)
 (add-hook 'prog-mode-hook 'rainbow-mode)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (menu-bar-mode 1)

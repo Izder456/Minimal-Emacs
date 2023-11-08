@@ -9,12 +9,30 @@
                    doom-modeline
                    dashboard
                    gruvbox-theme
+                   marginalia
+                   vertico
+                   all-the-icons-completion
                    eshell-syntax-highlighting))
   (unless (package-installed-p package)
     (package-install package)))
 
 ;; Enable Graphene
 (require 'graphene)
+
+;; Marginalia
+(require 'marginalia)
+(setq marginalia-max-relative-age 0)
+(setq marginalia-align 'right)
+(add-hook 'marginalia-mode 'all-the-icons-completion-marginalia-setup)
+(marginalia-mode t)
+(all-the-icons-completion-mode t)
+
+;; Vertico
+(require 'vertico)
+(setq vertico-count 13)
+(setq vertico-resize t)
+(setq vertico-cycle nil) 
+(vertico-mode t)
 
 ;; Eshell Syntax Highlight
 (eshell-syntax-highlighting-global-mode +1)
@@ -60,8 +78,7 @@
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 ;; Extra packages
-(dolist (package '(dumb-jump
-                   nyan-mode
+(dolist (package '(nyan-mode
                    ripgrep
                    sly
                    sly-quicklisp
@@ -71,7 +88,6 @@
                    treemacs
                    treemacs-projectile
                    treemacs-all-the-icons
-                   toc-org
                    org-bullets
                    emms
                    rainbow-mode

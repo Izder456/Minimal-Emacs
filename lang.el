@@ -8,8 +8,7 @@
         (json-mode . json-ts-mode)
         (css-mode . css-ts-mode)
         (python-mode . python-ts-mode)
-        (clojure-mode . clojure-ts-mode)
-        (lisp-mode . lisp-ts-mode)))
+        (clojure-mode . clojure-ts-mode)))
 
 (setq treesit-language-source-alist
       '((bash "https://github.com/tree-sitter/tree-sitter-bash")

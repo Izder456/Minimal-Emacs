@@ -179,11 +179,6 @@
           (lambda ()
             (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)))
 
-;; Emms
-(require 'emms-setup)
-(emms-all)
-(setq emms-player-list '(emms-player-mpv))
-
 ;; No Suggs
 (setq suggest-key-bindings nil)
 

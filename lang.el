@@ -33,9 +33,19 @@
                                       (ruby-mode . ("solargraph"))
                                       (rust-mode . ("rust-analyzer"))))
 
-       
-;; Lisp
-(add-hook 'lisp-mode-hook 'enable-paredit-mode)
+;; OCaml
+(setq package-selected-packages '(tuareg merlin merlin-eldoc flycheck-ocaml dune))
+(when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages))
+(add-hook 'tuareg-mode-hook #'merlin-mode)
+(add-hook 'merlin-mode-hook #'company-mode)
+(setq merlin-error-after-save nil)
+(add-hook 'tuareg-mode-hook #'utop-minor-mode)
+(require 'tuareg)
+(merlin-eldoc-setup)
+(require 'flycheck-ocaml)
+(flycheck-ocaml-setup)
 
 ;; Clojure
 (setq package-selected-packages '(clojure-ts-mode cider))
@@ -61,10 +71,14 @@
 
 ;; Perl
 (setq package-selected-packages '(cperl-mode))
-
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages))
+(fset 'perl-mode 'cperl-mode)
+(setq cperl-invalid-face nil)
+(setq cperl-indent-parens-as-block t)
+(add-hook 'cperl-mode-hook 'flycheck-mode)
+
 
 ;; Shell
 (setq package-selected-packages '(shx shell-pop))

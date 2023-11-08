@@ -1,5 +1,6 @@
 ;; Base packages
 (dolist (package '(compat
+                   seq
                    graphene
                    vterm
                    vterm-toggle
@@ -9,9 +10,7 @@
                    doom-modeline
                    dashboard
                    gruvbox-theme
-                   marginalia
-                   vertico
-                   all-the-icons-completion
+                   editorconfig
                    eshell-syntax-highlighting))
   (unless (package-installed-p package)
     (package-install package)))
@@ -19,20 +18,8 @@
 ;; Enable Graphene
 (require 'graphene)
 
-;; Marginalia
-(require 'marginalia)
-(setq marginalia-max-relative-age 0)
-(setq marginalia-align 'right)
-(add-hook 'marginalia-mode 'all-the-icons-completion-marginalia-setup)
-(marginalia-mode t)
-(all-the-icons-completion-mode t)
-
-;; Vertico
-(require 'vertico)
-(setq vertico-count 13)
-(setq vertico-resize t)
-(setq vertico-cycle nil) 
-(vertico-mode t)
+;; EditorConfig
+(editorconfig-mode 1)
 
 ;; Eshell Syntax Highlight
 (eshell-syntax-highlighting-global-mode +1)
@@ -89,7 +76,6 @@
                    treemacs-projectile
                    treemacs-all-the-icons
                    org-bullets
-                   emms
                    rainbow-mode
                    rainbow-delimiters
                    ligature
@@ -104,9 +90,6 @@
 ;;
 ; Org-Mode                                      ;
 ;;
-
-(require 'toc-org)
-(add-hook 'org-mode-hook 'toc-org-enable)
 (add-hook 'org-mode-hook 'org-indent-mode)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
@@ -124,7 +107,7 @@
       which-key-idle-delay 0.8
       which-key-max-description-length 25
       which-key-allow-imprecise-window-fit t
-      which-key-separator " → " )
+      which-key-separator " → ")
 
 ;;
 ; Dev

@@ -1,3 +1,65 @@
++Twig's+ Iz's Emacs Configuration -*- org -*-
+#+startup: showall
+#+options: toc:4
+#+author: me
+
+/Blantantly Ripped/ from [[https://git.disroot.org/twigthecat/emacs.git][Twig's Emacs Build]]
+
+* Table of Contents                                                   :TOC_4:
+- [[#packages][Packages]]
+  - [[#important-packages][Important Packages]]
+    - [[#third-party-repos][Third Party Repos]]
+    - [[#quelpa][Quelpa]]
+    - [[#evil-mode][Evil Mode]]
+      - [[#undo-tree][Undo Tree]]
+    - [[#keybinds][Keybinds]]
+    - [[#whichkey][WhichKey]]
+  - [[#org-mode][Org Mode]]
+    - [[#org-roam][Org Roam]]
+    - [[#org-roam-ui][Org Roam UI]]
+    - [[#org-agenda][Org Agenda]]
+    - [[#org-superstar][Org Superstar]]
+    - [[#org-fonts][Org Fon/TS]]
+    - [[#org-table-of-contents][Org Table of Contents]]
+    - [[#org-auto-tangle][Org Auto Tangle]]
+    - [[#latex][LaTeX]]
+      - [[#auctex][Auctex]]
+      - [[#cdlatex][CDLatex]]
+      - [[#org-fragtog][Org FragTog]]
+    - [[#org-appear][Org Appear]]
+    - [[#org-diary][Org Diary]]
+    - [[#org-alert][Org Alert]]
+    - [[#hooks-and-configuration][Hooks And Configuration]]
+  - [[#dashboard][Dashboard]]
+  - [[#all-the-icons][All The Icons]]
+  - [[#company][Company]]
+  - [[#ivy-counsel-prescient][Ivy, Counsel, Prescient]]
+  - [[#projectile][Projectile]]
+  - [[#drag-stuff][Drag Stuff]]
+  - [[#rainbow-stuff-gayyy][Rainbow stuff (GAYYY!!!!)]]
+    - [[#rainbow-delimiters][Rainbow Delimiters]]
+    - [[#rainbow-mode][Rainbow Mode]]
+  - [[#beacon][Beacon]]
+  - [[#modeline][Modeline]]
+  - [[#nyan-mode][Nyan Mode]]
+  - [[#neotree][Neotree]]
+  - [[#vterm][Vterm]]
+  - [[#highlight-todo][Highlight Todo]]
+  - [[#flyspell][Flyspell]]
+  - [[#flycheck][Flycheck]]
+  - [[#programming-stuff][Programming Stuff]]
+    - [[#programming-modes][Programming Modes]]
+    - [[#eglot][Eglot]]
+    - [[#treesitter][Treesitter]]
+- [[#aesthetics][Aesthetics]]
+  - [[#fonts][Fonts]]
+  - [[#theme][Theme]]
+- [[#other-options][Other Options]]
+
+* Packages
+** Important Packages
+*** Third Party Repos
+#+begin_src elisp :tangle init.el
 (require 'package)
 ;; Add the Melpa repository to the list of package sources
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")) ;; installed by default
@@ -5,7 +67,9 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (setq use-package-always-ensure t)
-
+#+end_src
+*** Quelpa
+#+begin_src elisp :tangle init.el
 (unless (package-installed-p 'quelpa)
   (with-temp-buffer
     (url-insert-file-contents
@@ -18,7 +82,9 @@
    :fetcher git
    :url "https://github.com/quelpa/quelpa-use-package.git"))
 (require 'quelpa-use-package)
-
+#+end_src
+*** Evil Mode
+#+begin_src elisp :tangle init.el
 (use-package evil
   :ensure t
   :init
@@ -49,7 +115,10 @@
   :config
   (setq evil-collection-mode-list '(dashboard dired ibuffer))
   (evil-collection-init))
-
+#+end_src
+**** Undo Tree
+To get redo functionality in evil-mode / emacs
+#+begin_src elisp :tangle init.el
 (use-package undo-tree
   :ensure t
   :config
@@ -57,7 +126,9 @@
   ;; I don't want random files in my directories for the undo-tree,
   ;; so unify them under this directory
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree"))))
-
+#+end_src
+*** Keybinds
+#+begin_src elisp :tangle init.el
 (use-package general
   :config
   (general-evil-setup)
@@ -86,7 +157,9 @@
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 ;; man fuck minibuffers and their 3 esc quits
 (global-set-key [escape] 'keyboard-escape-quit)
-
+#+end_src
+*** WhichKey
+#+begin_src elisp :tangle init.el
 (use-package which-key
   :init
   (which-key-mode 1)
@@ -104,7 +177,10 @@
           which-key-max-description-length 25
           which-key-allow-imprecise-window-fit t
           which-key-separator " → " ))
-
+#+end_src
+** Org Mode
+*** Org Roam
+#+begin_src elisp :tangle init.el
 (use-package org-roam
   :ensure t
   :bind
@@ -120,7 +196,9 @@
   (org-roam-db-autosync-mode)
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
-
+#+end_src
+*** Org Roam UI
+#+begin_src elisp :tangle init.el
 (use-package org-roam-ui
   :ensure t
   :after org-roam
@@ -129,9 +207,14 @@
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
-
+#+end_src
+*** Org Agenda
+#+begin_src elisp :tangle init.el
 (setq org-agenda-files '("~/Documents/org-roam/agenda.org"))
-
+#+end_src
+*** Org Superstar
+Org bullets but better
+#+begin_src elisp :tangle init.el
 (use-package org-superstar
   :hook
   (org-mode . org-superstar-mode)
@@ -140,8 +223,10 @@
   ;; disables leading bullets
   (setq org-superstar-leading-bullet ?\s)
   (setq org-indent-mode-turns-on-hiding-stars nil))
-
-(setq org-hide-emphasis-markers t)
+#+end_src
+*** Org Fonts
+#+begin_src elisp :tangle init.el
+  (setq org-hide-emphasis-markers t)
   (font-lock-add-keywords 'org-mode
 			  '(("^ *\\([-]\\) "
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
@@ -180,36 +265,52 @@
   ;; Fix Paragraphs
   (add-hook 'org-mode-hook 'visual-line-mode)
 
+#+end_src
+*** Org Table of Contents
+#+begin_src elisp :tangle init.el
 (use-package toc-org
   :hook
   (org-mode . toc-org-mode)
   :commands toc-org-enable)
-
+#+end_src
+*** Org Auto Tangle
+#+begin_src elisp :tangle init.el
 (use-package org-auto-tangle
   :defer t
   :hook
   ((org-mode . org-auto-tangle-mode))
   :config
   (setq org-auto-tangle-default t))
-
+#+end_src
+*** LaTeX
+**** Auctex
+#+begin_src elisp :tangle init.el
 (use-package auctex
   :ensure t
   :defer t)
-
+#+end_src
+**** CDLatex
+#+begin_src elisp :tangle init.el
 (use-package cdlatex
   :ensure t)
-
+#+end_src
+**** Org FragTog
+#+begin_src elisp :tangle init.el
 (use-package org-fragtog
   :custom
   (org-startup-with-latex-preview t)
   :ensure t
   :hook
   ((org-mode . org-fragtog-mode)))
-
+#+end_src
+*** Org Appear
+#+begin_src elisp :tangle init.el
 (use-package org-appear
   :hook
   (org-mode . org-appear-mode))
-
+#+end_src
+*** Org Diary
+#+begin_src elisp :tangle init.el
 (defun diary-is-norm-scl-day ()
   ""
   (and (let ((dayname (calendar-day-of-week date)))
@@ -235,44 +336,30 @@
        (unless (diary-block 3 25 2024 3 29 2024) t)
        (unless (diary-block 4 1 2024 4 1 2024) t)
        (unless (diary-block 5 24 2024 5 27 2024) t)))
-
+#+end_src
+*** Org Alert
+#+begin_src elisp :tangle init.el
 (use-package org-alert
   :ensure t
   :config
   (setq org-alert-enable t)
   (setq alert-default-style 'libnotify)
   (setq org-alert-interval 150))
-
+  #+end_src
+*** Hooks And Configuration
+#+begin_src elisp :tangle init.el
 (require 'org-tempo)
 
 (plist-put org-format-latex-options :scale 1.5)
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-block ((t (:inherit fixed-pitch))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(org-document-info ((t (:foreground "dark orange"))))
- '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
- '(org-document-title ((t ((\,@ headline) 'variable-pitch :height 2.0 :underline nil))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-level-1 ((t (:inherit variable-pitch :height 1.75))))
- '(org-level-2 ((t (:inherit variable-pitch :height 1.5))))
- '(org-level-3 ((t (:inherit variable-pitch :height 1.25))))
- '(org-level-4 ((t (:inherit variable-pitch :height 1.1))))
- '(org-level-5 ((t (:inherit variable-pitch))))
- '(org-level-6 ((t (:inherit variable-pitch))))
- '(org-level-7 ((t (:inherit variable-pitch))))
- '(org-level-8 ((t (:inherit variable-pitch))))
- '(org-link ((t (:foreground "royal blue" :underline t))))
- '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-property-value ((t (:inherit fixed-pitch))) t)
- '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-table ((t (:inherit fixed-pitch :foreground "#FABD2F"))))
- '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+ '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
+ '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
+ '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
 
 (setq org-display-custom-times t)
 
@@ -285,7 +372,9 @@
 (setq org-return-follows-link t)
 ;; Stop src blocks from auto indenting
 (setq org-edit-src-content-indentation 0)
-
+#+end_src
+** Dashboard
+#+begin_src elisp :tangle init.el
 (use-package dashboard
   :ensure t
   :init
@@ -303,7 +392,9 @@
 				      (bookmarks . "book")))
   :config
   (dashboard-setup-startup-hook))
-
+#+end_src
+** All The Icons
+#+begin_src elisp :tangle init.el
 (use-package all-the-icons
   :ensure t
   :if (display-graphic-p))
@@ -317,7 +408,9 @@
 (use-package all-the-icons-ivy-rich
   :ensure t
   :init (all-the-icons-ivy-rich-mode 1))
-
+#+end_src
+** Company
+#+begin_src elisp :tangle init.el
 (use-package company
   :ensure t
   :defer 2
@@ -339,7 +432,9 @@
   :ensure t
   :after company frame-local
   :hook (company-mode . company-box-mode))
-
+#+end_src
+** Ivy, Counsel, Prescient
+#+begin_src elisp :tangle init.el
 (use-package counsel
   :ensure t
   :after ivy
@@ -388,37 +483,56 @@
   :config
   (company-prescient-mode))
 
+#+end_src
+** Projectile
+#+begin_src elisp :tangle init.el
 (use-package projectile
   :ensure t
   :config
   (projectile-mode +1))
-
+#+end_src
+** Drag Stuff
+#+begin_src elisp :tangle init.el
 (use-package drag-stuff
   :ensure t
   :config
   (drag-stuff-mode))
-
+#+end_src
+** Rainbow stuff (GAYYY!!!!)
+*** Rainbow Delimiters
+#+begin_src elisp :tangle init.el
 (use-package rainbow-delimiters
   :hook ((prog-mode . rainbow-delimiters-mode)))
-
+#+end_src
+*** Rainbow Mode
+#+begin_src elisp :tangle init.el
 (use-package rainbow-mode
   :diminish
   :hook org-mode prog-mode)
-
+#+end_src
+** Beacon
+Shows your mouse when you make large movements
+#+begin_src elisp :tangle init.el
 (use-package beacon
   :ensure t
   :config
   (beacon-mode))
-
+#+end_src
+** Modeline
+#+begin_src elisp :tangle init.el
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
-
+#+end_src
+** Nyan Mode
+#+begin_src elisp :tangle init.el
 (use-package nyan-mode
   :ensure t
   :config
   (nyan-mode))
-
+#+end_src
+** Neotree
+#+begin_src elisp :tangle init.el
 (use-package neotree
   :config
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
@@ -436,7 +550,9 @@
                  (setq word-wrap nil)
                  (make-local-variable 'auto-hscroll-mode)
                  (setq auto-hscroll-mode nil)))))
-
+#+end_src
+** Vterm
+#+begin_src elisp :tangle init.el
 (use-package vterm
     :ensure t)
 
@@ -462,7 +578,9 @@
                   ;;(dedicated . t) ;dedicated is supported in emacs27
                   (reusable-frames . visible)
                   (window-height . 0.4))))
-
+#+end_src
+** Highlight Todo
+#+begin_src elisp :tangle init.el
 (use-package hl-todo
   :ensure t
   :hook ((org-mode . hl-todo-mode)
@@ -476,10 +594,14 @@
           ("REVIEW"     font-lock-keyword-face bold)
           ("NOTE"       success bold)
           ("DEPRECATED" font-lock-doc-face bold))))
-
+#+end_src
+** Flyspell
+#+begin_src elisp :tangle init.el
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
+#+end_src
+** Flycheck
+#+begin_src elisp :tangle init.el
 (use-package flycheck
   :ensure t
   :defer t
@@ -490,7 +612,10 @@
   :config
   (with-eval-after-load 'rust-mode
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
-
+#+end_src
+** Programming Stuff
+*** Programming Modes
+#+begin_src elisp :tangle init.el
 (use-package rust-mode
   :ensure t)
 (use-package yaml-mode
@@ -502,7 +627,9 @@
 (use-package markdown-mode
   :ensure t
   :hook ((markdown-mode . visual-line-mode)))
-
+#+end_src
+*** Eglot
+#+begin_src elisp :tangle init.el
 (use-package eglot
   :ensure t
   :config
@@ -511,7 +638,9 @@
   :hook
   ((rust-mode . eglot)
    (clojure-mode . eglot)))
-
+#+end_src
+*** Treesitter
+#+begin_src elisp :tangle init.el
 (setq treesit-font-lock-level 4)
 
 ;; Tell Emacs to prefer the treesitter mode
@@ -545,7 +674,10 @@
         (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
         (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-
+#+end_src
+* Aesthetics
+** Fonts
+#+begin_src elisp :tangle init.el
 (set-face-attribute 'default nil
   :font "Spleen"
   :height 160
@@ -564,7 +696,9 @@
 (add-to-list 'default-frame-alist '(font . "Spleen-12:regular:antialias=true:hinting=true"))
 
 (setq-default line-spacing 0.17)
-
+#+end_src
+** Theme
+#+begin_src elisp :tangle init.el
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (use-package doom-themes
   :pin melpa
@@ -579,7 +713,10 @@
   (doom-themes-visual-bell-config)
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config))
+#+end_src
 
+* Other Options
+#+begin_src elisp :tangle init.el
 ;; Changing the backup file path
 (defun iz/backup-file-name (fpath)
   "Return a new file path of a given file path.
@@ -614,10 +751,4 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-show-quick-access t nil nil "Customized with use-package company")
- '(org-agenda-files nil))
+#+end_src

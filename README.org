@@ -36,7 +36,7 @@
   - [[#ivy-counsel-prescient][Ivy, Counsel, Prescient]]
   - [[#projectile][Projectile]]
   - [[#drag-stuff][Drag Stuff]]
-  - [[#rainbow-stuff-gayyy][Rainbow stuff (GAYYY!!!!)]]
+  - [[#rainbow-stuff-gayyy-️][Rainbow stuff (GAYYY!!!!) 🏳️‍🌈]]
     - [[#rainbow-delimiters][Rainbow Delimiters]]
     - [[#rainbow-mode][Rainbow Mode]]
   - [[#beacon][Beacon]]
@@ -52,6 +52,7 @@
     - [[#eglot][Eglot]]
     - [[#treesitter][Treesitter]]
 - [[#aesthetics][Aesthetics]]
+  - [[#transparency-️️][Trans(Parency) 🏳️‍⚧️]]
   - [[#fonts][Fonts]]
   - [[#theme][Theme]]
 - [[#other-options][Other Options]]
@@ -226,45 +227,20 @@ Org bullets but better
 #+end_src
 *** Org Fonts
 #+begin_src elisp :tangle init.el
-  (setq org-hide-emphasis-markers t)
-  (font-lock-add-keywords 'org-mode
-			  '(("^ *\\([-]\\) "
-			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+(use-package org-modern
+  :ensure t
+  :hook
+  (org-mode . org-modern-mode)
+  :config
+  (setq org-auto-align-tags nil)
+	(setq org-tags-column 0)
+	(setq org-catch-invisible-edits 'show-and-error)
+	(setq org-special-ctrl-a/e t)
+	(setq org-insert-heading-respect-content t)
 
-;; Headers
-  (custom-theme-set-faces
-   'user
-   '(org-level-8 ((t (:inherit variable-pitch))))
-   '(org-level-7 ((t (:inherit variable-pitch))))
-   '(org-level-6 ((t (:inherit variable-pitch))))
-   '(org-level-5 ((t (:inherit variable-pitch))))
-   '(org-level-4 ((t (:inherit variable-pitch :height 1.1))))
-   '(org-level-3 ((t (:inherit variable-pitch :height 1.25))))
-   '(org-level-2 ((t (:inherit variable-pitch :height 1.5))))
-   '(org-level-1 ((t (:inherit variable-pitch :height 1.75))))
-   '(org-document-title ((t (,@headline 'variable-pitch :height 2.0 :underline nil)))))
-
-  ;; Code-Blocks
-  (custom-theme-set-faces
-    'user
-    '(org-block ((t (:inherit fixed-pitch))))
-    '(org-code ((t (:inherit (shadow fixed-pitch)))))
-    '(org-document-info ((t (:foreground "dark orange"))))
-    '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-    '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-    '(org-link ((t (:foreground "royal blue" :underline t))))
-    '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-    '(org-property-value ((t (:inherit fixed-pitch))) t)
-    '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-    '(org-table ((t (:inherit fixed-pitch :foreground "#FABD2F"))))
-    '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-    '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
-
-  ;; Re-Enable Variable Pitch
-  (add-hook 'org-mode-hook 'variable-pitch-mode)
-  ;; Fix Paragraphs
-  (add-hook 'org-mode-hook 'visual-line-mode)
-
+	;; org styling, hide markup etc
+	(setq org-hide-emphasis-markers t)
+	(setq org-pretty-entities t))
 #+end_src
 *** Org Table of Contents
 #+begin_src elisp :tangle init.el
@@ -498,7 +474,7 @@ Org bullets but better
   :config
   (drag-stuff-mode))
 #+end_src
-** Rainbow stuff (GAYYY!!!!)
+** Rainbow stuff (GAYYY!!!!) 🏳️‍🌈
 *** Rainbow Delimiters
 #+begin_src elisp :tangle init.el
 (use-package rainbow-delimiters
@@ -612,6 +588,11 @@ Shows your mouse when you make large movements
   :config
   (with-eval-after-load 'rust-mode
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+(use-package flycheck-ocaml
+  :ensure t
+  :config
+  (with-eval-after-load 'ocaml-mode
+    (add-hook 'flycheck-mode-hook #'flycheck-ocaml-setup)))
 #+end_src
 ** Programming Stuff
 *** Programming Modes
@@ -622,6 +603,9 @@ Shows your mouse when you make large movements
   :ensure t)
 (use-package json-mode
   :ensure t)
+(use-package cider
+  :ensure t
+  :hook ((clojure-mode . cider-jack-in)))
 (use-package clojure-mode
   :ensure t)
 (use-package markdown-mode
@@ -676,24 +660,41 @@ Shows your mouse when you make large movements
         (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 #+end_src
 * Aesthetics
+** Trans(Parency) 🏳️‍⚧️
+#+begin_src elisp :tangle init.el
+(set-frame-parameter (selected-frame) 'alpha '(85 . 75))
+(add-to-list 'default-frame-alist '(alpha . (85 . 75)))
+(defun toggle-transparency ()
+   (interactive)
+   (let ((alpha (frame-parameter nil 'alpha)))
+     (set-frame-parameter
+      nil 'alpha
+      (if (eql (cond ((numberp alpha) alpha)
+                     ((numberp (cdr alpha)) (cdr alpha))
+                     ;; Also handle undocumented (<active> <inactive>) form.
+                     ((numberp (cadr alpha)) (cadr alpha)))
+               100)
+          '(85 . 50) '(100 . 100)))))
+ (global-set-key (kbd "C-c t") 'toggle-transparency)
+#+end_src
 ** Fonts
 #+begin_src elisp :tangle init.el
 (set-face-attribute 'default nil
   :font "Spleen"
-  :height 160
+  :height 140
   :weight 'regular)
 (set-face-attribute 'variable-pitch nil
   :font "Liberation Serif"
-  :height 180
+  :height 140
   :weight 'regular)
 (set-face-attribute 'fixed-pitch nil
   :font "Spleen"
-  :height 160
+  :height 140
   :weight 'regular)
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "Spleen-12:regular:antialias=true:hinting=true"))
+(add-to-list 'default-frame-alist '(font . "Spleen:style=Medium:antialias=true:hinting=true"))
 
 (setq-default line-spacing 0.17)
 #+end_src

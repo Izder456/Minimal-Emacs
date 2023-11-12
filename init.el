@@ -141,44 +141,20 @@
   (setq org-superstar-leading-bullet ?\s)
   (setq org-indent-mode-turns-on-hiding-stars nil))
 
-(setq org-hide-emphasis-markers t)
-  (font-lock-add-keywords 'org-mode
-			  '(("^ *\\([-]\\) "
-			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+(use-package org-modern
+  :ensure t
+  :hook
+  (org-mode . org-modern-mode)
+  :config
+  (setq org-auto-align-tags nil)
+	(setq org-tags-column 0)
+	(setq org-catch-invisible-edits 'show-and-error)
+	(setq org-special-ctrl-a/e t)
+	(setq org-insert-heading-respect-content t)
 
-;; Headers
-  (custom-theme-set-faces
-   'user
-   '(org-level-8 ((t (:inherit variable-pitch))))
-   '(org-level-7 ((t (:inherit variable-pitch))))
-   '(org-level-6 ((t (:inherit variable-pitch))))
-   '(org-level-5 ((t (:inherit variable-pitch))))
-   '(org-level-4 ((t (:inherit variable-pitch :height 1.1))))
-   '(org-level-3 ((t (:inherit variable-pitch :height 1.25))))
-   '(org-level-2 ((t (:inherit variable-pitch :height 1.5))))
-   '(org-level-1 ((t (:inherit variable-pitch :height 1.75))))
-   '(org-document-title ((t (,@headline 'variable-pitch :height 2.0 :underline nil)))))
-
-  ;; Code-Blocks
-  (custom-theme-set-faces
-    'user
-    '(org-block ((t (:inherit fixed-pitch))))
-    '(org-code ((t (:inherit (shadow fixed-pitch)))))
-    '(org-document-info ((t (:foreground "dark orange"))))
-    '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-    '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-    '(org-link ((t (:foreground "royal blue" :underline t))))
-    '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-    '(org-property-value ((t (:inherit fixed-pitch))) t)
-    '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-    '(org-table ((t (:inherit fixed-pitch :foreground "#FABD2F"))))
-    '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-    '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
-
-  ;; Re-Enable Variable Pitch
-  (add-hook 'org-mode-hook 'variable-pitch-mode)
-  ;; Fix Paragraphs
-  (add-hook 'org-mode-hook 'visual-line-mode)
+	;; org styling, hide markup etc
+	(setq org-hide-emphasis-markers t)
+	(setq org-pretty-entities t))
 
 (use-package toc-org
   :hook
@@ -248,31 +224,13 @@
 (plist-put org-format-latex-options :scale 1.5)
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-block ((t (:inherit fixed-pitch))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(org-document-info ((t (:foreground "dark orange"))))
- '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
- '(org-document-title ((t ((\,@ headline) 'variable-pitch :height 2.0 :underline nil))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-level-1 ((t (:inherit variable-pitch :height 1.75))))
- '(org-level-2 ((t (:inherit variable-pitch :height 1.5))))
- '(org-level-3 ((t (:inherit variable-pitch :height 1.25))))
- '(org-level-4 ((t (:inherit variable-pitch :height 1.1))))
- '(org-level-5 ((t (:inherit variable-pitch))))
- '(org-level-6 ((t (:inherit variable-pitch))))
- '(org-level-7 ((t (:inherit variable-pitch))))
- '(org-level-8 ((t (:inherit variable-pitch))))
- '(org-link ((t (:foreground "royal blue" :underline t))))
- '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-property-value ((t (:inherit fixed-pitch))) t)
- '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-table ((t (:inherit fixed-pitch :foreground "#FABD2F"))))
- '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+ '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
+ '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
+ '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
 
 (setq org-display-custom-times t)
 
@@ -490,6 +448,11 @@
   :config
   (with-eval-after-load 'rust-mode
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+(use-package flycheck-ocaml
+  :ensure t
+  :config
+  (with-eval-after-load 'ocaml-mode
+    (add-hook 'flycheck-mode-hook #'flycheck-ocaml-setup)))
 
 (use-package rust-mode
   :ensure t)
@@ -497,6 +460,9 @@
   :ensure t)
 (use-package json-mode
   :ensure t)
+(use-package cider
+  :ensure t
+  :hook ((clojure-mode . cider-jack-in)))
 (use-package clojure-mode
   :ensure t)
 (use-package markdown-mode
@@ -546,22 +512,37 @@
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
         (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
+(set-frame-parameter (selected-frame) 'alpha '(85 . 75))
+(add-to-list 'default-frame-alist '(alpha . (85 . 75)))
+(defun toggle-transparency ()
+   (interactive)
+   (let ((alpha (frame-parameter nil 'alpha)))
+     (set-frame-parameter
+      nil 'alpha
+      (if (eql (cond ((numberp alpha) alpha)
+                     ((numberp (cdr alpha)) (cdr alpha))
+                     ;; Also handle undocumented (<active> <inactive>) form.
+                     ((numberp (cadr alpha)) (cadr alpha)))
+               100)
+          '(85 . 50) '(100 . 100)))))
+ (global-set-key (kbd "C-c t") 'toggle-transparency)
+
 (set-face-attribute 'default nil
   :font "Spleen"
-  :height 160
+  :height 140
   :weight 'regular)
 (set-face-attribute 'variable-pitch nil
   :font "Liberation Serif"
-  :height 180
+  :height 140
   :weight 'regular)
 (set-face-attribute 'fixed-pitch nil
   :font "Spleen"
-  :height 160
+  :height 140
   :weight 'regular)
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "Spleen-12:regular:antialias=true:hinting=true"))
+(add-to-list 'default-frame-alist '(font . "Spleen:style=Medium:antialias=true:hinting=true"))
 
 (setq-default line-spacing 0.17)
 
@@ -614,10 +595,3 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-show-quick-access t nil nil "Customized with use-package company")
- '(org-agenda-files nil))

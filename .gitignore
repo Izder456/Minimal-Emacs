@@ -1,5 +1,6 @@
 # Compiled
 *.elc
+*.eld
 
 # Packaging
 .cask
@@ -13,6 +14,8 @@
 # Cache
 .cache
 
+# history
+history
 
 # Misc
 *tree*

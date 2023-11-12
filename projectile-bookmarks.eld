@@ -1,1 +1,1 @@
-("~/" "~/.dotfiles/Emacs-Config/" "~/.st/" "~/.dotfiles/StumpWM-Config/" "~/Projects/Neocity/")
+("~/.dotfiles/Emacs-Config/" "~/.dotfiles/" "~/" "~/.st/" "~/.dotfiles/StumpWM-Config/" "~/Projects/Neocity/")

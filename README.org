@@ -9,7 +9,6 @@
 - [[#packages][Packages]]
   - [[#important-packages][Important Packages]]
     - [[#third-party-repos][Third Party Repos]]
-    - [[#quelpa][Quelpa]]
     - [[#evil-mode][Evil Mode]]
       - [[#undo-tree][Undo Tree]]
     - [[#keybinds][Keybinds]]
@@ -67,22 +66,12 @@
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/")) ;; installed by default from Emacs 28 onwards
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
-(setq use-package-always-ensure t)
-#+end_src
-*** Quelpa
-#+begin_src elisp :tangle init.el
-(unless (package-installed-p 'quelpa)
-  (with-temp-buffer
-    (url-insert-file-contents
-     "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-    (eval-buffer)
-    (quelpa-self-upgrade)))
-
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+	      use-package-expand-minimally t))
 #+end_src
 *** Evil Mode
 #+begin_src elisp :tangle init.el
@@ -605,7 +594,14 @@ Shows your mouse when you make large movements
   :ensure t)
 (use-package cider
   :ensure t
-  :hook ((clojure-mode . cider-jack-in)))
+  :config
+  (with-eval-after-load 'clojure-mode
+    (add-hook 'clojure-mode #'cider-jack-in)))
+(use-package geiser
+  :ensure t)
+(use-package geiser-chicken
+  :ensure t
+  :hook ((scheme-mode . geiser-mode)))
 (use-package clojure-mode
   :ensure t)
 (use-package markdown-mode

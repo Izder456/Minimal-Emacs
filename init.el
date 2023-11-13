@@ -4,20 +4,12 @@
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/")) ;; installed by default from Emacs 28 onwards
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
-(setq use-package-always-ensure t)
-
-(unless (package-installed-p 'quelpa)
-  (with-temp-buffer
-    (url-insert-file-contents
-     "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-    (eval-buffer)
-    (quelpa-self-upgrade)))
-
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+	      use-package-expand-minimally t))
 
 (use-package evil
   :ensure t
@@ -224,6 +216,10 @@
 (plist-put org-format-latex-options :scale 1.5)
 
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
@@ -462,7 +458,14 @@
   :ensure t)
 (use-package cider
   :ensure t
-  :hook ((clojure-mode . cider-jack-in)))
+  :config
+  (with-eval-after-load 'clojure-mode
+    (add-hook 'clojure-mode #'cider-jack-in)))
+(use-package geiser
+  :ensure t)
+(use-package geiser-chicken
+  :ensure t
+  :hook ((scheme-mode . geiser-mode)))
 (use-package clojure-mode
   :ensure t)
 (use-package markdown-mode
@@ -595,3 +598,10 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(doom-themes markdown-mode geiser-chicken geiser cider json-mode yaml-mode rust-mode flycheck-ocaml flycheck-rust flycheck hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters drag-stuff projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-alert org-appear org-fragtog cdlatex auctex org-auto-tangle toc-org org-modern org-superstar org-roam-ui org-roam which-key general undo-tree evil-collection evil-visual-mark-mode)))

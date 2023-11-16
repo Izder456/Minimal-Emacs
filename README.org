@@ -14,11 +14,9 @@
     - [[#keybinds][Keybinds]]
     - [[#whichkey][WhichKey]]
   - [[#org-mode][Org Mode]]
-    - [[#org-roam][Org Roam]]
-    - [[#org-roam-ui][Org Roam UI]]
+    - [[#denote][Denote]]
     - [[#org-agenda][Org Agenda]]
     - [[#org-superstar][Org Superstar]]
-    - [[#org-fonts][Org Fonts]]
     - [[#org-table-of-contents][Org Table of Contents]]
     - [[#org-auto-tangle][Org Auto Tangle]]
     - [[#latex][LaTeX]]
@@ -169,34 +167,16 @@ To get redo functionality in evil-mode / emacs
           which-key-separator " → " ))
 #+end_src
 ** Org Mode
-*** Org Roam
+*** Denote
 #+begin_src elisp :tangle init.el
-(use-package org-roam
+(use-package denote
+  :pin gnu
   :ensure t
-  :bind
-  (("C-c n l" . org-roam-buffer-toggle)
-   ("C-c n f" . org-roam-node-find)
-	 ("C-c n i" . org-roam-node-insert))
-  :custom
-  (org-roam-directory (file-truename "~/Documents/org-roam"))
   :config
-  (org-roam-setup)
-  ;; If you're using a vertical completion framework, you might want a more informative completion interface
-  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-db-autosync-mode)
-  ;; If using org-roam-protocol
-  (require 'org-roam-protocol))
-#+end_src
-*** Org Roam UI
-#+begin_src elisp :tangle init.el
-(use-package org-roam-ui
-  :ensure t
-  :after org-roam
-  :config
-  (setq org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start t))
+  (setq denote-directory (expand-file-name "~/Documents/notes/denote/"))
+  (setq denote-known-keywords '())
+  (setq denote-file-type nil)
+  (add-hook 'dired-mode-hook #'denote-dired-mode))
 #+end_src
 *** Org Agenda
 #+begin_src elisp :tangle init.el
@@ -210,26 +190,15 @@ Org bullets but better
   (org-mode . org-superstar-mode)
   :config
   (setq org-superstar-special-todo-items t)
+  (setq org-superstar-headline-bullets-list '(
+					          "ƛ"
+					          "☭"
+					          "⛮"
+					          "⯪"
+					          "ℵ"))
   ;; disables leading bullets
   (setq org-superstar-leading-bullet ?\s)
   (setq org-indent-mode-turns-on-hiding-stars nil))
-#+end_src
-*** Org Fonts
-#+begin_src elisp :tangle init.el
-(use-package org-modern
-  :ensure t
-  :hook
-  (org-mode . org-modern-mode)
-  :config
-  (setq org-auto-align-tags nil)
-	(setq org-tags-column 0)
-	(setq org-catch-invisible-edits 'show-and-error)
-	(setq org-special-ctrl-a/e t)
-	(setq org-insert-heading-respect-content t)
-
-	;; org styling, hide markup etc
-	(setq org-hide-emphasis-markers t)
-	(setq org-pretty-entities t))
 #+end_src
 *** Org Table of Contents
 #+begin_src elisp :tangle init.el
@@ -691,6 +660,24 @@ Shows your mouse when you make large movements
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
 (add-to-list 'default-frame-alist '(font . "Spleen:style=Medium:antialias=true:hinting=true"))
+
+;; Set org-mode to use Variable pitch
+(add-hook 'org-mode-hook 'variable-pitch-mode)
+(add-hook 'org-mode-hook 'visual-line-mode)
+(custom-theme-set-faces
+  'user
+  '(org-block ((t (:inherit fixed-pitch))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-document-info ((t (:foreground "#fe8019"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "#458588" :underline t))))
+  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 
 (setq-default line-spacing 0.17)
 #+end_src

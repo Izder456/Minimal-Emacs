@@ -97,30 +97,14 @@
           which-key-allow-imprecise-window-fit t
           which-key-separator " → " ))
 
-(use-package org-roam
+(use-package denote
+  :pin gnu
   :ensure t
-  :bind
-  (("C-c n l" . org-roam-buffer-toggle)
-   ("C-c n f" . org-roam-node-find)
-	 ("C-c n i" . org-roam-node-insert))
-  :custom
-  (org-roam-directory (file-truename "~/Documents/org-roam"))
   :config
-  (org-roam-setup)
-  ;; If you're using a vertical completion framework, you might want a more informative completion interface
-  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-db-autosync-mode)
-  ;; If using org-roam-protocol
-  (require 'org-roam-protocol))
-
-(use-package org-roam-ui
-  :ensure t
-  :after org-roam
-  :config
-  (setq org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start t))
+  (setq denote-directory (expand-file-name "~/Documents/notes/denote/"))
+  (setq denote-known-keywords '())
+  (setq denote-file-type nil)
+  (add-hook 'dired-mode-hook #'denote-dired-mode))
 
 (setq org-agenda-files '("~/Documents/org-roam/agenda.org"))
 
@@ -129,24 +113,15 @@
   (org-mode . org-superstar-mode)
   :config
   (setq org-superstar-special-todo-items t)
+  (setq org-superstar-headline-bullets-list '(
+					          "ƛ"
+					          "☭"
+					          "⛮"
+					          "⯪"
+					          "ℵ"))
   ;; disables leading bullets
   (setq org-superstar-leading-bullet ?\s)
   (setq org-indent-mode-turns-on-hiding-stars nil))
-
-(use-package org-modern
-  :ensure t
-  :hook
-  (org-mode . org-modern-mode)
-  :config
-  (setq org-auto-align-tags nil)
-	(setq org-tags-column 0)
-	(setq org-catch-invisible-edits 'show-and-error)
-	(setq org-special-ctrl-a/e t)
-	(setq org-insert-heading-respect-content t)
-
-	;; org styling, hide markup etc
-	(setq org-hide-emphasis-markers t)
-	(setq org-pretty-entities t))
 
 (use-package toc-org
   :hook
@@ -216,10 +191,6 @@
 (plist-put org-format-latex-options :scale 1.5)
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
@@ -547,6 +518,24 @@
 ;; are not right unless I also add this method of setting the default font.
 (add-to-list 'default-frame-alist '(font . "Spleen:style=Medium:antialias=true:hinting=true"))
 
+;; Set org-mode to use Variable pitch
+(add-hook 'org-mode-hook 'variable-pitch-mode)
+(add-hook 'org-mode-hook 'visual-line-mode)
+(custom-theme-set-faces
+  'user
+  '(org-block ((t (:inherit fixed-pitch))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-document-info ((t (:foreground "#fe8019"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "#458588" :underline t))))
+  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+
 (setq-default line-spacing 0.17)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
@@ -598,10 +587,3 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(doom-themes markdown-mode geiser-chicken geiser cider json-mode yaml-mode rust-mode flycheck-ocaml flycheck-rust flycheck hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters drag-stuff projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-alert org-appear org-fragtog cdlatex auctex org-auto-tangle toc-org org-modern org-superstar org-roam-ui org-roam which-key general undo-tree evil-collection evil-visual-mark-mode)))

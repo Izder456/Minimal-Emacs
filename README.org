@@ -5,7 +5,15 @@
 
 /Blantantly Ripped/ from [[https://git.disroot.org/twigthecat/emacs.git][Twig's Emacs Build]]
 
-* Table of Contents                                                   :TOC_4:
+* DISCLAIMER
+
+- I'm not responsible for any system breakage due to my code.
+
+- If you're unsure, refer to [[LICENSE.txt][THE LICENSE]] to see how seriously I take this.
+
+- Use with caution.
+* Table of Contents :TOC_4:
+- [[#disclaimer][DISCLAIMER]]
 - [[#packages][Packages]]
   - [[#important-packages][Important Packages]]
     - [[#third-party-repos][Third Party Repos]]

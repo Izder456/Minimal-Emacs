@@ -427,11 +427,18 @@
   :ensure t)
 (use-package json-mode
   :ensure t)
+(use-package lispy
+  :hook '((scheme-mode . lispy-mode)
+	  (lisp-mode . lispy-mode)
+	  (clojure-mode . lispy-mode)
+	  (clojurescript-mode . lispy-mode)
+	  (elisp-mode . lispy-mode)
+	  (cider-mode . lispy-mode)
+	  (ielm-mode . lispy-mode)
+	  (geiser-mode . lispy-mode))
+  :ensure t)
 (use-package cider
-  :ensure t
-  :config
-  (with-eval-after-load 'clojure-mode
-    (add-hook 'clojure-mode #'cider-jack-in)))
+  :ensure t)
 (use-package geiser
   :ensure t)
 (use-package geiser-chicken
@@ -469,22 +476,25 @@
 
 (setq treesit-language-source-alist
       '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-	      (ocaml "https://github.com/tree-sitter/tree-sitter-ocaml")
-        (cmake "https://github.com/uyha/tree-sitter-cmake")
-        (css "https://github.com/tree-sitter/tree-sitter-css")
-        (go "https://github.com/tree-sitter/tree-sitter-go")
-        (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
-        (rust "https://github.com/tree-sitter/tree-sitter-rust")
-        (html "https://github.com/tree-sitter/tree-sitter-html")
-        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-        (json "https://github.com/tree-sitter/tree-sitter-json")
-        (make "https://github.com/alemuller/tree-sitter-make")
-        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-        (python "https://github.com/tree-sitter/tree-sitter-python")
-        (toml "https://github.com/tree-sitter/tree-sitter-toml")
-        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+	(ocaml "https://github.com/tree-sitter/tree-sitter-ocaml")
+	(clojure "https://github.com/sogaiu/tree-sitter-clojure")
+	(clojurescript "https://github.com/sogaiu/tree-sitter-clojure")
+	(perl "https://github.com/tree-sitter-perl/tree-sitter-perl")
+	(cmake "https://github.com/uyha/tree-sitter-cmake")
+	(css "https://github.com/tree-sitter/tree-sitter-css")
+	(go "https://github.com/tree-sitter/tree-sitter-go")
+	(gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+	(rust "https://github.com/tree-sitter/tree-sitter-rust")
+	(html "https://github.com/tree-sitter/tree-sitter-html")
+	(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+	(json "https://github.com/tree-sitter/tree-sitter-json")
+	(make "https://github.com/alemuller/tree-sitter-make")
+	(markdown "https://github.com/ikatyang/tree-sitter-markdown")
+	(python "https://github.com/tree-sitter/tree-sitter-python")
+	(toml "https://github.com/tree-sitter/tree-sitter-toml")
+	(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+	(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+	(yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 (set-frame-parameter (selected-frame) 'alpha '(95 . 85))
 (add-to-list 'default-frame-alist '(alpha . (95 . 85)))
@@ -544,6 +554,44 @@
 (if (daemonp)
     (add-hook 'after-make-frame-functions #'load-my-fonts)
   (load-my-fonts (selected-frame)))
+
+(set-face-attribute 'default nil
+	      :font "Spleen"
+	      :weight 'regular
+	      :height 120)
+(set-face-attribute 'fixed-pitch nil
+	      :font "Spleen"
+	      :weight 'regular
+	      :height 120)
+(set-face-attribute 'variable-pitch nil
+	      :font "Freeserif"
+	      :weight 'regular
+	      :height 1.2)
+
+;; Make the document title a bit bigger
+(set-face-attribute 'org-document-title nil
+	      :font "Freeserif"
+	      :weight 'bold
+	      :height 1.3)
+
+;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
+(set-face-attribute 'org-block nil
+	      :foreground nil
+	      :inherit 'fixed-pitch)
+(set-face-attribute 'org-table nil
+	      :inherit 'fixed-pitch)
+(set-face-attribute 'org-formula nil
+	      :inherit 'fixed-pitch)
+(set-face-attribute 'org-code nil
+	      :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-verbatim nil
+	      :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-special-keyword nil
+	      :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-meta-line nil
+	      :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-checkbox nil
+	      :inherit 'fixed-pitch)
 
 ;; Set org-mode to use Variable pitch
 (add-hook 'org-mode-hook 'variable-pitch-mode)

@@ -644,42 +644,53 @@ Shows your mouse when you make large movements
 #+end_src
 ** Fonts
 #+begin_src elisp :tangle init.el
-(set-face-attribute 'default nil
-  :font "Spleen"
-  :height 140
-  :weight 'regular)
-(set-face-attribute 'variable-pitch nil
-  :font "Liberation Serif"
-  :height 140
-  :weight 'regular)
-(set-face-attribute 'fixed-pitch nil
-  :font "Spleen"
-  :height 140
-  :weight 'regular)
-;; This sets the default font on all graphical frames created after restarting Emacs.
-;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
-;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "Spleen:style=Medium:antialias=true:hinting=true"))
+(defun load-my-fonts (frame)
+  (select-frame frame)
+  (set-face-attribute 'default nil
+		      :font "Spleen"
+		      :weight 'regular
+		      :height 120)
+  (set-face-attribute 'fixed-pitch nil
+		      :font "Spleen"
+		      :weight 'regular
+		      :height 120)
+  (set-face-attribute 'variable-pitch nil
+		      :font "Freeserif"
+		      :weight 'regular
+		      :height 1.2)
+
+  ;; Make the document title a bit bigger
+  (set-face-attribute 'org-document-title nil
+		      :font "Freeserif"
+		      :weight 'bold
+		      :height 1.3)
+
+  ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
+  (set-face-attribute 'org-block nil
+		      :foreground nil
+		      :inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil
+		      :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil
+		      :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil
+		      :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil
+		      :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil
+		      :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil
+		      :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil
+		      :inherit 'fixed-pitch))
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'load-my-fonts)
+  (load-my-fonts (selected-frame)))
 
 ;; Set org-mode to use Variable pitch
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
-(custom-theme-set-faces
-  'user
-  '(org-block ((t (:inherit fixed-pitch))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-document-info ((t (:foreground "#fe8019"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "#458588" :underline t))))
-  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
-
-(setq-default line-spacing 0.17)
 #+end_src
 ** Theme
 #+begin_src elisp :tangle init.el

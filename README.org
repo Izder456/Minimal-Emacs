@@ -569,16 +569,6 @@ Shows your mouse when you make large movements
   :ensure t)
 (use-package json-mode
   :ensure t)
-(use-package lispy
-  :hook '((scheme-mode . lispy-mode)
-	  (lisp-mode . lispy-mode)
-	  (clojure-mode . lispy-mode)
-	  (clojurescript-mode . lispy-mode)
-	  (elisp-mode . lispy-mode)
-	  (cider-mode . lispy-mode)
-	  (ielm-mode . lispy-mode)
-	  (geiser-mode . lispy-mode))
-  :ensure t)
 (use-package cider
   :ensure t)
 (use-package geiser

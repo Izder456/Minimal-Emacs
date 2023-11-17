@@ -191,6 +191,10 @@
 (plist-put org-format-latex-options :scale 1.5)
 
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
@@ -427,16 +431,6 @@
   :ensure t)
 (use-package json-mode
   :ensure t)
-(use-package lispy
-  :hook '((scheme-mode . lispy-mode)
-	  (lisp-mode . lispy-mode)
-	  (clojure-mode . lispy-mode)
-	  (clojurescript-mode . lispy-mode)
-	  (elisp-mode . lispy-mode)
-	  (cider-mode . lispy-mode)
-	  (ielm-mode . lispy-mode)
-	  (geiser-mode . lispy-mode))
-  :ensure t)
 (use-package cider
   :ensure t)
 (use-package geiser
@@ -646,3 +640,10 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(doom-themes yaml-mode which-key vterm-toggle undo-tree toc-org symex rust-mode rainbow-mode rainbow-delimiters projectile org-superstar org-fragtog org-auto-tangle org-appear org-alert nyan-mode neotree markdown-mode json-mode ivy-prescient hl-todo general geiser-chicken flycheck-rust flycheck-ocaml evil-collection drag-stuff doom-modeline denote dashboard counsel company-prescient company-box cider cdlatex beacon auctex all-the-icons-ivy-rich all-the-icons-dired)))

@@ -19,6 +19,7 @@
     - [[#third-party-repos][Third Party Repos]]
     - [[#evil-mode][Evil Mode]]
       - [[#undo-tree][Undo Tree]]
+      - [[#elcord][Elcord]]
     - [[#keybinds][Keybinds]]
     - [[#whichkey][WhichKey]]
   - [[#org-mode][Org Mode]]
@@ -27,20 +28,12 @@
     - [[#org-superstar][Org Superstar]]
     - [[#org-table-of-contents][Org Table of Contents]]
     - [[#org-auto-tangle][Org Auto Tangle]]
-    - [[#latex][LaTeX]]
-      - [[#auctex][Auctex]]
-      - [[#cdlatex][CDLatex]]
-      - [[#org-fragtog][Org FragTog]]
     - [[#org-appear][Org Appear]]
-    - [[#org-diary][Org Diary]]
-    - [[#org-alert][Org Alert]]
-    - [[#hooks-and-configuration][Hooks And Configuration]]
   - [[#dashboard][Dashboard]]
   - [[#all-the-icons][All The Icons]]
   - [[#company][Company]]
   - [[#ivy-counsel-prescient][Ivy, Counsel, Prescient]]
   - [[#projectile][Projectile]]
-  - [[#drag-stuff][Drag Stuff]]
   - [[#rainbow-stuff-gayyy-️][Rainbow stuff (GAYYY!!!!) 🏳️‍🌈]]
     - [[#rainbow-delimiters][Rainbow Delimiters]]
     - [[#rainbow-mode][Rainbow Mode]]
@@ -122,6 +115,12 @@ To get redo functionality in evil-mode / emacs
   ;; I don't want random files in my directories for the undo-tree,
   ;; so unify them under this directory
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree"))))
+#+end_src
+**** Elcord
+discord RPC
+#+begin_src elisp :tangle init.el
+(use-package elcord
+  :ensure t)
 #+end_src
 *** Keybinds
 #+begin_src elisp :tangle init.el
@@ -224,96 +223,11 @@ Org bullets but better
   :config
   (setq org-auto-tangle-default t))
 #+end_src
-*** LaTeX
-**** Auctex
-#+begin_src elisp :tangle init.el
-(use-package auctex
-  :ensure t
-  :defer t)
-#+end_src
-**** CDLatex
-#+begin_src elisp :tangle init.el
-(use-package cdlatex
-  :ensure t)
-#+end_src
-**** Org FragTog
-#+begin_src elisp :tangle init.el
-(use-package org-fragtog
-  :custom
-  (org-startup-with-latex-preview t)
-  :ensure t
-  :hook
-  ((org-mode . org-fragtog-mode)))
-#+end_src
 *** Org Appear
 #+begin_src elisp :tangle init.el
 (use-package org-appear
   :hook
   (org-mode . org-appear-mode))
-#+end_src
-*** Org Diary
-#+begin_src elisp :tangle init.el
-(defun diary-is-norm-scl-day ()
-  ""
-  (and (let ((dayname (calendar-day-of-week date)))
-	           (memq dayname '(1 2 4 5)))
-       (diary-block 9 06 2023 6 06 2024)))
-
-(defun diary-is-wed-scl-day ()
-  ""
-  (and (let ((dayname (calendar-day-of-week date)))
-	           (memq dayname '(3)))
-       (diary-block 9 06 2023 6 06 2024)))
-
-(defun diary-is-scl-day ()
-  ""
-  (and (unless (diary-block 9 29 2023 9 29 2023) t)
-       (unless (diary-block 11 10 2023 11 10 2023) t)
-       (unless (diary-block 11 20 2023 11 24 2023) t)
-       (unless (diary-block 12 25 2023 12 29 2023) t)
-       (unless (diary-block 1 1 2024 1 1 2024) t)
-       (unless (diary-block 1 15 2024 1 15 2024) t)
-       (unless (diary-block 1 26 2024 1 26 2024) t)
-       (unless (diary-block 2 19 2024 2 19 2024) t)
-       (unless (diary-block 3 25 2024 3 29 2024) t)
-       (unless (diary-block 4 1 2024 4 1 2024) t)
-       (unless (diary-block 5 24 2024 5 27 2024) t)))
-#+end_src
-*** Org Alert
-#+begin_src elisp :tangle init.el
-(use-package org-alert
-  :ensure t
-  :config
-  (setq org-alert-enable t)
-  (setq alert-default-style 'libnotify)
-  (setq org-alert-interval 150))
-  #+end_src
-*** Hooks And Configuration
-#+begin_src elisp :tangle init.el
-(require 'org-tempo)
-
-(plist-put org-format-latex-options :scale 1.5)
-
-(custom-set-faces
- '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
- '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
- '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
-
-(setq org-display-custom-times t)
-
-(setq org-pretty-entities t)
-(setq org-use-sub-superscripts "{}")
-(setq org-hide-emphasis-markers t)
-(setq org-startup-with-inline-images t)
-
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-return-follows-link t)
-;; Stop src blocks from auto indenting
-(setq org-edit-src-content-indentation 0)
 #+end_src
 ** Dashboard
 #+begin_src elisp :tangle init.el
@@ -432,13 +346,6 @@ Org bullets but better
   :ensure t
   :config
   (projectile-mode +1))
-#+end_src
-** Drag Stuff
-#+begin_src elisp :tangle init.el
-(use-package drag-stuff
-  :ensure t
-  :config
-  (drag-stuff-mode))
 #+end_src
 ** Rainbow stuff (GAYYY!!!!) 🏳️‍🌈
 *** Rainbow Delimiters
@@ -768,6 +675,19 @@ If the new path's directories does not exist, create them."
     (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
     backupFilePath))
 (setq make-backup-file-name-function 'iz/backup-file-name)
+
+;; org
+(setq org-display-custom-times t)
+
+(setq org-pretty-entities t)
+(setq org-use-sub-superscripts "{}")
+(setq org-hide-emphasis-markers t)
+(setq org-startup-with-inline-images t)
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-return-follows-link t)
+;; Stop src blocks from auto indenting
+(setq org-edit-src-content-indentation 0)
 
 ;; save minibuffer history
 (savehist-mode 1)

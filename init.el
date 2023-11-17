@@ -50,6 +50,9 @@
   ;; so unify them under this directory
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree"))))
 
+(use-package elcord
+  :ensure t)
+
 (use-package general
   :config
   (general-evil-setup)
@@ -135,85 +138,9 @@
   :config
   (setq org-auto-tangle-default t))
 
-(use-package auctex
-  :ensure t
-  :defer t)
-
-(use-package cdlatex
-  :ensure t)
-
-(use-package org-fragtog
-  :custom
-  (org-startup-with-latex-preview t)
-  :ensure t
-  :hook
-  ((org-mode . org-fragtog-mode)))
-
 (use-package org-appear
   :hook
   (org-mode . org-appear-mode))
-
-(defun diary-is-norm-scl-day ()
-  ""
-  (and (let ((dayname (calendar-day-of-week date)))
-	           (memq dayname '(1 2 4 5)))
-       (diary-block 9 06 2023 6 06 2024)))
-
-(defun diary-is-wed-scl-day ()
-  ""
-  (and (let ((dayname (calendar-day-of-week date)))
-	           (memq dayname '(3)))
-       (diary-block 9 06 2023 6 06 2024)))
-
-(defun diary-is-scl-day ()
-  ""
-  (and (unless (diary-block 9 29 2023 9 29 2023) t)
-       (unless (diary-block 11 10 2023 11 10 2023) t)
-       (unless (diary-block 11 20 2023 11 24 2023) t)
-       (unless (diary-block 12 25 2023 12 29 2023) t)
-       (unless (diary-block 1 1 2024 1 1 2024) t)
-       (unless (diary-block 1 15 2024 1 15 2024) t)
-       (unless (diary-block 1 26 2024 1 26 2024) t)
-       (unless (diary-block 2 19 2024 2 19 2024) t)
-       (unless (diary-block 3 25 2024 3 29 2024) t)
-       (unless (diary-block 4 1 2024 4 1 2024) t)
-       (unless (diary-block 5 24 2024 5 27 2024) t)))
-
-(use-package org-alert
-  :ensure t
-  :config
-  (setq org-alert-enable t)
-  (setq alert-default-style 'libnotify)
-  (setq org-alert-interval 150))
-
-(require 'org-tempo)
-
-(plist-put org-format-latex-options :scale 1.5)
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
- '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
- '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
-
-(setq org-display-custom-times t)
-
-(setq org-pretty-entities t)
-(setq org-use-sub-superscripts "{}")
-(setq org-hide-emphasis-markers t)
-(setq org-startup-with-inline-images t)
-
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-return-follows-link t)
-;; Stop src blocks from auto indenting
-(setq org-edit-src-content-indentation 0)
 
 (use-package dashboard
   :ensure t
@@ -321,11 +248,6 @@
   :ensure t
   :config
   (projectile-mode +1))
-
-(use-package drag-stuff
-  :ensure t
-  :config
-  (drag-stuff-mode))
 
 (use-package rainbow-delimiters
   :hook ((prog-mode . rainbow-delimiters-mode)))
@@ -617,6 +539,19 @@ If the new path's directories does not exist, create them."
     backupFilePath))
 (setq make-backup-file-name-function 'iz/backup-file-name)
 
+;; org
+(setq org-display-custom-times t)
+
+(setq org-pretty-entities t)
+(setq org-use-sub-superscripts "{}")
+(setq org-hide-emphasis-markers t)
+(setq org-startup-with-inline-images t)
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-return-follows-link t)
+;; Stop src blocks from auto indenting
+(setq org-edit-src-content-indentation 0)
+
 ;; save minibuffer history
 (savehist-mode 1)
 
@@ -646,4 +581,10 @@ If the new path's directories does not exist, create them."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(doom-themes yaml-mode which-key vterm-toggle undo-tree toc-org symex rust-mode rainbow-mode rainbow-delimiters projectile org-superstar org-fragtog org-auto-tangle org-appear org-alert nyan-mode neotree markdown-mode json-mode ivy-prescient hl-todo general geiser-chicken flycheck-rust flycheck-ocaml evil-collection drag-stuff doom-modeline denote dashboard counsel company-prescient company-box cider cdlatex beacon auctex all-the-icons-ivy-rich all-the-icons-dired)))
+   '(doom-themes markdown-mode geiser-chicken geiser cider json-mode yaml-mode rust-mode flycheck-ocaml flycheck-rust flycheck hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-appear org-auto-tangle toc-org org-superstar denote which-key general elcord undo-tree evil-collection evil)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

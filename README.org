@@ -51,6 +51,7 @@
     - [[#treesitter][Treesitter]]
 - [[#aesthetics][Aesthetics]]
   - [[#transparency-️️][Trans(Parency) 🏳️‍⚧️]]
+  - [[#org-visuals][Org-Visuals]]
   - [[#fonts][Fonts]]
   - [[#theme][Theme]]
 - [[#other-options][Other Options]]
@@ -557,93 +558,121 @@ Shows your mouse when you make large movements
           '(85 . 50) '(100 . 100)))))
  (global-set-key (kbd "C-c t") 'toggle-transparency)
 #+end_src
+** Org-Visuals
+#+begin_src elisp :tangle init.el
+    ;; org
+
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
+ '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
+ '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
+
+(setq org-display-custom-times t)
+
+(setq org-pretty-entities t)
+(setq org-use-sub-superscripts "{}")
+(setq org-hide-emphasis-markers t)
+(setq org-startup-with-inline-images t)
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-return-follows-link t)
+;; Stop src blocks from auto indenting
+(setq org-edit-src-content-indentation 0)
+
+
+  (setq org-display-custom-times t)
+
+    (setq org-pretty-entities t)
+    (setq org-use-sub-superscripts "{}")
+    (setq org-hide-emphasis-markers t)
+    (setq org-startup-with-inline-images t)
+
+    (add-hook 'org-mode-hook 'org-indent-mode)
+    (setq org-return-follows-link t)
+    ;; Stop src blocks from auto indenting
+    (setq org-edit-src-content-indentation 0)
+#+end_src
 ** Fonts
 #+begin_src elisp :tangle init.el
-(defun load-my-fonts (frame)
-  (select-frame frame)
-  (set-face-attribute 'default nil
-		      :font "Spleen"
-		      :weight 'regular
-		      :height 120)
-  (set-face-attribute 'fixed-pitch nil
-		      :font "Spleen"
-		      :weight 'regular
-		      :height 120)
-  (set-face-attribute 'variable-pitch nil
-		      :font "Freeserif"
-		      :weight 'regular
-		      :height 1.2)
+  (defun load-my-fonts (frame)
+    (select-frame frame)
+    (set-face-attribute 'default nil
+			:font "Spleen"
+			:weight 'regular
+			:height 120)
+    (set-face-attribute 'fixed-pitch nil
+			:font "Spleen"
+			:weight 'regular
+			:height 120)
+    (set-face-attribute 'variable-pitch nil
+			:font "Freeserif"
+			:weight 'regular
+			:height 1.2)
 
-  ;; Make the document title a bit bigger
-  (set-face-attribute 'org-document-title nil
-		      :font "Freeserif"
-		      :weight 'bold
-		      :height 1.3)
+    ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
+(with-eval-after-load 'org-faces
+    (set-face-attribute 'org-block nil
+			:foreground nil
+			:inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil
+			:inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil
+			:inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil
+			:inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil
+			:inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil
+			:inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil
+			:inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil
+			:inherit 'fixed-pitch)))
+
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions #'load-my-fonts)
+    (load-my-fonts (selected-frame)))
+
+  (set-face-attribute 'default nil
+		:font "Spleen"
+		:weight 'regular
+		:height 120)
+  (set-face-attribute 'fixed-pitch nil
+		:font "Spleen"
+		:weight 'regular
+		:height 120)
+  (set-face-attribute 'variable-pitch nil
+		:font "Freeserif"
+		:weight 'regular
+		:height 1.2)
 
   ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
-  (set-face-attribute 'org-block nil
-		      :foreground nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil
-		      :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil
-		      :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil
-		      :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil
-		      :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil
-		      :inherit 'fixed-pitch))
-
-(if (daemonp)
-    (add-hook 'after-make-frame-functions #'load-my-fonts)
-  (load-my-fonts (selected-frame)))
-
-(set-face-attribute 'default nil
-	      :font "Spleen"
-	      :weight 'regular
-	      :height 120)
-(set-face-attribute 'fixed-pitch nil
-	      :font "Spleen"
-	      :weight 'regular
-	      :height 120)
-(set-face-attribute 'variable-pitch nil
-	      :font "Freeserif"
-	      :weight 'regular
-	      :height 1.2)
-
-;; Make the document title a bit bigger
-(set-face-attribute 'org-document-title nil
-	      :font "Freeserif"
-	      :weight 'bold
-	      :height 1.3)
-
-;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
+(with-eval-after-load 'org-faces
 (set-face-attribute 'org-block nil
-	      :foreground nil
-	      :inherit 'fixed-pitch)
-(set-face-attribute 'org-table nil
-	      :inherit 'fixed-pitch)
-(set-face-attribute 'org-formula nil
-	      :inherit 'fixed-pitch)
-(set-face-attribute 'org-code nil
-	      :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-verbatim nil
-	      :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-special-keyword nil
-	      :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-meta-line nil
-	      :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-checkbox nil
-	      :inherit 'fixed-pitch)
+		:foreground nil
+		:inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil
+		:inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil
+		:inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil
+		:inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil
+		:inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil
+		:inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil
+		:inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil
+		:inherit 'fixed-pitch))
 
-;; Set org-mode to use Variable pitch
-(add-hook 'org-mode-hook 'variable-pitch-mode)
-(add-hook 'org-mode-hook 'visual-line-mode)
+  ;; Set org-mode to use Variable pitch
+  (add-hook 'org-mode-hook 'variable-pitch-mode)
+  (add-hook 'org-mode-hook 'visual-line-mode)
 #+end_src
 ** Theme
 #+begin_src elisp :tangle init.el
@@ -662,54 +691,40 @@ Shows your mouse when you make large movements
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config))
 #+end_src
-
 * Other Options
 #+begin_src elisp :tangle init.el
-;; Changing the backup file path
-(defun iz/backup-file-name (fpath)
-  "Return a new file path of a given file path.
-If the new path's directories does not exist, create them."
-  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
-         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
-         (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
-    (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
-    backupFilePath))
-(setq make-backup-file-name-function 'iz/backup-file-name)
+    ;; Changing the backup file path
+    (defun iz/backup-file-name (fpath)
+      "Return a new file path of a given file path.
+    If the new path's directories does not exist, create them."
+      (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
+	     (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
+	     (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
+	(make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
+	backupFilePath))
+    (setq make-backup-file-name-function 'iz/backup-file-name)
 
-;; org
-(setq org-display-custom-times t)
+    ;; save minibuffer history
+    (savehist-mode 1)
 
-(setq org-pretty-entities t)
-(setq org-use-sub-superscripts "{}")
-(setq org-hide-emphasis-markers t)
-(setq org-startup-with-inline-images t)
+    (setq-default left-margin-width 5 right-margin-width 5) ; Define new widths.
+    (set-window-buffer nil (current-buffer)) ; Use them now.
 
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-return-follows-link t)
-;; Stop src blocks from auto indenting
-(setq org-edit-src-content-indentation 0)
+    ;; smooth scrolling
+    (setq scroll-step           1
+	  scroll-conservatively 10000)
 
-;; save minibuffer history
-(savehist-mode 1)
+    ;; disable the gtk stuff
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)
 
-(setq-default left-margin-width 5 right-margin-width 5) ; Define new widths.
-(set-window-buffer nil (current-buffer)) ; Use them now.
+    (delete-selection-mode 1)    ;; You can select text and delete it by typing.
+    (electric-indent-mode 1)
+    (electric-pair-mode 1)       ;; Turns on automatic parens pairing
 
-;; smooth scrolling
-(setq scroll-step           1
-      scroll-conservatively 10000)
+    (global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
 
-;; disable the gtk stuff
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-
-(delete-selection-mode 1)    ;; You can select text and delete it by typing.
-(electric-indent-mode 1)
-(electric-pair-mode 1)       ;; Turns on automatic parens pairing
-
-(global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
-
-;; i want line numbers when i program !!
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'text-mode-hook 'visual-line-mode)
+    ;; i want line numbers when i program !!
+    (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+    (add-hook 'text-mode-hook 'visual-line-mode)
 #+end_src

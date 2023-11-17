@@ -427,91 +427,117 @@
           '(85 . 50) '(100 . 100)))))
  (global-set-key (kbd "C-c t") 'toggle-transparency)
 
-(defun load-my-fonts (frame)
-  (select-frame frame)
-  (set-face-attribute 'default nil
-		      :font "Spleen"
-		      :weight 'regular
-		      :height 120)
-  (set-face-attribute 'fixed-pitch nil
-		      :font "Spleen"
-		      :weight 'regular
-		      :height 120)
-  (set-face-attribute 'variable-pitch nil
-		      :font "Freeserif"
-		      :weight 'regular
-		      :height 1.2)
+;; org
 
-  ;; Make the document title a bit bigger
-  (set-face-attribute 'org-document-title nil
-		      :font "Freeserif"
-		      :weight 'bold
-		      :height 1.3)
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
+ '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
+ '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
+
+(setq org-display-custom-times t)
+
+(setq org-pretty-entities t)
+(setq org-use-sub-superscripts "{}")
+(setq org-hide-emphasis-markers t)
+(setq org-startup-with-inline-images t)
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-return-follows-link t)
+;; Stop src blocks from auto indenting
+(setq org-edit-src-content-indentation 0)
+
+
+  (setq org-display-custom-times t)
+
+    (setq org-pretty-entities t)
+    (setq org-use-sub-superscripts "{}")
+    (setq org-hide-emphasis-markers t)
+    (setq org-startup-with-inline-images t)
+
+    (add-hook 'org-mode-hook 'org-indent-mode)
+    (setq org-return-follows-link t)
+    ;; Stop src blocks from auto indenting
+    (setq org-edit-src-content-indentation 0)
+
+(defun load-my-fonts (frame)
+    (select-frame frame)
+    (set-face-attribute 'default nil
+			:font "Spleen"
+			:weight 'regular
+			:height 120)
+    (set-face-attribute 'fixed-pitch nil
+			:font "Spleen"
+			:weight 'regular
+			:height 120)
+    (set-face-attribute 'variable-pitch nil
+			:font "Freeserif"
+			:weight 'regular
+			:height 1.2)
+
+    ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
+(with-eval-after-load 'org-faces
+    (set-face-attribute 'org-block nil
+			:foreground nil
+			:inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil
+			:inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil
+			:inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil
+			:inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil
+			:inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil
+			:inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil
+			:inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil
+			:inherit 'fixed-pitch)))
+
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions #'load-my-fonts)
+    (load-my-fonts (selected-frame)))
+
+  (set-face-attribute 'default nil
+		:font "Spleen"
+		:weight 'regular
+		:height 120)
+  (set-face-attribute 'fixed-pitch nil
+		:font "Spleen"
+		:weight 'regular
+		:height 120)
+  (set-face-attribute 'variable-pitch nil
+		:font "Freeserif"
+		:weight 'regular
+		:height 1.2)
 
   ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
-  (set-face-attribute 'org-block nil
-		      :foreground nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil
-		      :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil
-		      :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil
-		      :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil
-		      :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil
-		      :inherit 'fixed-pitch))
-
-(if (daemonp)
-    (add-hook 'after-make-frame-functions #'load-my-fonts)
-  (load-my-fonts (selected-frame)))
-
-(set-face-attribute 'default nil
-	      :font "Spleen"
-	      :weight 'regular
-	      :height 120)
-(set-face-attribute 'fixed-pitch nil
-	      :font "Spleen"
-	      :weight 'regular
-	      :height 120)
-(set-face-attribute 'variable-pitch nil
-	      :font "Freeserif"
-	      :weight 'regular
-	      :height 1.2)
-
-;; Make the document title a bit bigger
-(set-face-attribute 'org-document-title nil
-	      :font "Freeserif"
-	      :weight 'bold
-	      :height 1.3)
-
-;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
+(with-eval-after-load 'org-faces
 (set-face-attribute 'org-block nil
-	      :foreground nil
-	      :inherit 'fixed-pitch)
-(set-face-attribute 'org-table nil
-	      :inherit 'fixed-pitch)
-(set-face-attribute 'org-formula nil
-	      :inherit 'fixed-pitch)
-(set-face-attribute 'org-code nil
-	      :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-verbatim nil
-	      :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-special-keyword nil
-	      :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-meta-line nil
-	      :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-checkbox nil
-	      :inherit 'fixed-pitch)
+		:foreground nil
+		:inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil
+		:inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil
+		:inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil
+		:inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil
+		:inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil
+		:inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil
+		:inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil
+		:inherit 'fixed-pitch))
 
-;; Set org-mode to use Variable pitch
-(add-hook 'org-mode-hook 'variable-pitch-mode)
-(add-hook 'org-mode-hook 'visual-line-mode)
+  ;; Set org-mode to use Variable pitch
+  (add-hook 'org-mode-hook 'variable-pitch-mode)
+  (add-hook 'org-mode-hook 'visual-line-mode)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (use-package doom-themes
@@ -533,24 +559,11 @@
   "Return a new file path of a given file path.
 If the new path's directories does not exist, create them."
   (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
-         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
-         (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
+	 (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
+	 (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
     (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
     backupFilePath))
 (setq make-backup-file-name-function 'iz/backup-file-name)
-
-;; org
-(setq org-display-custom-times t)
-
-(setq org-pretty-entities t)
-(setq org-use-sub-superscripts "{}")
-(setq org-hide-emphasis-markers t)
-(setq org-startup-with-inline-images t)
-
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-return-follows-link t)
-;; Stop src blocks from auto indenting
-(setq org-edit-src-content-indentation 0)
 
 ;; save minibuffer history
 (savehist-mode 1)
@@ -575,16 +588,3 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(doom-themes markdown-mode geiser-chicken geiser cider json-mode yaml-mode rust-mode flycheck-ocaml flycheck-rust flycheck hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-appear org-auto-tangle toc-org org-superstar denote which-key general elcord undo-tree evil-collection evil)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

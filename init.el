@@ -109,8 +109,6 @@
   (setq denote-file-type nil)
   (add-hook 'dired-mode-hook #'denote-dired-mode))
 
-(setq org-agenda-files '("~/Documents/org-roam/agenda.org"))
-
 (use-package org-superstar
   :hook
   (org-mode . org-superstar-mode)

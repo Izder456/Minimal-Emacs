@@ -12,6 +12,7 @@
 - If you're unsure, refer to [[LICENSE.txt][THE LICENSE]] to see how seriously I take this.
 
 - Use with caution.
+  
 * Table of Contents :TOC_4:
 - [[#disclaimer][DISCLAIMER]]
 - [[#packages][Packages]]
@@ -24,7 +25,6 @@
     - [[#whichkey][WhichKey]]
   - [[#org-mode][Org Mode]]
     - [[#denote][Denote]]
-    - [[#org-agenda][Org Agenda]]
     - [[#org-superstar][Org Superstar]]
     - [[#org-table-of-contents][Org Table of Contents]]
     - [[#org-auto-tangle][Org Auto Tangle]]
@@ -185,10 +185,6 @@ discord RPC
   (setq denote-known-keywords '())
   (setq denote-file-type nil)
   (add-hook 'dired-mode-hook #'denote-dired-mode))
-#+end_src
-*** Org Agenda
-#+begin_src elisp :tangle init.el
-(setq org-agenda-files '("~/Documents/org-roam/agenda.org"))
 #+end_src
 *** Org Superstar
 Org bullets but better

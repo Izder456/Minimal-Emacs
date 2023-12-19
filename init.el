@@ -351,6 +351,13 @@
   :ensure t)
 (use-package json-mode
   :ensure t)
+(use-package fsharp-mode
+  :ensure t
+  :defer t)
+(use-package eglot-fsharp
+  :ensure t)
+(use-package ob-fsharp
+  :ensure t)
 (use-package cider
   :ensure t)
 (use-package geiser
@@ -369,6 +376,8 @@
   :config
   (add-to-list 'eglot-server-programs '((clojure-mode . ("clojure-lsp"))))
   (add-to-list 'eglot-server-programs '((rust-mode . ("rust-analyzer"))))
+  (add-to-list 'eglot-server-programs '((c++-mode . ("clangd"))))
+  (add-to-list 'eglot-server-programs '((c-mode . ("clangd"))))
   :hook
   ((rust-mode . eglot)
    (clojure-mode . eglot)))
@@ -428,6 +437,10 @@
 ;; org
 
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
@@ -586,3 +599,10 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(eglot-fsharp yaml-mode which-key vterm-toggle undo-tree toc-org rust-mode rainbow-mode rainbow-delimiters projectile org-superstar org-auto-tangle org-appear ob-fsharp nyan-mode neotree markdown-mode json-mode ivy-prescient hl-todo general geiser-chicken flycheck-rust flycheck-ocaml evil-collection elcord doom-themes doom-modeline denote dashboard counsel company-prescient company-box cider beacon all-the-icons-ivy-rich all-the-icons-dired)))

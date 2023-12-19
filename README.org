@@ -473,6 +473,13 @@ Shows your mouse when you make large movements
   :ensure t)
 (use-package json-mode
   :ensure t)
+(use-package fsharp-mode
+  :ensure t
+  :defer t)
+(use-package eglot-fsharp
+  :ensure t)
+(use-package ob-fsharp
+  :ensure t)
 (use-package cider
   :ensure t)
 (use-package geiser
@@ -493,6 +500,8 @@ Shows your mouse when you make large movements
   :config
   (add-to-list 'eglot-server-programs '((clojure-mode . ("clojure-lsp"))))
   (add-to-list 'eglot-server-programs '((rust-mode . ("rust-analyzer"))))
+  (add-to-list 'eglot-server-programs '((c++-mode . ("clangd"))))
+  (add-to-list 'eglot-server-programs '((c-mode . ("clangd"))))
   :hook
   ((rust-mode . eglot)
    (clojure-mode . eglot)))
@@ -689,38 +698,38 @@ Shows your mouse when you make large movements
 #+end_src
 * Other Options
 #+begin_src elisp :tangle init.el
-    ;; Changing the backup file path
-    (defun iz/backup-file-name (fpath)
-      "Return a new file path of a given file path.
-    If the new path's directories does not exist, create them."
-      (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
-	     (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
-	     (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
-	(make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
-	backupFilePath))
-    (setq make-backup-file-name-function 'iz/backup-file-name)
+;; Changing the backup file path
+(defun iz/backup-file-name (fpath)
+  "Return a new file path of a given file path.
+If the new path's directories does not exist, create them."
+  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
+	 (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
+	 (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
+    (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
+    backupFilePath))
+(setq make-backup-file-name-function 'iz/backup-file-name)
 
-    ;; save minibuffer history
-    (savehist-mode 1)
+;; save minibuffer history
+(savehist-mode 1)
 
-    (setq-default left-margin-width 5 right-margin-width 5) ; Define new widths.
-    (set-window-buffer nil (current-buffer)) ; Use them now.
+(setq-default left-margin-width 5 right-margin-width 5) ; Define new widths.
+(set-window-buffer nil (current-buffer)) ; Use them now.
 
-    ;; smooth scrolling
-    (setq scroll-step           1
-	  scroll-conservatively 10000)
+;; smooth scrolling
+(setq scroll-step           1
+      scroll-conservatively 10000)
 
-    ;; disable the gtk stuff
-    (menu-bar-mode -1)
-    (tool-bar-mode -1)
+;; disable the gtk stuff
+(menu-bar-mode -1)
+(tool-bar-mode -1)
 
-    (delete-selection-mode 1)    ;; You can select text and delete it by typing.
-    (electric-indent-mode 1)
-    (electric-pair-mode 1)       ;; Turns on automatic parens pairing
+(delete-selection-mode 1)    ;; You can select text and delete it by typing.
+(electric-indent-mode 1)
+(electric-pair-mode 1)       ;; Turns on automatic parens pairing
 
-    (global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
+(global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
 
-    ;; i want line numbers when i program !!
-    (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-    (add-hook 'text-mode-hook 'visual-line-mode)
+;; i want line numbers when i program !!
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'text-mode-hook 'visual-line-mode)
 #+end_src

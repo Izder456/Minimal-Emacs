@@ -50,8 +50,10 @@
   ;; so unify them under this directory
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree"))))
 
-(use-package elcord
-  :ensure t)
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
 
 (use-package general
   :config
@@ -605,4 +607,4 @@ If the new path's directories does not exist, create them."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(eglot-fsharp yaml-mode which-key vterm-toggle undo-tree toc-org rust-mode rainbow-mode rainbow-delimiters projectile org-superstar org-auto-tangle org-appear ob-fsharp nyan-mode neotree markdown-mode json-mode ivy-prescient hl-todo general geiser-chicken flycheck-rust flycheck-ocaml evil-collection elcord doom-themes doom-modeline denote dashboard counsel company-prescient company-box cider beacon all-the-icons-ivy-rich all-the-icons-dired)))
+    '(doom-themes markdown-mode geiser-chicken geiser cider ob-fsharp eglot-fsharp fsharp-mode json-mode yaml-mode rust-mode flycheck-ocaml flycheck-rust flycheck hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-appear org-auto-tangle toc-org org-superstar denote which-key general editorconfig undo-tree evil-collection evil)))

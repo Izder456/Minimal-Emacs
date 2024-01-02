@@ -20,7 +20,7 @@
     - [[#third-party-repos][Third Party Repos]]
     - [[#evil-mode][Evil Mode]]
       - [[#undo-tree][Undo Tree]]
-      - [[#elcord][Elcord]]
+      - [[#editorconfig][Editorconfig]]
     - [[#keybinds][Keybinds]]
     - [[#whichkey][WhichKey]]
   - [[#org-mode][Org Mode]]
@@ -117,11 +117,13 @@ To get redo functionality in evil-mode / emacs
   ;; so unify them under this directory
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree"))))
 #+end_src
-**** Elcord
-discord RPC
+**** Editorconfig
+for editor consistency
 #+begin_src elisp :tangle init.el
-(use-package elcord
-  :ensure t)
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
 #+end_src
 *** Keybinds
 #+begin_src elisp :tangle init.el

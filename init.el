@@ -369,6 +369,8 @@
   :hook ((scheme-mode . geiser-mode)))
 (use-package clojure-mode
   :ensure t)
+(use-package hy-mode
+  :ensure t)
 (use-package markdown-mode
   :ensure t
   :hook ((markdown-mode . visual-line-mode)))
@@ -607,4 +609,4 @@ If the new path's directories does not exist, create them."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-    '(doom-themes markdown-mode geiser-chicken geiser cider ob-fsharp eglot-fsharp fsharp-mode json-mode yaml-mode rust-mode flycheck-ocaml flycheck-rust flycheck hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-appear org-auto-tangle toc-org org-superstar denote which-key general editorconfig undo-tree evil-collection evil)))
+    '(hy-mode yaml-mode which-key vterm-toggle undo-tree toc-org rust-mode rainbow-mode rainbow-delimiters projectile org-superstar org-auto-tangle org-appear ob-fsharp nyan-mode neotree markdown-mode json-mode ivy-prescient hl-todo general geiser-chicken flycheck-rust flycheck-ocaml evil-collection eglot-fsharp editorconfig doom-themes doom-modeline denote dashboard counsel company-prescient company-box cider beacon all-the-icons-ivy-rich all-the-icons-dired)))

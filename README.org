@@ -12,7 +12,7 @@
 - If you're unsure, refer to [[LICENSE.txt][THE LICENSE]] to see how seriously I take this.
 
 - Use with caution.
-  
+
 * Table of Contents :TOC_4:
 - [[#disclaimer][DISCLAIMER]]
 - [[#packages][Packages]]
@@ -490,6 +490,8 @@ Shows your mouse when you make large movements
   :ensure t
   :hook ((scheme-mode . geiser-mode)))
 (use-package clojure-mode
+  :ensure t)
+(use-package hy-mode
   :ensure t)
 (use-package markdown-mode
   :ensure t

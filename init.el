@@ -250,7 +250,11 @@
   (projectile-mode +1))
 
 (use-package rainbow-delimiters
-  :hook ((prog-mode . rainbow-delimiters-mode)))
+  :hook ((prog-mode . rainbow-delimiters-mode)
+	 (sly-mode . rainbow-delimiters-mode)
+	 (cider-mode . rainbow-delimiters-mode)
+	 (geiser-mode . rainbow-delimiters-mode)
+	 (hy-mode . rainbow-delimiters-mode)))
 
 (use-package rainbow-mode
   :diminish
@@ -361,9 +365,11 @@
 (use-package ob-fsharp
   :ensure t)
 (use-package cider
-  :ensure t)
+  :ensure t
+  :hook ((cider-mode . turn-off-evil-mode)))
 (use-package geiser
-  :ensure t)
+  :ensure t
+  :hook ((geiser-mode . turn-off-evil-mode)))
 (use-package geiser-chicken
   :ensure t
   :hook ((scheme-mode . geiser-mode)))
@@ -371,6 +377,9 @@
   :ensure t)
 (use-package hy-mode
   :ensure t)
+(use-package sly
+  :ensure t
+  :hook ((sly-mrepl-mode . turn-off-evil-mode)))
 (use-package markdown-mode
   :ensure t
   :hook ((markdown-mode . visual-line-mode)))
@@ -441,10 +450,6 @@
 ;; org
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
@@ -603,10 +608,3 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-    '(hy-mode yaml-mode which-key vterm-toggle undo-tree toc-org rust-mode rainbow-mode rainbow-delimiters projectile org-superstar org-auto-tangle org-appear ob-fsharp nyan-mode neotree markdown-mode json-mode ivy-prescient hl-todo general geiser-chicken flycheck-rust flycheck-ocaml evil-collection eglot-fsharp editorconfig doom-themes doom-modeline denote dashboard counsel company-prescient company-box cider beacon all-the-icons-ivy-rich all-the-icons-dired)))

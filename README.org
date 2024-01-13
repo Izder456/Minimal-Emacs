@@ -350,7 +350,11 @@ Org bullets but better
 *** Rainbow Delimiters
 #+begin_src elisp :tangle init.el
 (use-package rainbow-delimiters
-  :hook ((prog-mode . rainbow-delimiters-mode)))
+  :hook ((prog-mode . rainbow-delimiters-mode)
+	 (sly-mode . rainbow-delimiters-mode)
+	 (cider-mode . rainbow-delimiters-mode)
+	 (geiser-mode . rainbow-delimiters-mode)
+	 (hy-mode . rainbow-delimiters-mode)))
 #+end_src
 *** Rainbow Mode
 #+begin_src elisp :tangle init.el
@@ -483,9 +487,11 @@ Shows your mouse when you make large movements
 (use-package ob-fsharp
   :ensure t)
 (use-package cider
-  :ensure t)
+  :ensure t
+  :hook ((cider-mode . turn-off-evil-mode)))
 (use-package geiser
-  :ensure t)
+  :ensure t
+  :hook ((geiser-mode . turn-off-evil-mode)))
 (use-package geiser-chicken
   :ensure t
   :hook ((scheme-mode . geiser-mode)))
@@ -493,6 +499,9 @@ Shows your mouse when you make large movements
   :ensure t)
 (use-package hy-mode
   :ensure t)
+(use-package sly
+  :ensure t
+  :hook ((sly-mrepl-mode . turn-off-evil-mode)))
 (use-package markdown-mode
   :ensure t
   :hook ((markdown-mode . visual-line-mode)))

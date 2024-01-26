@@ -1,7 +1,14 @@
-+Twig's+ Iz's Emacs Configuration -*- org -*-
+#+title: +Twig's+ Iz's Emacs Configuration -*- org -*-
 #+startup: showall
 #+options: toc:4
 #+author: me
+
+#+BEGIN_HTML
+<div align="left">
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/izder456/Minimal-Emacs?style=plastic">
+  <img alt="Lines of code" src="https://tokei.rs/b1/github/izder456/Minimal-Emacs?category=code&style=plastic">
+</div>
+#+END_HTML
 
 /Blantantly Ripped/ from [[https://git.disroot.org/twigthecat/emacs.git][Twig's Emacs Build]]
 

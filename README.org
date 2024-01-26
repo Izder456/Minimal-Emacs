@@ -1,4 +1,4 @@
-#+title: +Twig's+ Iz's Emacs Configuration -*- org -*-
+#+title: +Twig's+ Iz's Emacs Configuration
 #+startup: showall
 #+options: toc:4
 #+author: me

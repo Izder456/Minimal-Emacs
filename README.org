@@ -23,14 +23,13 @@
 
 * Table of Contents :TOC_4:
 - [[#disclaimer][DISCLAIMER]]
-- [[#meta][Meta]]
-  - [[#editorconfig][Editorconfig]]
 - [[#packages][Packages]]
   - [[#important-packages][Important Packages]]
     - [[#third-party-repos][Third Party Repos]]
     - [[#evil-mode][Evil Mode]]
+      - [[#path][PATH]]
       - [[#undo-tree][Undo Tree]]
-      - [[#editorconfig-1][Editorconfig]]
+      - [[#editorconfig][Editorconfig]]
     - [[#keybinds][Keybinds]]
     - [[#whichkey][WhichKey]]
   - [[#org-mode][Org Mode]]
@@ -66,16 +65,6 @@
   - [[#fonts][Fonts]]
   - [[#theme][Theme]]
 - [[#other-options][Other Options]]
-
-* Meta
-
-** Editorconfig
-
-#+BEGIN_SRC toml :tangle .editorconfig
-[*]
-indent_style = space
-indent_size = 2
-#+END_SRC
 
 * Packages
 ** Important Packages
@@ -126,6 +115,19 @@ indent_size = 2
   :config
   (setq evil-collection-mode-list '(dashboard dired ibuffer))
   (evil-collection-init))
+#+end_src
+**** PATH
+#+begin_src elisp :tangle init.el
+(defun set-exec-path-from-shell-PATH ()
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string
+                          "[ \t\n]*$" "" (shell-command-to-string
+                                          "$SHELL --login -c 'echo $PATH'"
+                                          ))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
 #+end_src
 **** Undo Tree
 To get redo functionality in evil-mode / emacs

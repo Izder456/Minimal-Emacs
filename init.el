@@ -9,7 +9,7 @@
   (package-install 'use-package))
 (eval-and-compile
   (setq use-package-always-ensure t
-	      use-package-expand-minimally t))
+        use-package-expand-minimally t))
 
 (use-package evil
   :ensure t
@@ -90,17 +90,17 @@
   :ensure t
   :config
   (setq which-key-side-window-location 'bottom
-          which-key-sort-order #'which-key-key-order-alpha
-          which-key-sort-uppercase-first nil
-          which-key-add-column-padding 1
-          which-key-max-display-columns nil
-          which-key-min-display-lines 6
-          which-key-side-window-slot -10
-          which-key-side-window-max-height 0.25
-          which-key-idle-delay 0.8
-          which-key-max-description-length 25
-          which-key-allow-imprecise-window-fit t
-          which-key-separator " → " ))
+        which-key-sort-order #'which-key-key-order-alpha
+        which-key-sort-uppercase-first nil
+        which-key-add-column-padding 1
+        which-key-max-display-columns nil
+        which-key-min-display-lines 6
+        which-key-side-window-slot -10
+        which-key-side-window-max-height 0.25
+        which-key-idle-delay 0.8
+        which-key-max-description-length 25
+        which-key-allow-imprecise-window-fit t
+        which-key-separator " → " ))
 
 (use-package denote
   :pin gnu
@@ -117,11 +117,11 @@
   :config
   (setq org-superstar-special-todo-items t)
   (setq org-superstar-headline-bullets-list '(
-					          "ƛ"
-					          "☭"
-					          "⛮"
-					          "⯪"
-					          "ℵ"))
+                                              "ƛ"
+                                              "☭"
+                                              "⛮"
+                                              "⯪"
+                                              "ℵ"))
   ;; disables leading bullets
   (setq org-superstar-leading-bullet ?\s)
   (setq org-indent-mode-turns-on-hiding-stars nil))
@@ -156,7 +156,7 @@
                           (agenda . 5)))
   :custom
   (dashboard-modify-heading-icons '((recents . "file-text")
-				      (bookmarks . "book")))
+                                    (bookmarks . "book")))
   :config
   (dashboard-setup-startup-hook))
 
@@ -201,8 +201,8 @@
   :after ivy
   :diminish
   :config
-    (counsel-mode)
-    (setq ivy-initial-inputs-alist nil)) ;; removes starting ^ regex in M-x
+  (counsel-mode)
+  (setq ivy-initial-inputs-alist nil)) ;; removes starting ^ regex in M-x
 
 (use-package ivy
   :ensure t
@@ -224,8 +224,8 @@
   :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
   :custom
   (ivy-virtual-abbreviate 'full
-   ivy-rich-switch-buffer-align-virtual-buffer t
-   ivy-rich-path-style 'abbrev)
+                          ivy-rich-switch-buffer-align-virtual-buffer t
+                          ivy-rich-path-style 'abbrev)
   :config
   (ivy-set-display-transformer 'ivy-switch-buffer
                                'ivy-rich-switch-buffer-transformer))
@@ -251,10 +251,11 @@
 
 (use-package rainbow-delimiters
   :hook ((prog-mode . rainbow-delimiters-mode)
-	 (sly-mode . rainbow-delimiters-mode)
-	 (cider-mode . rainbow-delimiters-mode)
-	 (geiser-mode . rainbow-delimiters-mode)
-	 (hy-mode . rainbow-delimiters-mode)))
+         (sly-mode . rainbow-delimiters-mode)
+         (cider-mode . rainbow-delimiters-mode)
+         (geiser-mode . rainbow-delimiters-mode)
+         (inf-elixir-mode . rainbow-delimiters-mode)
+         (hy-mode . rainbow-delimiters-mode)))
 
 (use-package rainbow-mode
   :diminish
@@ -283,17 +284,17 @@
         neo-window-fixed-size nil
         inhibit-compacting-font-caches t
         projectile-switch-project-action 'neotree-projectile-action)
-        ;; truncate long file names in neotree
-        (add-hook 'neo-after-create-hook
-           #'(lambda (_)
-               (with-current-buffer (get-buffer neo-buffer-name)
-                 (setq truncate-lines t)
-                 (setq word-wrap nil)
-                 (make-local-variable 'auto-hscroll-mode)
-                 (setq auto-hscroll-mode nil)))))
+  ;; truncate long file names in neotree
+  (add-hook 'neo-after-create-hook
+            #'(lambda (_)
+                (with-current-buffer (get-buffer neo-buffer-name)
+                  (setq truncate-lines t)
+                  (setq word-wrap nil)
+                  (make-local-variable 'auto-hscroll-mode)
+                  (setq auto-hscroll-mode nil)))))
 
 (use-package vterm
-    :ensure t)
+  :ensure t)
 
 (use-package vterm-toggle
   :ensure t
@@ -306,17 +307,17 @@
   (setq vterm-toggle-scope 'project)
   (add-to-list 'display-buffer-alist
                '((lambda (buffer-or-name _)
-                     (let ((buffer (get-buffer buffer-or-name)))
-                       (with-current-buffer buffer
-                         (or (equal major-mode 'vterm-mode)
-                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                  (display-buffer-reuse-window display-buffer-at-bottom)
-                  ;;(display-buffer-reuse-window display-buffer-in-direction)
-                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                  ;;(direction . bottom)
-                  ;;(dedicated . t) ;dedicated is supported in emacs27
-                  (reusable-frames . visible)
-                  (window-height . 0.4))))
+                   (let ((buffer (get-buffer buffer-or-name)))
+                     (with-current-buffer buffer
+                       (or (equal major-mode 'vterm-mode)
+                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 ;;(display-buffer-reuse-window display-buffer-in-direction)
+                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                 ;;(direction . bottom)
+                 ;;(dedicated . t) ;dedicated is supported in emacs27
+                 (reusable-frames . visible)
+                 (window-height . 0.4))))
 
 (use-package hl-todo
   :ensure t
@@ -344,7 +345,7 @@
   :ensure t
   :config
   (with-eval-after-load 'rust-mode
-  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 (use-package flycheck-ocaml
   :ensure t
   :config
@@ -357,16 +358,16 @@
   :ensure t)
 (use-package json-mode
   :ensure t)
-(use-package fsharp-mode
-  :ensure t
-  :defer t)
 (use-package eglot-fsharp
-  :ensure t)
-(use-package ob-fsharp
   :ensure t)
 (use-package cider
   :ensure t
   :hook ((cider-mode . turn-off-evil-mode)))
+(use-package elixir-mode
+  :ensure t
+  :hook ((elixir-mode . inf-elixir-minor-mode)))
+(use-package inf-elixir
+  :ensure t)
 (use-package geiser
   :ensure t
   :hook ((geiser-mode . turn-off-evil-mode)))
@@ -383,6 +384,59 @@
 (use-package markdown-mode
   :ensure t
   :hook ((markdown-mode . visual-line-mode)))
+
+;; Elixir
+(defun elixir-inf-helper (lis)
+  "find terminal and switch to term buffer"
+  (cond
+   ((eq '() lis)
+    (inf-elixir-set-repl))
+   ((string= (car lis) "Inf-Elixir")
+    (switch-to-buffer-other-window (car lis)))
+   (t
+    (elixir-inf-helper (cdr lis)))))
+
+(defun elixir-inf-switch ()
+  "switch to inf elixir window"
+  (interactive)
+  (let ((bufs (mapchar #'buffer-name (buffer-list))))
+    (elixir-inf-helper bufs)))
+
+(general-define-key
+ :keymaps 'inf-elixir-mode-map
+ :prefix "C-c"
+ "C-z" '(previous-multiframe-window :which-key "other-window"))
+
+(general-define-key
+ :keymaps 'elixir-mode-map
+ "C-<return>" '(inf-elixir-send-line :which-key "send line"))
+
+(general-define-key
+ :keymaps 'elixir-mode-map
+ :prefix "C-c"
+ "C-c" '(inf-elixir-send-buffer :which-key "elixir inf send-buffer")
+ "C-z" '(elixir-inf-switch :which-key "elixir inf switch"))
+
+;; defaults
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+(setq indent-line-function 'insert-tab)
+
+;; Perl
+(defalias 'perl-mode 'cperl-mode)
+(setq cperl-invalid-face nil
+      cperl-electric-keywords t
+      cperl-auto-newlin t
+      cperl-indent-level 2
+      cperl-indent-parens-as-block t
+      cperl-close-paren-offset -2
+      cperl-continued-statement-offset 2
+      cperl-tab-always-indent t)
+
+;; CC-mode
+(setq c-default-style "bsd"
+      c-basic-offset 2)
+(c-set-offset 'comment-intro 0)
 
 (use-package eglot
   :ensure t
@@ -412,40 +466,40 @@
 
 (setq treesit-language-source-alist
       '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-	(ocaml "https://github.com/tree-sitter/tree-sitter-ocaml")
-	(clojure "https://github.com/sogaiu/tree-sitter-clojure")
-	(clojurescript "https://github.com/sogaiu/tree-sitter-clojure")
-	(perl "https://github.com/tree-sitter-perl/tree-sitter-perl")
-	(cmake "https://github.com/uyha/tree-sitter-cmake")
-	(css "https://github.com/tree-sitter/tree-sitter-css")
-	(go "https://github.com/tree-sitter/tree-sitter-go")
-	(gomod "https://github.com/camdencheek/tree-sitter-go-mod")
-	(rust "https://github.com/tree-sitter/tree-sitter-rust")
-	(html "https://github.com/tree-sitter/tree-sitter-html")
-	(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-	(json "https://github.com/tree-sitter/tree-sitter-json")
-	(make "https://github.com/alemuller/tree-sitter-make")
-	(markdown "https://github.com/ikatyang/tree-sitter-markdown")
-	(python "https://github.com/tree-sitter/tree-sitter-python")
-	(toml "https://github.com/tree-sitter/tree-sitter-toml")
-	(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-	(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-	(yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+        (ocaml "https://github.com/tree-sitter/tree-sitter-ocaml")
+        (clojure "https://github.com/sogaiu/tree-sitter-clojure")
+        (clojurescript "https://github.com/sogaiu/tree-sitter-clojure")
+        (perl "https://github.com/tree-sitter-perl/tree-sitter-perl")
+        (cmake "https://github.com/uyha/tree-sitter-cmake")
+        (css "https://github.com/tree-sitter/tree-sitter-css")
+        (go "https://github.com/tree-sitter/tree-sitter-go")
+        (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+        (rust "https://github.com/tree-sitter/tree-sitter-rust")
+        (html "https://github.com/tree-sitter/tree-sitter-html")
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+        (json "https://github.com/tree-sitter/tree-sitter-json")
+        (make "https://github.com/alemuller/tree-sitter-make")
+        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+        (python "https://github.com/tree-sitter/tree-sitter-python")
+        (toml "https://github.com/tree-sitter/tree-sitter-toml")
+        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 (set-frame-parameter (selected-frame) 'alpha '(95 . 85))
 (add-to-list 'default-frame-alist '(alpha . (95 . 85)))
 (defun toggle-transparency ()
-   (interactive)
-   (let ((alpha (frame-parameter nil 'alpha)))
-     (set-frame-parameter
-      nil 'alpha
-      (if (eql (cond ((numberp alpha) alpha)
-                     ((numberp (cdr alpha)) (cdr alpha))
-                     ;; Also handle undocumented (<active> <inactive>) form.
-                     ((numberp (cadr alpha)) (cadr alpha)))
-               100)
-          '(85 . 50) '(100 . 100)))))
- (global-set-key (kbd "C-c t") 'toggle-transparency)
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
 
 ;; org
 
@@ -471,93 +525,93 @@
 (setq org-edit-src-content-indentation 0)
 
 
-  (setq org-display-custom-times t)
+(setq org-display-custom-times t)
 
-    (setq org-pretty-entities t)
-    (setq org-use-sub-superscripts "{}")
-    (setq org-hide-emphasis-markers t)
-    (setq org-startup-with-inline-images t)
+(setq org-pretty-entities t)
+(setq org-use-sub-superscripts "{}")
+(setq org-hide-emphasis-markers t)
+(setq org-startup-with-inline-images t)
 
-    (add-hook 'org-mode-hook 'org-indent-mode)
-    (setq org-return-follows-link t)
-    ;; Stop src blocks from auto indenting
-    (setq org-edit-src-content-indentation 0)
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-return-follows-link t)
+;; Stop src blocks from auto indenting
+(setq org-edit-src-content-indentation 0)
 
 (defun load-my-fonts (frame)
-    (select-frame frame)
-    (set-face-attribute 'default nil
-			:font "Spleen"
-			:weight 'regular
-			:height 120)
-    (set-face-attribute 'fixed-pitch nil
-			:font "Spleen"
-			:weight 'regular
-			:height 120)
-    (set-face-attribute 'variable-pitch nil
-			:font "Freeserif"
-			:weight 'regular
-			:height 1.2)
-
-    ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
-(with-eval-after-load 'org-faces
-    (set-face-attribute 'org-block nil
-			:foreground nil
-			:inherit 'fixed-pitch)
-    (set-face-attribute 'org-table nil
-			:inherit 'fixed-pitch)
-    (set-face-attribute 'org-formula nil
-			:inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil
-			:inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim nil
-			:inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-special-keyword nil
-			:inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil
-			:inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil
-			:inherit 'fixed-pitch)))
-
-  (if (daemonp)
-      (add-hook 'after-make-frame-functions #'load-my-fonts)
-    (load-my-fonts (selected-frame)))
-
+  (select-frame frame)
   (set-face-attribute 'default nil
-		:font "Spleen"
-		:weight 'regular
-		:height 120)
+                      :font "Spleen"
+                      :weight 'regular
+                      :height 120)
   (set-face-attribute 'fixed-pitch nil
-		:font "Spleen"
-		:weight 'regular
-		:height 120)
+                      :font "Spleen"
+                      :weight 'regular
+                      :height 120)
   (set-face-attribute 'variable-pitch nil
-		:font "Freeserif"
-		:weight 'regular
-		:height 1.2)
+                      :font "Freeserif"
+                      :weight 'regular
+                      :height 1.2)
 
   ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
-(with-eval-after-load 'org-faces
-(set-face-attribute 'org-block nil
-		:foreground nil
-		:inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil
-		:inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula nil
-		:inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil
-		:inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil
-		:inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil
-		:inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil
-		:inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil
-		:inherit 'fixed-pitch))
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-block nil
+                        :foreground nil
+                        :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil
+                        :inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil
+                        :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil
+                        :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil
+                        :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil
+                        :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil
+                        :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil
+                        :inherit 'fixed-pitch)))
 
-  ;; Set org-mode to use Variable pitch
-  (add-hook 'org-mode-hook 'variable-pitch-mode)
-  (add-hook 'org-mode-hook 'visual-line-mode)
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'load-my-fonts)
+  (load-my-fonts (selected-frame)))
+
+(set-face-attribute 'default nil
+                    :font "Spleen"
+                    :weight 'regular
+                    :height 120)
+(set-face-attribute 'fixed-pitch nil
+                    :font "Spleen"
+                    :weight 'regular
+                    :height 120)
+(set-face-attribute 'variable-pitch nil
+                    :font "Freeserif"
+                    :weight 'regular
+                    :height 1.2)
+
+;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
+(with-eval-after-load 'org-faces
+  (set-face-attribute 'org-block nil
+                      :foreground nil
+                      :inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil
+                      :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil
+                      :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil
+                      :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil
+                      :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil
+                      :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil
+                      :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil
+                      :inherit 'fixed-pitch))
+
+;; Set org-mode to use Variable pitch
+(add-hook 'org-mode-hook 'variable-pitch-mode)
+(add-hook 'org-mode-hook 'visual-line-mode)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (use-package doom-themes
@@ -565,7 +619,7 @@
   :ensure t
   :config
   ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+  (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-gruvbox t)
 
@@ -579,8 +633,8 @@
   "Return a new file path of a given file path.
 If the new path's directories does not exist, create them."
   (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
-	 (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
-	 (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
+         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
+         (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
     (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
     backupFilePath))
 (setq make-backup-file-name-function 'iz/backup-file-name)
@@ -595,7 +649,7 @@ If the new path's directories does not exist, create them."
 (setq scroll-step           1
       scroll-conservatively 10000)
 
-;; disable the gtk stuff
+;; the gtk stuff
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 

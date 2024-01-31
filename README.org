@@ -32,6 +32,7 @@
       - [[#editorconfig][Editorconfig]]
     - [[#keybinds][Keybinds]]
     - [[#whichkey][WhichKey]]
+  - [[#erc][ERC]]
   - [[#org-mode][Org Mode]]
     - [[#denote][Denote]]
     - [[#org-superstar][Org Superstar]]
@@ -198,6 +199,18 @@ for editor consistency
         which-key-max-description-length 25
         which-key-allow-imprecise-window-fit t
         which-key-separator " → " ))
+#+end_src
+** ERC
+#+begin_src elisp :tangle init.el
+(setq erc-prompt (lambda () (concat "λP." "(P " (buffer-name) ")"))
+      erc-server "irc.libera.chat"
+      erc-nick "izder456"
+      erc-user-full-name "izder456"
+      erc-autojoin-channels-alist '(("irc.libera.chat" "#openbsd-gaming" "#openbsd" "#clojure" "#lisp"))
+      erc-auto-query 'bury
+      erc-fill-column 72
+      erc-fill-function 'erc-fill-static
+      erc-fill-static-center 20)
 #+end_src
 ** Org Mode
 *** Denote

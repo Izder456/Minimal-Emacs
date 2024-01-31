@@ -113,6 +113,16 @@
         which-key-allow-imprecise-window-fit t
         which-key-separator " → " ))
 
+(setq erc-prompt (lambda () (concat "λP." "(P " (buffer-name) ")"))
+      erc-server "irc.libera.chat"
+      erc-nick "izder456"
+      erc-user-full-name "izder456"
+      erc-autojoin-channels-alist '(("irc.libera.chat" "#openbsd-gaming" "#openbsd" "#clojure" "#lisp"))
+      erc-auto-query 'bury
+      erc-fill-column 72
+      erc-fill-function 'erc-fill-static
+      erc-fill-static-center 20)
+
 (use-package denote
   :pin gnu
   :ensure t

@@ -438,22 +438,29 @@
  "C-c" '(inf-elixir-send-buffer :which-key "elixir inf send-buffer")
  "C-z" '(elixir-inf-switch :which-key "elixir inf switch"))
 
-;; Makefiles for OpenBSD Ports
-(defun format-makefile ()
- "Format the current buffer as a Makefile."
- (interactive)
- (save-excursion
-    (goto-char (point-min))
-    (while (not (eobp))
-      (beginning-of-line)
-      (when (looking-at "^\\([^ \t]+\\)[ \t]*=")
-        (let ((key (match-string 1)))
-          (delete-region (match-beginning 0) (match-end 0))
-          (insert key " =")
-          (indent-according-to-mode))))
-    (message "Formatted Makefile")))
-
-(global-set-key (kbd "C-c a") 'format-makefile)
+;; Makefiles
+(add-hook 'makefile-mode-hook
+  (lambda ()
+    (setq indent-tabs-mode t)
+    (setq-default indent-tabs-mode t)
+    (setq tab-width 2)))
+(add-hook 'makefile-gmake-mode-hook
+  (lambda ()
+    (setq indent-tabs-mode t)
+    (setq-default indent-tabs-mode t)
+    (setq tab-width 2)))
+(add-hook 'makefile-bsdmake-mode-hook
+  (lambda ()
+    (setq indent-tabs-mode t)
+    (setq-default indent-tabs-mode t)
+    (setq tab-width 2)))
+;; Convert hard tabs to spaces on save
+(add-hook 'before-save-hook
+  (lambda ()
+    ; But not Makefiles
+    (if (member major-mode '(makefile-mode makefile-gmake-mode))
+      (tabify (point-min) (point-max))
+      (untabify (point-min) (point-max)))))
 
 ;; defaults
 (setq-default indent-tabs-mode nil)

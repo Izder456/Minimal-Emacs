@@ -438,6 +438,23 @@
  "C-c" '(inf-elixir-send-buffer :which-key "elixir inf send-buffer")
  "C-z" '(elixir-inf-switch :which-key "elixir inf switch"))
 
+;; Makefiles for OpenBSD Ports
+(defun format-makefile ()
+ "Format the current buffer as a Makefile."
+ (interactive)
+ (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (beginning-of-line)
+      (when (looking-at "^\\([^ \t]+\\)[ \t]*=")
+        (let ((key (match-string 1)))
+          (delete-region (match-beginning 0) (match-end 0))
+          (insert key " =")
+          (indent-according-to-mode))))
+    (message "Formatted Makefile")))
+
+(global-set-key (kbd "C-c a") 'format-makefile)
+
 ;; defaults
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)

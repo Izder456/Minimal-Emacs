@@ -173,7 +173,7 @@ for editor consistency
     "t"  '(:ignore t :wk "neotree")
     "tn" '(neotree-toggle :wk "Open neotree")))
 ;; zoom in and out
-(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
@@ -390,6 +390,7 @@ Org bullets but better
          (sly-mode . rainbow-delimiters-mode)
          (cider-mode . rainbow-delimiters-mode)
          (geiser-mode . rainbow-delimiters-mode)
+         (geiser-repl-mode . rainbow-delimiters-mode)
          (inf-elixir-mode . rainbow-delimiters-mode)
          (hy-mode . rainbow-delimiters-mode)))
 #+end_src
@@ -577,6 +578,9 @@ Shows your mouse when you make large movements
  "C-c" '(inf-elixir-send-buffer :which-key "elixir inf send-buffer")
  "C-z" '(elixir-inf-switch :which-key "elixir inf switch"))
 
+;; Chicken Scheme
+(setq scheme-program-name "chicken-csi -:c")
+
 ;; Makefiles
 (add-hook 'makefile-mode-hook
   (lambda ()
@@ -601,11 +605,6 @@ Shows your mouse when you make large movements
       (tabify (point-min) (point-max))
       (untabify (point-min) (point-max)))))
 
-;; defaults
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
-(setq indent-line-function 'insert-tab)
-
 ;; Perl
 (defalias 'perl-mode 'cperl-mode)
 (setq cperl-invalid-face nil
@@ -616,6 +615,9 @@ Shows your mouse when you make large movements
       cperl-close-paren-offset -2
       cperl-continued-statement-offset 2
       cperl-tab-always-indent t)
+
+;; Common Lisp
+(setq inferior-lisp-program "sbcl")
 
 ;; CC-mode
 (setq c-default-style "bsd"

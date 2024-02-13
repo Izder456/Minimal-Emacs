@@ -497,6 +497,8 @@ Shows your mouse when you make large movements
   :defer t
   :diminish
   :config (global-flycheck-mode))
+(use-package flycheck-projectile
+  :ensure t)
 (use-package flycheck-rust
   :ensure t
   :config
@@ -507,45 +509,73 @@ Shows your mouse when you make large movements
   :config
   (with-eval-after-load 'ocaml-mode
     (add-hook 'flycheck-mode-hook #'flycheck-ocaml-setup)))
+(use-package flycheck-elixir
+  :ensure t
+  :config
+  (with-eval-after-load 'elixir-mode
+    (add-hook 'elixir-mode-hook #'flycheck-elixir-setup)))
+(use-package flycheck-clojure
+  :ensure t)
+(use-package flycheck-raku
+  :ensure t)
 #+end_src
 ** Programming Stuff
 *** Programming Modes
 #+begin_src elisp :tangle init.el
 (use-package rust-mode
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package yaml-mode
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package json-mode
-  :ensure t)
-(use-package eglot-fsharp
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package cider
   :ensure t
-  :hook ((cider-mode . turn-off-evil-mode)))
+  :defer t)
 (use-package elixir-mode
   :ensure t
-  :hook ((elixir-mode . inf-elixir-minor-mode)))
+  :defer t)
 (use-package inf-elixir
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package geiser
   :ensure t
-  :hook ((geiser-mode . turn-off-evil-mode)))
+  :defer t)
+(use-package raku-mode
+  :ensure t
+  :defer t)
 (use-package geiser-chicken
   :ensure t
+  :defer t
   :hook ((scheme-mode . geiser-mode)))
 (use-package clojure-mode
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package hy-mode
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package sly
   :ensure t
-  :hook ((sly-mrepl-mode . turn-off-evil-mode)))
+  :defer t)
 (use-package markdown-mode
   :ensure t
+  :defer t
   :hook ((markdown-mode . visual-line-mode)))
 #+end_src
 *** Custom Functions
 #+begin_src elisp :tangle init.el
+;; format
+(use-package format-all
+  :commands format-all-mode
+  :hook (prog-mode . format-all-mode)
+  :config
+  (setq-default format-all-formatters
+                '(("C" (astyle "--mode=c"))
+                  ("Java" (astyle "--mode=java"))
+                  ("Shell" (shfmt "-i" "4" "-ci")))))
+
 ;; Elixir
 (defun elixir-inf-helper (lis)
   "find terminal and switch to term buffer"
@@ -580,30 +610,6 @@ Shows your mouse when you make large movements
 
 ;; Chicken Scheme
 (setq scheme-program-name "chicken-csi -:c")
-
-;; Makefiles
-(add-hook 'makefile-mode-hook
-  (lambda ()
-    (setq indent-tabs-mode t)
-    (setq-default indent-tabs-mode t)
-    (setq tab-width 2)))
-(add-hook 'makefile-gmake-mode-hook
-  (lambda ()
-    (setq indent-tabs-mode t)
-    (setq-default indent-tabs-mode t)
-    (setq tab-width 2)))
-(add-hook 'makefile-bsdmake-mode-hook
-  (lambda ()
-    (setq indent-tabs-mode t)
-    (setq-default indent-tabs-mode t)
-    (setq tab-width 2)))
-;; Convert hard tabs to spaces on save
-(add-hook 'before-save-hook
-  (lambda ()
-    ; But not Makefiles
-    (if (member major-mode '(makefile-mode makefile-gmake-mode))
-      (tabify (point-min) (point-max))
-      (untabify (point-min) (point-max)))))
 
 ;; Perl
 (defalias 'perl-mode 'cperl-mode)
@@ -853,6 +859,7 @@ If the new path's directories does not exist, create them."
 ;; the gtk stuff
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(scroll-bar-mode -1)
 
 (delete-selection-mode 1)    ;; You can select text and delete it by typing.
 (electric-indent-mode 1)

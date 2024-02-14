@@ -394,6 +394,9 @@
 (use-package json-mode
   :ensure t
   :defer t)
+(use-package forth-mode
+  :ensure t
+  :defer t)
 (use-package cider
   :ensure t
   :defer t)
@@ -471,6 +474,16 @@
 
 ;; Chicken Scheme
 (setq scheme-program-name "chicken-csi -:c")
+(setq geiser-chicken-binary "chicken-csi")
+(add-hook 'geiser-mode-hook 'geiser-chicken)
+
+;; Common Lisp
+(setq inferior-lisp-program "sbcl")
+(add-hook 'list-mode-hook 'sly)
+
+;; Clojure
+(add-hook 'clojure-mode 'cider-jack-in-clj)
+(add-hook 'clojurescript-mode 'cider-jack-in-cljs)
 
 ;; Perl
 (defalias 'perl-mode 'cperl-mode)
@@ -482,9 +495,6 @@
       cperl-close-paren-offset -2
       cperl-continued-statement-offset 2
       cperl-tab-always-indent t)
-
-;; Common Lisp
-(setq inferior-lisp-program "sbcl")
 
 ;; CC-mode
 (setq c-default-style "bsd"
@@ -726,4 +736,4 @@ If the new path's directories does not exist, create them."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(doom-themes format-all markdown-mode sly hy-mode geiser-chicken raku-mode geiser inf-elixir elixir-mode json-mode yaml-mode rust-mode flycheck-raku flycheck-clojure flycheck-elixir flycheck-ocaml flycheck-rust flycheck-projectile flycheck hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-appear org-auto-tangle toc-org org-superstar denote which-key general editorconfig undo-tree evil-collection evil)))
+   '(forth-mode yaml-mode which-key vterm-toggle undo-tree toc-org sly rust-mode raku-mode rainbow-mode rainbow-delimiters org-superstar org-auto-tangle org-appear nyan-mode neotree markdown-mode json-mode ivy-prescient inf-elixir hy-mode hl-todo general geiser-chicken format-all flycheck-rust flycheck-raku flycheck-projectile flycheck-ocaml flycheck-elixir flycheck-clojure evil-collection elixir-mode editorconfig doom-themes doom-modeline denote dashboard counsel company-prescient company-box beacon all-the-icons-ivy-rich all-the-icons-dired)))

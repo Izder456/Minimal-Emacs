@@ -531,6 +531,9 @@ Shows your mouse when you make large movements
 (use-package json-mode
   :ensure t
   :defer t)
+(use-package forth-mode
+  :ensure t
+  :defer t)
 (use-package cider
   :ensure t
   :defer t)
@@ -610,6 +613,16 @@ Shows your mouse when you make large movements
 
 ;; Chicken Scheme
 (setq scheme-program-name "chicken-csi -:c")
+(setq geiser-chicken-binary "chicken-csi")
+(add-hook 'geiser-mode-hook 'geiser-chicken)
+
+;; Common Lisp
+(setq inferior-lisp-program "sbcl")
+(add-hook 'list-mode-hook 'sly)
+
+;; Clojure
+(add-hook 'clojure-mode 'cider-jack-in-clj)
+(add-hook 'clojurescript-mode 'cider-jack-in-cljs)
 
 ;; Perl
 (defalias 'perl-mode 'cperl-mode)
@@ -621,9 +634,6 @@ Shows your mouse when you make large movements
       cperl-close-paren-offset -2
       cperl-continued-statement-offset 2
       cperl-tab-always-indent t)
-
-;; Common Lisp
-(setq inferior-lisp-program "sbcl")
 
 ;; CC-mode
 (setq c-default-style "bsd"

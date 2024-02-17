@@ -570,14 +570,10 @@ Shows your mouse when you make large movements
 *** Custom Functions
 #+begin_src elisp :tangle init.el
 ;; format
-(use-package format-all
-  :commands format-all-mode
-  :hook (prog-mode . format-all-mode)
-  :config
-  (setq-default format-all-formatters
-                '(("C" (astyle "--mode=c"))
-                  ("Java" (astyle "--mode=java"))
-                  ("Shell" (shfmt "-i" "4" "-ci")))))
+(use-package astyle
+  :ensure t
+  :when (executable-find "astyle")
+  :hook (c-mode-common . astyle-on-save-mode))
 
 ;; Elixir
 (defun elixir-inf-helper (lis)

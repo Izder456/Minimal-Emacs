@@ -3,6 +3,12 @@
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")) ;; installed by default
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/")) ;; installed by default from Emacs 28 onwards
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/"))
+
+(setq package-archive-priorities '(("jcs-elpa" . 0)
+				   ("melpa" . 1)
+				   ("nongnu" . 2)
+				   ("gnu" . 3)))
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -526,24 +532,20 @@
 (setq treesit-language-source-alist
       '((bash "https://github.com/tree-sitter/tree-sitter-bash")
         (ocaml "https://github.com/tree-sitter/tree-sitter-ocaml")
-        (clojure "https://github.com/sogaiu/tree-sitter-clojure")
-        (clojurescript "https://github.com/sogaiu/tree-sitter-clojure")
         (perl "https://github.com/tree-sitter-perl/tree-sitter-perl")
-        (cmake "https://github.com/uyha/tree-sitter-cmake")
         (css "https://github.com/tree-sitter/tree-sitter-css")
         (go "https://github.com/tree-sitter/tree-sitter-go")
-        (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
         (rust "https://github.com/tree-sitter/tree-sitter-rust")
         (html "https://github.com/tree-sitter/tree-sitter-html")
-        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+        (ruby "https://github.com/tree-sitter/tree-sitter-ruby")
+	(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
         (json "https://github.com/tree-sitter/tree-sitter-json")
-        (make "https://github.com/alemuller/tree-sitter-make")
-        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
         (python "https://github.com/tree-sitter/tree-sitter-python")
-        (toml "https://github.com/tree-sitter/tree-sitter-toml")
-        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+	(java "https://github.com/tree-sitter/tree-sitter-java")	
+	(scala "https://github.com/tree-sitter/tree-sitter-scala")
+	(c "https://github.com/tree-sitter/tree-sitter-c")
+	(cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
 
 (set-frame-parameter (selected-frame) 'alpha '(95 . 85))
 (add-to-list 'default-frame-alist '(alpha . (95 . 85)))

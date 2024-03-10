@@ -5,6 +5,13 @@
 # Packaging
 .cask
 
+# extra crap
+*plstore
+*flycheck*
+
+# eshell
+eshell/*
+
 # Backup files
 *~
 

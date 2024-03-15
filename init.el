@@ -125,7 +125,7 @@
       erc-user-full-name "izder456"
       erc-autojoin-channels-alist '(("irc.libera.chat" "#openbsd-gaming" "#openbsd" "#clojure" "#lisp"))
       erc-auto-query 'bury
-      erc-fill-column 72
+      erc-fill-column 128
       erc-fill-function 'erc-fill-static
       erc-fill-static-center 20)
 
@@ -442,6 +442,15 @@
   :when (executable-find "astyle")
   :hook (c-mode-common . astyle-on-save-mode))
 
+;; for Common Lisp hyperspec
+(use-package clhs
+  :ensure t
+  :config
+  (autoload 'clhc-doc "clhs" "Get doc on ANSI CL" t)
+  (define-key help-map "\C-l" 'clhs-doc)
+  (custom-set-variables
+   '(tags-apropos-additonal-actions '(("Common Lisp" clhs-doc clhs-symbols)))))
+
 ;; Elixir
 (defun elixir-inf-helper (lis)
   "find terminal and switch to term buffer"
@@ -589,7 +598,6 @@
 ;; Stop src blocks from auto indenting
 (setq org-edit-src-content-indentation 0)
 
-
 (setq org-display-custom-times t)
 
 (setq org-pretty-entities t)
@@ -714,6 +722,10 @@ If the new path's directories does not exist, create them."
 (setq scroll-step           1
       scroll-conservatively 10000)
 
+;; LaTeX
+(setq org-latex-compiler "xelatex")
+(setq org-latex-pdf-process '("xelatex %f"))
+
 ;; the gtk stuff
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -728,3 +740,11 @@ If the new path's directories does not exist, create them."
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(clhs yaml-mode which-key vterm-toggle undo-tree toc-org sly rust-mode raku-mode rainbow-mode rainbow-delimiters org-superstar org-auto-tangle org-appear nyan-mode neotree markdown-mode json-mode ivy-prescient inf-elixir hy-mode hl-todo general geiser-chicken forth-mode flycheck-rust flycheck-raku flycheck-projectile flycheck-ocaml flycheck-elixir flycheck-clojure evil-collection elixir-mode editorconfig doom-themes doom-modeline denote dashboard counsel company-prescient company-box beacon astyle all-the-icons-ivy-rich all-the-icons-dired))
+ '(tags-apropos-additonal-actions '(("Common Lisp" clhs-doc clhs-symbols))))

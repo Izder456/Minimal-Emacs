@@ -1,0 +1,63 @@
+
+<pre># Hello!
+
+It happens that I occasionally write a blog post to give some news about my own projects and life(style), this is such a blog post!
+
+# 2023's projects
+
+2023 was a special year for me, I've been terribly sick early January, and this motivated me to change a lot of things in my life.  I stuck to this idea the whole year and I still continue to lurk for changing things in my life.
+
+## Work
+
+I left the company I was working for, and started to work as a freelance DevSecOps/DevOps. The word "Sysadmin" would be the best job title for me, but people like buzzwords and nobody talk about system administrators anymore.
+
+Since the end of the year, I also work as a technical writer for a VPN provider (that I consider ethical), and it makes me think that in the future, I may have a career shift to being a technical writer "only".
+
+## The blog
+
+Since 2023, I have a page on Patreon allowing my readers to support me financially, in exchange for a few days of early access for most blog posts.  This is an advantage to reward my supporters without being a loss for all other readers.  Patreon helps me a lot as it allows me to plan on a monthly income and spend more time on my blog or contributing to open source projects. I also added other payments option as some wanted to support me using more free (as in freedom) methods like liberapay, BTC or XMR.
+
+The blog also received a few technical changes, mostly in the HTML rendering like captions on pictures or headers numbering.  I'm quite pleased with the result right now, and the use of GemText (from Gemini) markup was a right choice a few years ago as it gives a simple structure enforcing clarity (of course it's bad if you need a complex layout).
+
+The content finally got a proper license: CC-BY-4.0, I'm an open source person, but my own content was under no license, what a shame for all this time...
+
+## Open Source
+
+Last year, I started using Qubes OS as it's the best operating system for my needs (a blog post will cover this "soon") and I got involved into the community and in testing the 4.2 release that got out a few weeks ago by now.
+
+I'm still contributing to OpenBSD, but not as much as I want, simply because of lack of hardware (and a bit of time), but this is now solved after my deal with NovaCustom.  I still maintain the packages updates build cluster.
+
+In 2023, I entirely dropped NixOS, but I preferred to not write a blog post about it to avoid a flame war, but maybe I'll write one.  In a few words, I didn't like the governance issues of the project, it seems company driven to me and from my point of view it's harmful for the open source project.  The technology is awesome, but the "core team" struggles to get somewhere.  I'll investigate more Guix as I always enjoyed this project, and they proved they are a reliable and solid project able to maintain their pace over time.
+
+## The OpenBSD Webzine
+
+It's my favorite pet project, even though it's a lot of work to publish a single issue.
+
+Working with Prahou for the special Halloween issue was really fun as instead of writing the content, I had to give some direction to keep the issue on rails for being a Webzine issue, while being able to enjoy it like any other reader as I didn't make the content itself.
+
+# 2024's project
+
+## Lifestyle
+
+For no reasons, I decided to experiment vegetarian diet up to end of February (I still eat eggs, milk, butter, cheese or rarely fish).  I'm bad at cooking, I don't enjoy it much but mostly because I have no idea what to cook.  This forces me to learn about new food and recipes I was not aware of.  Buying a recipes book is definitely a must for this :-).  I never really enjoyed meat, and it's possible that I may keep the vegetarian diet for a longer time.
+
+## Open source
+
+This is the year of the comeback on OpenBSD, I really enjoy contributing to it, helping the community and reviewing some ports I care of.
+
+I'll also continue contributing to Qubes OS, this niche operating system deserves some more contributors.
+
+## The blog
+
+I'll try to stick to a weekly blog post schedule.  Of course, I also need to work in parallel, and sometimes I'm just out of ideas :-)
+
+## Work
+
+Let's see what 2024 will bring for me!
+
+# Best wishes!
+
+I'd like to thank all my readers.  I regularly receive emails about your enjoyments, or typos reports, or suggestions to improve the content, this really drives me continuing writing.
+</pre>
+    
+  

@@ -1,0 +1,27 @@
+<p>As mentioned in my &quot;<a rel="noopener" target="_blank" href="https://www.cambus.net/customizing-netbsd-boot-banners/">Customizing NetBSD boot banners</a>&quot; article, it's
+really easy to customize NetBSD boot banners using the <a rel="noopener" target="_blank" href="https://man.netbsd.org/boot.cfg.5">boot.cfg</a>
+configuration file.</p>
+<p>In a previous life, I used to draw ASCII art (mostly in the pre-2000 era)
+and more precisely a type of ASCII art referred as newschool ASCII in the
+<a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Computer_art_scene">artscene</a>. By taking advantage of the extended character set (the 128
+to 255 range) of the IBM PC's <a rel="noopener" target="_blank" href="https://www.ascii-codes.com">code page 437</a>, it was possible to achieve
+great detail and really smooth curves. Some examples can be found at the
+bottom of my <a rel="noopener" target="_blank" href="https://cleaner.ansilove.org/gallery.html">online gallery</a>.</p>
+<p>Attempting to draw the NetBSD flag in ASCII and use it when booting in
+both <strong>NetBSD/i386</strong> and <strong>NetBSD/amd64</strong> in BIOS mode was thus too
+tempting, so here we go.</p>
+<p>The NetBSD flag in full glory, loaded in TheDraw:</p>
+<p><img src="/content/2023/01/netbsd-ascii-flag.png" alt="NetBSD ASCII Flag" /></p>
+<p>And here is a screenshot of the NetBSD x86 bootloader:</p>
+<p><img src="/content/2023/01/netbsd-ascii-flag-bootloader.png" alt="NetBSD ASCII Flag in the bootloader" /></p>
+<p>And this is how it could look like with colors and a customized VGA palette:</p>
+<p><img src="/content/2023/01/netbsd-ascii-flag-bootloader-color.png" alt="NetBSD ASCII Flag in the bootloader" /></p>
+<p>Unfortunately, the extended ASCII characters do not display correctly
+when booting in EFI mode, at least on the machine I tested on, but I
+suspect it will likely be the case on other implementations as well.</p>
+<p>As specified in the <strong>Human Interface Infrastructure</strong> part (<a rel="noopener" target="_blank" href="https://uefi.org/specs/UEFI/2.10/33_Human_Interface_Infrastructure.html#limiting-glyphs">33.2.7.2</a>
+subsection) of the <strong>UEFI</strong> specification, UEFI requires platform support
+of a font containing the basic Latin character set. So extended ASCII
+support is not mandatory, and there is no guarantee that the characters
+would be the same between fonts used by different EFI firmwares anyway.</p>
+<p>The <em>boot.cfg</em> configuration file can be downloaded <a rel="noopener" target="_blank" href="https://www.cambus.net/files/netbsd/boot.cfg">here</a>. Enjoy!</p>

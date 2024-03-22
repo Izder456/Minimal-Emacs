@@ -1,0 +1,49 @@
+<p>In the introduction of my &quot;<a rel="noopener" target="_blank" href="https://www.cambus.net/why-openbsd/">Why OpenBSD?</a>&quot; post, I mentioned that I came
+to the BSD world through FreeBSD.</p>
+<p>Rather than paraphrasing what I wrote back then, here is the relevant part:</p>
+<blockquote>
+<p>I’ve been using FreeBSD from 2000 to 2005 as my sole operating system at
+the time (both on servers and workstations), from 4.1 to the end of the 4.x
+series. I have fond memories of that period, and that’s probably the main
+reason why I’ve been diving again into the BSDs during the last few years.</p>
+</blockquote>
+<p>I started using FreeBSD in September 2000 coming from Slackware Linux,
+not knowing it would be the beginning of a more than 20-year journey.</p>
+<p>At the time, I still didn't have broadband internet access so downloading
+ISOs over a dial-up connection was not an option. I'm not exactly sure how
+I got the <a rel="noopener" target="_blank" href="https://www.freebsd.org/releases/4.1R/announce/">FreeBSD 4.1</a> installation CD from, but I think I might have
+ordered it from <a rel="noopener" target="_blank" href="https://web.archive.org/web/20001109120500/http://ikarios.com/form/#bsd">Ikarios</a>, a French distributor of Linux and BSD
+distribution CDs.</p>
+<p>Having spent a large part of the nineties immersed in text mode on MS-DOS,
+mostly because of my involvement in the BBS and ANSI art scenes, it's
+only natural that I kept the habit of using text consoles on Linux.
+On the hardware I was using at the time, I was often hitting a random issue
+causing the machine to become unusable when switching between text consoles
+and the X server.</p>
+<p>Switching back and forth between X and text consoles was such an important
+use case for me at the time, that I was willing to try everything in order
+to fix the problem. Luckily, FreeBSD didn't exhibit the issue, and as an
+added benefit, the FreeBSD console could display ANSI art with <em>cat(1)</em>
+in full glory out of the box. One could connect to telnet BBSes using the
+system telnet client, and enjoy an MS-DOS like experience.</p>
+<p>FreeBSD provided many other benefits, but most importantly a clean and
+well integrated system. The quality of the documentation made things a lot
+easier than in the Linux world. Configuring IPFW was a breeze compared to
+what was available on Linux at the time. Being able to tweak and compile
+kernels using a single text configuration file was also a powerful thing,
+and I remember spending an unhealthy amount of time compiling the smallest
+possible working kernels in order to save RAM and compile time.</p>
+<p>FreeBSD also offered a great platform for C development, with quality manual
+pages documenting the C library.</p>
+<p>It thus won't come as a surprise that I learned a lot about UNIX systems
+during that period. I also started contributing to the ports collection
+(<a rel="noopener" target="_blank" href="https://freshbsd.org/freebsd/ports/commit/baf57e3382b63a31656f1de6844afaba5be1c014">babytrans</a>, <a rel="noopener" target="_blank" href="https://freshbsd.org/freebsd/ports/commit/302c3bd32990a4006a52370149d091a1dfa26308">dtc</a>, <a rel="noopener" target="_blank" href="https://freshbsd.org/freebsd/ports/commit/2c1676782f3825a08496b1a302f861ddfd2c28cf">gsfv</a>, <a rel="noopener" target="_blank" href="https://freshbsd.org/freebsd/ports/commit/486a5d36cb11f558f319fe3d5f07a54a2f214922">huc</a>, <a rel="noopener" target="_blank" href="https://freshbsd.org/freebsd/ports/commit/479a0785ef1500e7ffe454b4e6a7d39761c58ebf">multimail</a>,
+<a rel="noopener" target="_blank" href="https://freshbsd.org/freebsd/ports/commit/aa51c6b92894d532fcf5472299efe5db0394eed9">tetradraw</a>), and even doing some evangelization on LinuxFR, a community
+driven social news site for the releases of FreeBSD <a rel="noopener" target="_blank" href="https://linuxfr.org/news/sortie-de-freebsd-411">4.11</a> and <a rel="noopener" target="_blank" href="https://linuxfr.org/news/sortie-de-freebsd-60--2">6.0</a>.</p>
+<p>Ultimately by 2005 software was getting larger, especially browsers so
+compiling ports was not practical anymore and binary packages were still a
+bit of a hit and miss on FreeBSD at this time. The FreeBSD 5.x series was
+unfortunately plagued by unreliability issues, which prompted me to go explore
+other shores.
+My BSD story was to be continued a few years later anyway, little did I know
+at the time...</p>

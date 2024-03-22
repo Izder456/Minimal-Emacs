@@ -1,0 +1,462 @@
+
+<pre># Disclaimer
+
+Hello!  Today, I present you a quite special blog post, resulting from a partnership with the PC Manufacturer NovaCustom.  I offered them to write an honest review for their product and also share my feedback as a user, in exchange for a NV41 laptop.  This is an exceptional situation, I insist that it's not a sponsorship, I actually needed a laptop for my freelance work, and it turns they agreed.  In our agreements, I added that I would return the laptop in the case I wouldn't like it, I don't want to generate electronic wastes and company's money for nothing.
+
+I have no plans to turn my blog into an advertisement platform and do this on a regular basis.  Stars aligned well here, NovaCustom is making the only modern laptop Qubes OS certified, and the CEO is a very open source friendly person.
+
+# Introduction
+
+The real introduction now :-)
+
+In this blog post, I'll share my experience using a NV41 laptop from NovaCustom, I tried many operating systems on it for a while, run some benchmarks, and ultimately used Qubes OS on it for a month and half for my freelance work.
+
+=> https://novacustom.com/ NovaCustom official website
+=> https://novacustom.com/product/nv41-series/ NV41 Laptop store webpage
+
+# The machine itself
+
+=> static/review/laptop-stand.jpg The laptop on a stand, running Ubuntu 23.10
+
+This is a 14-inch laptop, the best form factor in my opinion for being comfortable when used for a long time while being easy to carry.
+
+It looks great with its metal look with blueish reflection and the engraved logo "NV" on the cover (logo can be customized).
+
+The frame feels solid and high-end, I'm not afraid to carry it or manipulate it.  Compared to my ThinkPad T470, that's a change, I always fear to press its plastic frame too much when carrying with a single hand.
+
+The power button is on the right side, this is quite unusual, but it looks great, there are LED around the power plug near the power button that tells the state of the system (running, off, sleeping) and if the battery is running low or charging.
+
+It's running the open-source Firmware Dasharo coreboot, and optionally the security oriented firmware Heads can be installed.
+
+=> https://dasharo.com/ Dasharo coreboot official website
+=> https://osresearch.net/ Heads open source firmware official website
+
+## Packaging and unboxing
+
+The machine came in a box containing a box containing the actual box with the laptop inside, it was greatly packaged.
+
+=> static/review/laptop-package.jpg Laptop still wrapped in the protections, all the boxes are in the background
+
+The laptop screen had a removable sleeve that can be reused, I appreciated this as it's smart because it's possible to put it back in case you don't use the laptop for a long time or want to sell it later.
+
+The box contained the laptop, the power supply and the power plug, the full length of the power supply is 2 meters which is great, I hate laptops chargers that only have 1 meter of cable.
+
+=> static/review/laptop-unbox.jpg The laptop, power supply, power plug and other (manual, screen cleaner…)
+
+## Hardware
+
+The specifications of the hardware I received are the following:
+
+* CPU: i7-1260P (4 Performance cores with hyper-threading, 8 Efficient cores)
+* Memory: 2x32 GB of 3200 MHz
+* Storage: NVME Samsung 980 Pro 2 TB
+* Wireless: blob-free Atheros QCNFA222 Wi-Fi a/b/g/n + bluetooth 4.0
+* Screen: 14" 1080p (1920x1080), 98% sRGB 60 Hz, anti-glare treatment
+* Weight: 1.4 kg
+
+The default wireless card is an Intel AX-200/201 compatible with Wi-Fi 6 and Bluetooth 5.2, but I received the blob-free card which was convenient for most operating systems as it doesn't need a firmware (works out of the box on Guix for instance).
+
+There are options to remove the webcam or add a slider to it, a screen privacy filter or secure screws+tape for the packaging to be sure the laptop hasn't been intercepted during transit.
+
+You can also choose the keyboard layout from a large list, or even have your own layout.
+
+Kudos to NovaCustom for guaranteeing the sell of replacement parts for at least 7 years after you buy them a laptop!  They also provide a PDF will full details about the internals.
+
+### Hybrid CPU
+
+This is my very first Hybrid CPU, it has 4 Performance cores capable of hyperthreading, and 8 Efficient cores that should draw less power at the expense of being slower.
+
+I made a benchmark, only on Qubes OS, to compare the different cores to a Ryzen 5 5600X and my T470 i5-7300U.
+
+=> https://openbenchmarking.org/result/2311253-NE-2311251NE63&hni=1&hlc=1&ppt=D Phoronix benchmark link
+=> https://forum.qubes-os.org/t/hybrid-cpu-benchmarking-performance-when-pinning-to-specific-cores/22251 Qubes OS forum: Hybrid CPU benchmarking performance when pinning to specific cores
+
+If your operating system doesn't know (Linux does) how to make use of E/P cores (like OpenBSD or FreeBSD), it will use them like if they were similar, so no worry here.  However, the performance and battery saving aren't optimized because the system won't balance the load at the right place.
+
+TL;DR: the P cores compete with my desktop Ryzen 5 5600X! And the E cores are faster than the i5-7300U!  Linux and Xen (in Qubes OS) does a great job at balancing the workload at the right place, so you don't have to worry about pinning a specific task to a P or E core pool.
+
+### Coil whine noise
+
+I think this deserves an entry because it's a plague on many modern computers.  If you don't know about it, it's an electric noise that happens under certain conditions.  On my T470, it's when charging the battery.
+
+I've been able to get some coil whine noise, only if I forced the CPU frequency to the maximum in the operating system, instead of letting the computer scaling the frequency.  This resulted in no performance improvement and some coil whine noise.
+
+In my daily "normal" use with Linux or Qubes OS, I never heard a coil whine.  But on OpenBSD for which the frequency management is still not good with these modern CPUs (intel p-state support isn't great) there is a constant noise.  However, using obsdfreqd reduced the noise to almost nothing, but still appeared a bit on CPU load.
+
+There is a specific topic where coil whine on this laptop was discussed, a fix was provided by NovaCustom using heat pads (sent for free for their customers) placed at a specific place.  I don't think this should be required except if your operating system has a poor support for frequency scaling.
+
+=> https://forum.qubes-os.org/t/otherss-who-bought-a-nv41-and-have-noise-issues/20436 Qubes OS forum: NV41 coil whine topic
+
+### Screen
+
+The screen coloring is excellent, which is expected as it covers 98% of sRGB palette, it's really bright, and I rarely turn the brightness more than 50%. I didn't try to use it outdoor, but the brightness at full level should allow reading the screen.
+
+However, it has a noticeable ghosting which make it annoying for playing video games (that's not really the purpose of this model though), or if you are really sensitive to it.  I'm used to a 144 Hz display on my desktop and I became really sensitive to refresh rate.  However, I have to admit the ghosting isn't really annoying for productivity work, development or browsing the web.  Watching a video is fine too.
+
+One slightly annoying limitation is that it's not possible to open the screen more than a 140° angle, this sounds reasonable, but I got used to my T470 screen able to open at ~180°.  This is not a real issue, but if you have a weird setup in which you store your laptop vertically against your desktop AND with the screen opened, you won't be able to use the screen.
+
+### Sound system
+
+I've been surprised by the speakers, the audio quality is good up to ~80% of the max volume, but then the quality drops when you set it too high.
+
+I have no way to measure it, but the speakers appear to be quite loud compared to my other laptops when set to 100%, I don't recommend doing it though due to quality drop, but it can be handy sometimes.
+
+The headphones port works fine, there are no noises, and it's able to drive my DT 770 Pro 80 ohm.
+
+I’ve been able to figure an equalizer setting improving the audio to be pretty good (that's subjective). I’m absolutely not an audio expert, but it sounded a lot better for pop, rock, metal or piano.
+
+* 31 Hz: 0 db
+* 63 Hz: 0 db
+* 125 Hz: 0 db
+* 250 Hz: 0 db
+* 500 Hz: -4 db
+* 1 kHz: -5 db
+* 2 kHz: -8 db
+* 4 kHz: -3 db
+* 8 kHz: -3 db
+* 16 kHz: +2 db
+
+The idea is to lower the trebles instead of pushing the bass which quickly saturate.  Depending on what you listen to and your tastes, you could try +1 or +2 db for the four first settings, but it may produce saturated sounds.
+
+### Cooling
+
+I think the cooling system is one of the best part of the laptop, it's always running at 10% of its speed and is inaudible.
+
+=> static/review/laptop-under.jpg Laptop view from below
+
+Under a huge load, the fan can be heard, but it's still less loud than my idling silent desktop...
+
+There is a special key combination (Fn+1) that triggers the turbo fan mode, forcing them to run at 100%, it is recommended if the laptop is used to run at full CPU 24/7 or for a very long period of time, however, this is as loud as a 1U rack server! For a more comprehensive comparison, let's say it is as annoying as a microwave device.
+
+I was surprised that the laptop never burned my knees, although under heavy load for 30 minutes it felt a bit too hot to keep it on my bare skin without fabric between, that's a genuine lap-top laptop, compatible with short skirts :D.
+
+### Keyboard
+
+The keyboard isn't bad, but not good either.  Typing on it is pleasant, but it's no match against my mechanical keyboards.  The touch is harder than on my Lenovo T470 laptop, I think it feels like most modern laptop keyboards.
+
+Check the layout for the keys like "home", "end", "page up/down", on mine they are tiny keys near the arrows, this may not be to your taste.
+
+The type is quite silent, and there are 5 levels of back-light, I don't really like this feature, so I turned it off, but it's there if you like it.
+
+There are NO indicators for the status of caps lock or num lock (neither for scroll lock, but do people really use it?), this can be annoying for some users.
+
+### Touchpad
+
+The touchpad may be a no-go for many, there are no extra physical buttons but you can physically click on the bottom area to make/hold a click.  It also features no trackpoint (the little joystick in the middle of the keyboard).
+
+However, it has a large surface and can make use of multitouch clicks.  While I was annoyed at first because I was used to ThinkPad's extra physical buttons, over time I got used to multitouch click (click is different depending on the number of fingers used), or the "split-area" click, where a click in a bottom left does a left click, in the middle it does a middle click, and in the bottom right it does a right click.
+
+It reacts well to movements and clicks and does the job, it's not the greatest touchpad I ever used, but it's good enough.
+
+Unfortunately, it's not possible for NovaCustom to propose a variant touchpad featuring extra physical buttons.
+
+### Suspend and Resume
+
+The suspend/resume feature works as expected on Linux and Qubes OS.
+
+Closing the lid correctly triggers the suspend function, opening it resumes the system.
+
+### Webcam
+
+Nothing special to say about it, it's like most laptop webcams, it has a narrow angle and the image quality is good enough to show your face during VoIP meetings.
+
+### Battery life (short version)
+
+I tested the battery using different operating systems (OpenBSD, Qubes OS, Fedora, Ubuntu) and different methods, there are more details later in the text, but long story short, you can expect the following:
+
+* battery life when idling: 6h00
+* battery life with normal usage: 3h00-5h00 for viewing videos, browsing the web, playing emulated games, code development and some compilation
+* battery life in continuous heavy use: 2h00 (I accidentally played a long video with no hardware-acceleration, it was using 500% CPU)
+
+### I/O ports
+
+On the I/O, the laptop is well-equipped.  I appreciated seeing an Ethernet port on a modern laptop.
+
+On the left side:
+
+* 1x Thunderbolt 4 / USB-c (supports external screen and charging)
+* 1x USB
+* anti-thief system
+* Ethernet port
+* Multi-card reader (a SD card plugged in doesn't go completely inside, so it's not practical for a persistent extra storage)
+
+=> static/review/laptop-left.jpg Left side of the laptop
+
+On the right side:
+
+* 1x USB-c (supports external screen)
+* 1x headphone
+* Charge port
+* Power button and two discrete states LEDs
+* 1x HDMI
+* 1x USB
+
+=> static/review/laptop-right.jpg Right side of the laptop
+
+The rear of the laptop is fully used for the cooling system, and there are nothing on the front (Hopefully! I hate connecting headphones on the front side).
+
+=> static/review/laptop-rear.jpg Back of the laptop
+=> static/review/laptop-front.jpg Front of the laptop
+
+## Dasharo coreboot firmware
+
+The laptop ships by Dasharo coreboot firmware (that's the correct name for nowadays devices when we speak of the BIOS), it's an open-source firmware that allows to manage your own secure boot keys, disable some Intel features like "ME"
+
+I guess their website will be a better place to understand what it's doing compared to a proprietary firmware.
+
+=> https://www.dasharo.com/ Dasharo official website
+
+## NovaCustom
+
+NovaCustom is building laptops based on Clevo (a manufacturer doing high-end laptop frames, but they rarely sell directly) while ensuring compatibility with Linux systems, especially Qubes OS for this specific model as it's certified (it guarantees the laptop and all its features will work correctly).
+
+They contribute to dasharo development for their own laptops.
+
+They ship their product worldwide, and as I heard from some users, the custom support is quite reactive.
+
+=> https://novacustom.com/ NovaCustom official website
+
+# Operating system support
+
+Now I shared about the hardware part, let's see how it behaves with many operating systems!
+
+## Linux distributions
+
+I guess most users will use a Linux system on this laptop, so let's start by testing some popular distributions:
+
+### Fedora
+
+=> https://fedoraproject.org/ Fedora project official website
+
+=> static/review/fedora-fs8.png Screenshot of Fedora 39 running GNOME
+
+Fedora Linux support (tested with Fedora 39) was excellent, GNOME worked fine.  The Wi-Fi network worked immediately even during the installer, Bluetooth was working as well with my few devices.  Changing the screen brightness from the GNOME panel was working.  However, after a Dasharo update, the keyboard slider in GNOME stopped working, it's a known bug that also affects System76 laptops if I've read correctly, this may be an issue with the Linux driver itself.
+
+The touchpad was working on multitouch out of the box, suspending and resuming the laptop never produced any issue.
+
+Enabling Secure Boot worked out of the box with Fedora, which is quite enjoyable.
+
+### Ubuntu
+
+=> https://ubuntu.com/ Ubuntu company official website
+
+Ubuntu 23.10 support was excellent as well, it's absolutely identical to the Fedora report above.
+
+Note: if you use VLC from the Snap store, it won't have hardware decoded acceleration and will use a lot of CPU (and draw battery, and waste watts for nothing), I guess it's an Ubuntu issue here.  VLC from Flatpak worked fine, as always.
+
+### Alpine Linux
+
+=> https://www.alpinelinux.org/ Alpine Linux project official website
+
+Alpine Linux support (tested with Alpine 3.18.4) was excellent, I installed GNOME and everything worked out of the box.  The Atheros card worked without firmware (this is expected for a blob free device), CPU scheduling was correctly handled for Efficient/Performance cores as the provided kernel is quite recent.
+
+The touchpad default behavior was to click left/right/middle depending on the number of fingers used to click, suspend and resume worked fine, playing video games was also easy thanks to flatpak and Steam.
+
+It's possible to enable Secure Boot by generating your own keys.
+
+=> https://wiki.alpinelinux.org/wiki/UEFI_Secure_Boot Alpine Linux wiki: UEFI Secure Boot
+
+### Guix
+
+=> https://guix.gnu.org/ Guix project official website
+
+=> static/review/guix-fs8.png Screenshot of Guix running GNOME
+
+Guix support is mixed.  I've been able to install it with no issue, thanks to the blob-free atheros network interface, it worked without having to use guix-nonfree repository (that contains firmware).
+
+However, I was surprised to notice that the graphical acceleration wasn't working, it seems that Intel Xe GPU aren't blob free.  This only mean you can't plan video games or that any kind of GPU related encoding/decoding won't work, but this didn't prevent GNOME to work fine.
+
+Suspend and resume was OK, and the touchpad worked out-of-the-box in multi-tap mode.
+
+Secure Boot didn't work, and I have no idea how a Secure Boot setup with your own keys would look like on Guix, but it's certainly achievable with enough Grub-foo.
+
+### Trisquel
+
+=> https://trisquel.info Trisquel GNU/Linux official project website
+
+Trisquel is a 100% libre GNU/Linux distribution, this mean it doesn't provide proprietary software or drivers, and no device firmware.
+
+I've been able to install Trisquel and use it, the Wi-Fi was working out of the box because of the blob-free Atheros card.
+
+The main components of the system: CPU / Memory / Storage were correctly detected, the default kernel isn't too old, and it was able to make use of the Efficient/Performance core of the CPU.
+
+When not using the laptop, I was able to suspend it to reduce the battery usage, and then resume instantly the session when I needed, this worked flawlessly.
+
+The touchpad was working great using the "3 zones" mode in which you tap on the touchpad in the left/center/right bottom of it to make a left/middle/right click, this is actually as convenient as using 1, 2 or 3 fingers depending on the click you want to make, this is something that could be configured though.
+
+Sound was working out of the box, the audio jack is also working fine when plugging in headphones.
+
+There is one issue with the webcam, when trying to use it, X crashes instantly. This may be an issue in Trisquel software stack because it works fine on other OS.
+
+A major issue right now is the lack of graphical hardware acceleration, I'm not sure if it's due to the i7-1260P integrated GPU needing a proprietary firmware or if the linux-libre kernel didn't catch up with this GPU yet.
+
+## Qubes OS
+
+=> https://www.qubes-os.org Qubes OS project official website
+
+=> static/review/qubes-os.png Qubes OS 4.2 desktop screenshot
+
+Qubes OS support (tested with 4.1, 4.2-RC2 to RC5 and 4.2) is excellent, this is exactly what I expected for a Qubes OS certified laptop (the only modern and powerful certified laptop as of January 2024!).
+
+=> https://www.qubes-os.org/doc/certified-hardware/#hardware-certification-requirements Qubes OS documentation: Hardware certification requirements
+
+Qubes OS is my main OS as I use it for writing this blog, for work (freelancer with different clients) and general use except gaming, so I needed a reliable system that would be fast, with a pretty good battery life.
+
+So far, I never experienced issues except one related to the Atheros Wi-Fi card (this is not the stock Wi-Fi device): 1 time out of 10 when I suspend and resume, the card is missing, and I need to restart the qube sys-net to have it again.  I didn't try with the latest Dasharo update though, it may be solved.
+
+Watching 1080p videos x265 10 bits encoded is smooth and only draw ~40% of a CPU, without any kind of GPU accelerated decoding.
+
+The battery life when using the system to write emails, browse the Internet and look at some videos was of 3 hours, if I only do stuff in LibreOffice offline it lasts 5h30.
+
+I'm able to have smooth videoconferences with the integrated webcam and a USB headset, this kind of task may be the most CPU consuming popular job that Qubes OS need, and it worked well.
+
+The 64 GB are very appreciated, I "only" have 32 GB on my desktop computer, but sometimes it lacks memory...  64 GB allows to not ever think about memory anymore.
+
+The touchpad is working fine, by default on the split-area behavior (left/middle/right click depending on the touchpad area you click on).
+
+There is a single USB controller that drives the webcam and card reader + the USB ports, including a USB-c docked that would be connected on either the thunderbolt or USB-c ports.  The thunderbolt device is on a separate controller, but if you attach it to a qube (that is not sys-usb), you lose all USB connectivity from a dock connected to it (there is still the other plain USB-c port).  The qube sys-usb isn't even required to run if you don't use any USB devices (this saves many headaches and annoying times).
+
+Connecting a usb-c dock on the thunderbolt port allows to have USB passthrough with sys-usb, an additional ethernet port and external screen working with sound, it's also capable of charging the computer.  Whereas the simple usb-c port can only carry USB devices or the integrated ethernet port of my dock, it should be able to support a screen but I guess it's not working on Qubes OS.  I didn't try adding more than one screen on either ports, I guess it should work on the thunderbolt port.
+
+## BSD systems
+
+I tried OpenBSD and FreeBSD with the laptop.  I always have bad luck with NetBSD, so I preferred to not try it, and DragonFly BSD support should be pretty close to FreeBSD for which it didn't work well.
+
+### OpenBSD
+
+=> https://www.openbsd.org OpenBSD project official website
+
+=> static/review/openbsd-fs8.png Screenshot of the OpenBSD 7.4 desktop using GNOME
+
+I tried OpenBSD 7.4 and -current, everything went really well except the Atheros WiFi card that isn't supported, but this was to be expected.  If you want the NV41 with OpenBSD, you need to take the Intel AX-200/201 which is supported by the iwx driver.
+
+=> https://man.openbsd.org/iwx OpenBSD manual page: iwx(4)
+
+Suspend and resume works fine, the touchpad is using the "3 zones" behavior by default where you need to tap left/center/right bottom to make a left/middle/right click.  The webcam and sound card were working fine too.
+
+The GPU is fully supported, you can use it for 3D rendering: I've been able to play a PSP game using PPSSPP emulator.  OpenBSD doesn't support hardware accelerated video encoding/decoding at all, so I didn't test it.
+
+=> static/review/ppsspp-fs8.png WipeOut Pulse emulated in the PSP emulator PPSSPP
+
+### FreeBSD
+
+=> https://www.freebsd.org FreeBSD project official website
+
+I installed FreeBSD 14.0 RC4 with ZFS on root and full disk encryption, the process went fine, I had Wi-Fi at the installer step (thanks to the blob free Atheros card).
+
+However, once I booted into the system, I didn't succeed to get X to run, the GPU isn't supported yet and using VESA display didn't work for me.  Suspend and resume didn't work either.
+
+I gave another try with GhostBSD 23.10.1 in hope I did something wrong on FreeBSD 14 RC4 like a misconfiguration as I never had any good experience with FreeBSD on desktop with regard to the setup.  But GhostBSD failed to start X and was continuously displaying its logo on screen, only booting in safe mode allowed me to figure what was wrong.
+
+I was really surprised that the hardware is still "too new" for FreeBSD while OpenBSD support is almost excellent.
+
+## Other
+
+Some less known operating systems were tested as well.
+
+### Haiku
+
+=> https://www.haiku-os.org/ Haiku project official website
+
+=> static/review/haiku.jpg Photography of the laptop running Haiku (live USB)
+
+I booted Haiku revision 57370 live USB, I was actually surprised to have the desktop displayed, and the network interfaces recognized.
+
+Unfortunately, the Atheros card was recognized, but I haven't been able to connect to a scanned network.
+
+The display was using the correct resolution, but it was using software rendering.
+
+The webcam and the touchpad didn't work, I had to connect my USB trackball.
+
+I didn't go as far as installing it.
+
+### OpenIndiana
+
+I tried the freshly released OpenIndiana Hipster 2023.10 liveUSB.
+
+After letting the bootloader display and start the boot process, the init process seemed stuck and was printing errors about CPU every minute.  I haven't been able to get past this step.
+
+# Measurements
+
+I had fun measuring a lot of things like power usage at the outlet, battery duration with many workloads and gaming FPS (Frames per Second, 30 is okayish depending on people, 40 is acceptable, 60 is perfect as it's the refresh rate of the screen).
+
+## Power
+
+I measured the power usage in watts using a watt-o-meter in different situations:
+
+* power supply connected, but not to the laptop: 0 watt (some power supplies draw a few watts doing nothing... hello Nintendo Switch with its 2.1 watts!)
+* charging, sleeping: 30 watts
+* charging, idling:  37 watts
+* charging and heavy use: 79 watts
+* connected to AC (not charging), sleeping: 1 watt
+* connected to AC (not charging), idling, screen at full brightness: 17 watts
+* connected to AC (not charging), downloading a file over Wi-Fi, screen at full brightness: 22 watts
+
+This is actually good in my opinion, to have a comparison point, a standard 24-inch screen usually draw around 40 watts alone.
+
+The power consumption of the laptop itself is within the range of other laptop.  I was happy to see it use no power when the AC is connected but not to the computer, and on idling it's only 1 watt, I have another laptop idling at 7 watts!
+
+## Battery life
+
+I measured the battery life using different methods and sometimes multiple times to verify if it was reliable.
+
+### Linux
+
+One method was to play a 2160p x265 10 bits encoded video using VLC, 1h39 long, with full brightness and no network.
+
+* With hardware accelerated decoding support: 33% of the battery was used, so the battery life would theoretically be almost 6 hours (299 minutes) while playing a video at full brightness
+* Without hardware acceleration: 90% of the battery was used (VLC was using 480% of the CPU, but I didn't notice it as the fans were too silent!), this would mean a battery life of 1h49 (110 minutes) using the computer under heavy load
+
+The other method was to play the video game "Risk of Rain Returns" with a USB PS5 controller, and at full brightness, for a given duration (measured at 20 25 minutes).
+
+* Risk of Rain Returns: 15% of battery used in 20 minutes, this mean I should have been able to play 2h13 (133 minutes) before having to charge.
+
+### OpenBSD
+
+I played a PSP game for 25 minutes using PPSSPP in full screen at full brightness.
+
+* WipeOut Pulse: 14% of battery was used in 25 minutes, this mean I could have played for almost 3 hours straight (178 minutes)
+
+## Gaming performance
+
+I did play a bit on the laptop on Linux using Steam on Flatpak.  I tested it on Fedora 39, Ubuntu 23.10 and Alpine Linux 3.18.3, results were identical.
+
+A big surprise while playing was that the fans remained almost silent, they were spinning faster than usual of course, but that didn't require me to increase the moderate volume I used in my gaming session.
+
+* Baldur's Gate 3: Playable at stable 30 FPS with all settings to low and FSR2.2 enabled in ultra performance mode
+
+=> static/review/bg3.jpg Baldur's Gate 3 (2023)
+
+* Counter Strike 2: Stable 60 FPS in 1600x900 with all settings set to minimum
+
+=> static/review/cs2.jpg Counter Strike 2
+
+* Spin Rhythm XD: Stable at 60 FPS
+* Rain world: Stable at 60 FPS
+* HELLDIVERS: Stable at 60 FPS with native resolution and graphical settings set to maximum
+* Beam NG;Drive: Playable with a mix of low/normal settings at 30 FPS
+* Resident Evil: Solid 45 FPS with the few settings set to maximum, better lock the game at 30 FPS though
+* Risk of Rain Returns: Stable 60 FPS
+
+=> static/review/rorr-fs8.png Risk of Rain returns
+
+* Risk of Rain 2: Stable 60 FPS using 1600x900 with almost all settings to lowest
+
+=> static/review/ror2.jpg Risk of Rain 2
+
+* Endless Dungeon: with the lowest settings and resolution lowered to 1600x900, it was able to maintain stable 30 FPS, it was kinda playable
+
+I didn't try using an external GPU on the thunderbolt port, but you can expect way better performance as the games were never CPU bound.
+
+# Conclusion
+
+I'm glad I dared asking NovaCustom about this partnership about the NV41, this is exactly the laptop I needed.  It's reliable, no weird features, it's almost full open source (at least for the software stack?), very powerful, and I can buy replacement parts for at least 7 years if I break something.  It's also SILENT, I despise laptop having a high pitch fan noise.
+
+I still have to play with Dasharo coreboot, I'm really new to this open-source firmware world, so I have to learn before trying weird and dangerous things (I would like to try Heads for its anti-evil maid features, it should be possible to install it on Dasharo systems "soon").
+
+Writing this blog post was extremely hard, I had to stay mindful that this must be an HONEST and NEUTRAL review: writing about a product you are happy with leads to some excitement moments and one may forget to share some little annoyance because it's "not _that_ bad", but I did my best to stay neutral when writing. And this is the agreement I had with NovaCustom.
+
+Honesty is an important value to me.  You, dear readers, certainly trust me to some point, I don't want to lose your trust.
+</pre>
+    
+  

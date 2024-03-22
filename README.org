@@ -26,6 +26,7 @@
   - [[#important-packages][Important Packages]]
     - [[#third-party-repos][Third Party Repos]]
     - [[#evil-mode][Evil Mode]]
+      - [[#other-file][Other File]]
       - [[#path][PATH]]
       - [[#undo-tree][Undo Tree]]
       - [[#editorconfig][Editorconfig]]
@@ -52,6 +53,7 @@
   - [[#neotree][Neotree]]
   - [[#vterm][Vterm]]
   - [[#highlight-todo][Highlight Todo]]
+  - [[#elfeed-for-atomrss][Elfeed for Atom/RSS]]
   - [[#flyspell][Flyspell]]
   - [[#flycheck][Flycheck]]
   - [[#programming-stuff][Programming Stuff]]
@@ -81,13 +83,11 @@
 				   ("melpa" . 1)
 				   ("nongnu" . 2)
 				   ("gnu" . 3)))
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-and-compile
-  (setq use-package-always-ensure t
-        use-package-expand-minimally t))
+(use-package use-package
+  :custom
+  (use-package-always-ensure t)
+  (package-native-compile t)
+  (warning-minimum-level :error))
 #+end_src
 *** Evil Mode
 #+begin_src elisp :tangle init.el
@@ -121,6 +121,13 @@
   :config
   (setq evil-collection-mode-list '(dashboard dired ibuffer))
   (evil-collection-init))
+#+end_src
+**** Other File
+#+begin_src elisp :tangle init.el
+(setq-default custom-file
+	      (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
 #+end_src
 **** PATH
 #+begin_src elisp :tangle init.el
@@ -488,6 +495,23 @@ Shows your mouse when you make large movements
           ("REVIEW"     font-lock-keyword-face bold)
           ("NOTE"       success bold)
           ("DEPRECATED" font-lock-doc-face bold))))
+#+end_src
+** Elfeed for Atom/RSS
+#+begin_src elisp :tangle init.el
+(use-package elfeed
+  :ensure t
+  :custom
+  (elfeed-db-directory
+   (expand-file-name "elfeed" user-emacs-directory)
+   (elfeed-show-entry-switch 'display-buffer))
+  :bind
+  ("C-c w e" . elfeed))
+
+(use-package elfeed-dashboard
+  :ensure t
+  :config
+  (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
+  (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links))
 #+end_src
 ** Flyspell
 #+begin_src elisp :tangle init.el

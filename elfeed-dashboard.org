@@ -1,0 +1,39 @@
+[[~/.emacs.d/hantyumi.png]]
+#+TITLE: Elfeed-Dashboard
+
+* Keys
+
+| Key | Bind                          |
+|-----+-------------------------------|
+| =u=   | ~+unread~                       |
+| =U=   | ~elfeed-dashboard-update~       |
+| =g=   | ~elfeed-dashboard-update-links~ |
+| =E=   | ~elfeed-dashboard-edit~         |
+| =s=   | ~elfeed~                        |
+| =q=   | ~kill-current-buffer~           |
+
+* Bookmarks
+
+| Name   | Count           |
+|--------+-----------------|
+| Unread | ([[elfeed:+unread][   102]]/[[elfeed:][   106]]) |
+
+* Configuration
+  :PROPERTIES:
+  :VISIBILITY: hideall
+  :END:
+
+  Press "E" to edit and M-x elfeed-dashboard-mode to go back
+
+  #+STARTUP: showall showstars indent
+  #+KEYMAP: u | elfeed-dashboard-query "+unread"
+  #+KEYMAP: be | elfeed-dashboard-query "+unread +blogs +emacs"
+  #+KEYMAP: bn | elfeed-dashboard-query "+unread +blogs +nullprogram"
+  #+KEYMAP: m | elfeed-dashboard-query "+unread +monitoring"
+  #+KEYMAP: v | elfeed-dashboard-query "+unread +video"
+  #+KEYMAP: n | elfeed-dashboard-query "+unread +news"
+  #+KEYMAP: s | elfeed
+  #+KEYMAP: g | elfeed-dashboard-update-links
+  #+KEYMAP: U | elfeed-dashboard-update
+  #+KEYMAP: E | elfeed-dashboard-edit
+  #+KEYMAP: q | kill-current-buffer

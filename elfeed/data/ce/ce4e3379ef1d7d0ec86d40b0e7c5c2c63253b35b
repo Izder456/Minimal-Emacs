@@ -1,0 +1,56 @@
+<p>I've been involved with the OpenBSD ports collection since 2015, and have
+accumulated some notes on the topic over the years. This is an attempt at
+doing a redacted version, mostly for my personal use.
+While some of these notes are specific to the OpenBSD Ports Collection,
+most of them will also apply to the others BSDs and Linux distributions.</p>
+<p>It will come at no surprise that distfiles are at the core of the problem
+domain. The ports system fetches distribution files, most often tarballs,
+verifies their checksum and starts building programs. In order to be
+able to reliably build packages from the source tarballs, we need both
+<strong>availability</strong> and <strong>integrity</strong>.</p>
+<p>Because <strong>MASTER_SITES</strong> can be down, either temporarily or permanently,
+each of the BSD maintains their own distfiles mirrors, or caches.</p>
+<p>As a rule of thumb though, MASTER_SITES (or nowadays simply SITES) should
+not be set to point to <em>ftp.openbsd.org</em>, mostly because there is sometimes
+no guarantee that the files will be cached there forever, and also to avoid
+putting unnecessary load on the server. To remedy this, some porters maintain
+their own distfiles hosting sites.</p>
+<p>For checking distfiles integrity, each BSD uses a different combination of
+cryptographic hashes:</p>
+<p>OpenBSD and FreeBSD both use <strong>SHA256</strong>, while NetBSD uses <strong>BLAKE2s</strong> and
+<strong>SHA512</strong>. The hashes are stored in a file called <em>distinfo</em>.</p>
+<p>Here is an example from OpenBSD's distinfo for binutils:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>SHA256 (binutils-2.41.tar.bz2) = pMS+wFL3uDcAJOYDieGUN38/SLVmGEGOpRBn9nqqsws=
+</span><span>SIZE (binutils-2.41.tar.bz2) = 37132937
+</span></code></pre>
+<p>And another excerpt from NetBSD's Pkgsrc distinfo for binutils:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>BLAKE2s (binutils-2.41.tar.bz2) = bd20a803c6f86632b62e27fce2cb07eb0ee4aa06fb374d80c8ba235568466dd2
+</span><span>SHA512 (binutils-2.41.tar.bz2) = 8c4303145262e84598d828e1a6465ddbf5a8ff757efe3fd981948854f32b311afe5b154be3966e50d85cf5d25217564c1f519d197165aac8e82efcadc9e1e47c
+</span><span>Size (binutils-2.41.tar.bz2) = 37132937 bytes
+</span></code></pre>
+<p>Checksums can fail because there was a network failure while downloading
+the source file, or because the file itself changed.</p>
+<p>If the distfile changed, there can be several causes:</p>
+<ul>
+<li>The source archive has been replaced by a malicious one</li>
+<li>Upstream re-rolled the tarball</li>
+<li>Automatically generated tarballs are not immutable</li>
+</ul>
+<p>Re-rolling tarballs can happen for software which is not versioned, or
+when upstream try to fix minor issues not long after a release, without
+issuing a new one in order not to have to bump version numbers.</p>
+<p>For the last possible cause, this has been a problem with GitHub auto
+generated tarballs in the past. More information can be found in sthen@'s
+&quot;<a rel="noopener" target="_blank" href="https://marc.info/?l=openbsd-ports&amp;m=151973450514279&amp;w=2">Porters, please read re GitHub auto-generated tarballs vs releases</a>&quot;
+post on the ports mailing list back in 2018.</p>
+<p>In January 2023, GitHub updated the Git version they are using on their
+platform. Because Git switched to use their internal <em>gzip</em> implementation
+for generating tarballs, this resulted in the generated tarballs having
+different checksums. The <a rel="noopener" target="_blank" href="https://github.blog/changelog/2023-01-30-git-archive-checksums-may-change/">change</a> has quickly been reverted.</p>
+<p>Each durable checksum failure will require maintainers to spend time
+analyzing changes to ensure there has not been any malicious changes
+happening.</p>
+<p>Ideally, distfiles should be as small as possible to prevent wasting
+bandwidth when fetching and CPU cycles when unpacking content. Unfortunately,
+that's not always the case because some projects do vendor dependencies, and
+everyone has to pay the cost.</p>

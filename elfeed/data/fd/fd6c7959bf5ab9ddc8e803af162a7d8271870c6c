@@ -1,0 +1,89 @@
+<p>LLVM was <a rel="noopener" target="_blank" href="https://freshbsd.org/openbsd/ports/commit/8341693aaf9f5ca9351dd990e7aad1f1bc3783db4cf989c705f3213c3aeb27de">imported</a> in the OpenBSD ports tree back in 2008, and happily
+lived there for a long while before being imported in the source tree
+at the g2k16 hackathon in 2016. I previously wrote about this in
+&quot;<a rel="noopener" target="_blank" href="https://www.cambus.net/the-state-of-toolchains-in-openbsd/">The state of toolchains in OpenBSD</a>&quot; last year.</p>
+<p>As mentioned in my previous article, we do not use upstream build system
+to build <strong>LLVM</strong> in the base system, but hand-written BSD Makefiles.
+Importing CMake into the base system was not an option, because of
+the size of the project and the large dependency chain it requires
+for building. As a drawback, the build is slower than it could be, were
+we able to take advantage of a more modern build system.</p>
+<p>Nowadays, <strong>Clang</strong> is the default compiler on the amd64, arm64, armv7,
+i386, macppc, octeon, powerpc64, and riscv64 platforms. It is also available
+in the sparc64 base system.</p>
+<p>But then, why do we still need LLVM in the ports tree? As an aside, for those
+wondering why we need a compiler in the base system in the first place, Julio
+Merino wrote about this in his &quot;<a rel="noopener" target="_blank" href="https://jmmv.dev/2015/10/compilers-in-the-bsd-base-system.html">Compilers in the (BSD) base system</a>&quot; post.</p>
+<p>In the OpenBSD base system, we only build LLVM backends for a given
+architecture, so on amd64 and i386 we build LLVM's <strong>X86 backend</strong>.
+The mapping we do between OpenBSD's <strong>MACHINE_ARCH</strong> and <strong>LLVM_ARCH</strong> values
+can be found in <a rel="noopener" target="_blank" href="https://github.com/openbsd/src/blob/master/gnu/usr.bin/clang/Makefile.arch">gnu/usr.bin/clang/Makefile.arch</a>.</p>
+<p>Note that we also build the AMDGPU backend on platforms requiring it.</p>
+<p>On an amd64 machine, the registered targets for the base compiler are:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>$ clang --print-targets
+</span><span>  Registered Targets:
+</span><span>    amdgcn - AMD GCN GPUs
+</span><span>    r600   - AMD GPUs HD2XXX-HD6XXX
+</span><span>    x86    - 32-bit X86: Pentium-Pro and above
+</span><span>    x86-64 - 64-bit X86: EM64T and AMD64
+</span></code></pre>
+<p>And the ones for Clang installed from ports are:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>$ clang-13 --print-targets
+</span><span>  Registered Targets:
+</span><span>    aarch64    - AArch64 (little endian)
+</span><span>    aarch64_32 - AArch64 (little endian ILP32)
+</span><span>    aarch64_be - AArch64 (big endian)
+</span><span>    amdgcn     - AMD GCN GPUs
+</span><span>    arm        - ARM
+</span><span>    arm64      - ARM64 (little endian)
+</span><span>    arm64_32   - ARM64 (little endian ILP32)
+</span><span>    armeb      - ARM (big endian)
+</span><span>    avr        - Atmel AVR Microcontroller
+</span><span>    bpf        - BPF (host endian)
+</span><span>    bpfeb      - BPF (big endian)
+</span><span>    bpfel      - BPF (little endian)
+</span><span>    hexagon    - Hexagon
+</span><span>    lanai      - Lanai
+</span><span>    mips       - MIPS (32-bit big endian)
+</span><span>    mips64     - MIPS (64-bit big endian)
+</span><span>    mips64el   - MIPS (64-bit little endian)
+</span><span>    mipsel     - MIPS (32-bit little endian)
+</span><span>    msp430     - MSP430 [experimental]
+</span><span>    nvptx      - NVIDIA PTX 32-bit
+</span><span>    nvptx64    - NVIDIA PTX 64-bit
+</span><span>    ppc32      - PowerPC 32
+</span><span>    ppc32le    - PowerPC 32 LE
+</span><span>    ppc64      - PowerPC 64
+</span><span>    ppc64le    - PowerPC 64 LE
+</span><span>    r600       - AMD GPUs HD2XXX-HD6XXX
+</span><span>    riscv32    - 32-bit RISC-V
+</span><span>    riscv64    - 64-bit RISC-V
+</span><span>    sparc      - Sparc
+</span><span>    sparcel    - Sparc LE
+</span><span>    sparcv9    - Sparc V9
+</span><span>    systemz    - SystemZ
+</span><span>    thumb      - Thumb
+</span><span>    thumbeb    - Thumb (big endian)
+</span><span>    wasm32     - WebAssembly 32-bit
+</span><span>    wasm64     - WebAssembly 64-bit
+</span><span>    x86        - 32-bit X86: Pentium-Pro and above
+</span><span>    x86-64     - 64-bit X86: EM64T and AMD64
+</span><span>    xcore      - XCore
+</span></code></pre>
+<p>The <strong>devel/llvm</strong> port is built using CMake and Ninja, resulting in more
+efficient builds. On top of building all available LLVM backends, we
+also build:</p>
+<ul>
+<li>The <strong>Clang Static Analyzer</strong> and its companion tool scan-build</li>
+<li><strong>Clang utilities</strong> (clang-format and clang-* tools)</li>
+<li><strong>LLVM utilities</strong> (LLVM binary utilities: llvm-ar, llvm-as, llvm-objcopy,
+llvm-objdump, etc.)</li>
+<li>Tools to process code coverage data (llvm-profdata and llvm-cov)</li>
+<li>Various other tools such as llc, lli, llvm-mc, llvm-mca, etc.</li>
+</ul>
+<p>So in essence, we try to keep the base system LLVM somewhat minimal,
+and build additional features and tooling in the port version. This
+solution has worked well for us so far.</p>
+<p>One last thing to note, we only build one version of LLVM in ports, which
+is kept in sync with the base version, so we do not ship packages for older
+(or newer) versions of LLVM.</p>

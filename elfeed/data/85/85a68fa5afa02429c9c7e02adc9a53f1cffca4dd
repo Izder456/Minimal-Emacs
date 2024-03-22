@@ -1,0 +1,10 @@
+
+        <ul>
+    <li>OpenBSD 7.0 released! (<a class="permalink" href="https://marc.info/?l=openbsd-announce&m=163422237101753&w=2">Announcement</a>)</li>
+    <li>No more packages updates for 6.9, syspatch will still be published</li>
+    <li>No more syspatches for 6.8, it is now end of life and shouldn't be used any longer</li>
+    <li>OpenBSD 7.0 song <a href="https://www.openbsd.org/lyrics.html#70" class="permalink">released</a> as well!</li>
+</ul>
+</article>
+    
+    

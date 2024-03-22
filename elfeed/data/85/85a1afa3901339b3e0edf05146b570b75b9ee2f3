@@ -1,0 +1,147 @@
+<p>I was recently amazed to discover that <a rel="noopener" target="_blank" href="https://www.delorie.com/djgpp/">DJGPP</a> was still being maintained,
+and had very recent versions of GCC and binutils available. I have not been
+doing any C programming on DOS in a very long time now, so I think the timing
+is right.</p>
+<p>There is an installation program with an interface very similar to the good
+old <strong>Turbo Vision</strong>, which could be helpful in case one wants to install the
+full environment.</p>
+<p><img src="https://www.cambus.net/content/2021/05/djgpp-01.png" alt="DJGPP Installer" /></p>
+<p><img src="https://www.cambus.net/content/2021/05/djgpp-02.png" alt="DJGPP Installer" /></p>
+<p>I'm only interested in using the <strong>C</strong> and <strong>C++</strong> frontends for now, so
+I will do a manual installation.</p>
+<p>We need the following components:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>djdev205.zip    B  2,509,574  2015-10-18   DJGPP development kit 2.05
+</span><span>bnu2351b.zip    B  6,230,009  2021-01-16   GNU Binutils 2.35.1 binaries for DJGPP
+</span><span>gcc1030b.zip    B 42,027,946  2021-04-18   GNU GCC C compiler 10.3.0 for DJGPP V2
+</span><span>gpp1030b.zip    B 16,207,187  2021-04-18   GNU C++ compiler 10.3.0 for DJGPP V2
+</span><span>csdpmi7b.zip    B     71,339  2010-01-29   CS&#39;s DPMI Provider r7 Binaries
+</span></code></pre>
+<p>The development environment can be bootstrapped as follows:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>mkdir -p ~/dos/djgpp
+</span><span>cd ~/dos/djgpp
+</span><span>wget https://www.delorie.com/pub/djgpp/current/v2/djdev205.zip
+</span><span>wget https://www.delorie.com/pub/djgpp/current/v2gnu/bnu2351b.zip
+</span><span>wget https://www.delorie.com/pub/djgpp/current/v2gnu/gcc1030b.zip
+</span><span>wget https://www.delorie.com/pub/djgpp/current/v2gnu/gpp1030b.zip
+</span><span>wget https://www.delorie.com/pub/djgpp/current/v2misc/csdpmi7b.zip
+</span><span>unzip djdev205.zip
+</span><span>unzip bnu2351b.zip
+</span><span>unzip gcc1030b.zip
+</span><span>unzip gpp1030b.zip
+</span><span>unzip csdpmi7b.zip
+</span></code></pre>
+<p>When using <strong>FreeDOS</strong>, we need to add the following in <em>FDAUTO.BAT</em>:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>set DJGPP=c:\djgpp\djgpp.env
+</span><span>set PATH=c:\djgpp\bin;%PATH%
+</span></code></pre>
+<p>Alternatively, when using <strong>DOSBox</strong> instead, we need the following in
+<em>dosbox.conf</em>:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>[autoexec]
+</span><span>mount c ~/dos
+</span><span>path=c:\djgpp\bin
+</span><span>set DJGPP=c:\djgpp\djgpp.env
+</span><span>c:
+</span></code></pre>
+<p>Once we are done installing, this gives us GCC 10.3.0 and ld 2.35.1:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>C:\&gt;gcc --version
+</span><span>gcc.exe (GCC) 10.3.0
+</span><span>Copyright (C) 2020 Free Software Foundation, Inc.
+</span><span>This is free software; see the source for copying conditions.  There is NO
+</span><span>warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+</span><span>
+</span><span>C:\&gt;ld --version
+</span><span>GNU ld (GNU Binutils) 2.35.1
+</span><span>Copyright (C) 2020 Free Software Foundation, Inc.
+</span><span>This program is free software; you may redistribute it under the terms of
+</span><span>the GNU General Public License version 3 or (at your option) a later version.
+</span><span>This program has absolutely no warranty.
+</span></code></pre>
+<p>To verify things are working properly, let's create a simple test program:</p>
+<pre data-lang="c" style="background-color:#272822;color:#f8f8f2;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#f92672;">#include </span><span style="color:#e6db74;">&lt;stdio.h&gt;
+</span><span>
+</span><span style="font-style:italic;color:#66d9ef;">int
+</span><span style="color:#a6e22e;">main</span><span>()
+</span><span>{
+</span><span>	</span><span style="color:#66d9ef;">puts</span><span>(</span><span style="color:#e6db74;">&quot;Hello World!&quot;</span><span>);
+</span><span>
+</span><span>	</span><span style="color:#f92672;">return </span><span style="color:#ae81ff;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>We then build and run it:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>C:\&gt;gcc hello.c -o hello
+</span><span>
+</span><span>C:\&gt;hello
+</span><span>Hello World!
+</span></code></pre>
+<p>Here is the output of running <strong>file</strong> on the executable:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>HELLO.EXE: MS-DOS executable, COFF for MS-DOS, DJGPP go32 DOS extender
+</span></code></pre>
+<p>Let's build only an object file:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>C:\&gt;gcc -c hello.c
+</span></code></pre>
+<p>We can run <strong>nm</strong> on it to list symbols:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>C:\&gt;nm hello.o
+</span><span>00000000 b .bss
+</span><span>00000000 N .comment
+</span><span>00000000 d .data
+</span><span>00000000 t .text
+</span><span>0000000d T _main
+</span><span>         U _puts
+</span></code></pre>
+<p>And run <strong>objdump</strong> to display its content:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>C:\&gt;objdump -s hello.o
+</span><span>
+</span><span>HELLO.o:     file format coff-go32
+</span><span>
+</span><span>Contents of section .text:
+</span><span> 0000 48656c6c 6f20576f 726c6421 008d4c24  Hello World!..L$
+</span><span> 0010 0483e4f0 ff71fc55 89e55183 ec0483ec  .....q.U..Q.....
+</span><span> 0020 0c680000 0000e8d5 ffffff83 c410b800  .h..............
+</span><span> 0030 0000008b 4dfc89ec 5d8d61fc c3909090  ....M...].a.....
+</span><span>Contents of section .comment:
+</span><span> 0000 4743433a 2028474e 55292031 302e332e  GCC: (GNU) 10.3.
+</span><span> 0010 30000000                             0...            
+</span></code></pre>
+<p>We can also use <strong>objdump</strong> to disassemble the object file:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>C:\&gt;objdump -d hello.o
+</span><span>
+</span><span>HELLO.o:     file format coff-go32
+</span><span>
+</span><span>Disassembly of section .text:
+</span><span>
+</span><span>00000000 &lt;.text&gt;:
+</span><span>   0:	48                      dec    %eax
+</span><span>   1:	65 6c                   gs insb (%dx),%es:(%edi)
+</span><span>   3:	6c                      insb   (%dx),%es:(%edi)
+</span><span>   4:	6f                      outsl  %ds:(%esi),(%dx)
+</span><span>   5:	20 57 6f                and    %dl,0x6f(%edi)
+</span><span>   8:	72 6c                   jb     76 &lt;_main+0x69&gt;
+</span><span>   a:	64 21 00                and    %eax,%fs:(%eax)
+</span><span>
+</span><span>0000000d &lt;_main&gt;:
+</span><span>   d:	8d 4c 24 04             lea    0x4(%esp),%ecx
+</span><span>  11:	83 e4 f0                and    $0xfffffff0,%esp
+</span><span>  14:	ff 71 fc                pushl  -0x4(%ecx)
+</span><span>  17:	55                      push   %ebp
+</span><span>  18:	89 e5                   mov    %esp,%ebp
+</span><span>  1a:	51                      push   %ecx
+</span><span>  1b:	83 ec 04                sub    $0x4,%esp
+</span><span>  1e:	83 ec 0c                sub    $0xc,%esp
+</span><span>  21:	68 00 00 00 00          push   $0x0
+</span><span>  26:	e8 d5 ff ff ff          call   0 &lt;.text&gt;
+</span><span>  2b:	83 c4 10                add    $0x10,%esp
+</span><span>  2e:	b8 00 00 00 00          mov    $0x0,%eax
+</span><span>  33:	8b 4d fc                mov    -0x4(%ebp),%ecx
+</span><span>  36:	89 ec                   mov    %ebp,%esp
+</span><span>  38:	5d                      pop    %ebp
+</span><span>  39:	8d 61 fc                lea    -0x4(%ecx),%esp
+</span><span>  3c:	c3                      ret
+</span><span>  3d:	90                      nop
+</span><span>  3e:	90                      nop
+</span><span>  3f:	90                      nop
+</span></code></pre>
+<p>Besides the C and C++ frontends, the <strong>Ada</strong>, <strong>Fortran</strong>, <strong>Objective C</strong>,
+and <strong>Pascal</strong> frontends are also available. While I used DOSBox to test the
+development environment and prepare this article, I've since moved to FreeDOS
+which I'm running natively on my ASUS Eee PC. I'm currently having a lot of
+fun redoing some small character and color cycling effects in text mode.</p>

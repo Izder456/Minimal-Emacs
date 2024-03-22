@@ -1,0 +1,114 @@
+
+<pre># Introduction
+
+This guide explains how to install the PHP web service Shaarli on OpenBSD.
+
+Shaarli is a bookmarking service and RSS feed reader, you can easily add new links and associate a text / tag and share it with other or keep each entry private if you prefer.
+
+=> https://github.com/shaarli/Shaarli Shaarli GitHub Project page
+
+# Setup
+
+The software is pretty easy to install using base system httpd and PHP (included latest version available as of time of writing).
+
+## Deploy Shaarli
+
+Download the latest version of Shaarli available on their GitHub project.
+
+=> https://github.com/shaarli/Shaarli/releases Shaarli releases on GitHub
+
+Extract the archive and move the directory `Shaarli` in `/var/www/`.
+
+Change the owner of the following directories to the user `www`.  It's required for Shaarli to work properly.  For security’s sake, don't chown all the files to Shaarli, it's safer when a program can't modify itself.
+
+```
+chown www /var/www/Shaarli/{cache,data,pagecache,tmp}
+```
+
+## Install the packages
+
+We need a few packages to make it work, I'm using php 8.3 in the example, but you can replace with the current version you want:
+
+```
+pkg_add php--%8.3 php-curl--%8.3 php-gd--%8.3 php-intl--%8.3
+```
+
+By default, on OpenBSD the PHP modules aren't enabled, you can do it with:
+
+```
+for i in gd curl intl opcache; do ln -s "/etc/php-8.3.sample/${i}.ini" /etc/php-8.3/ ; done
+```
+
+Now, enable and start PHP service:
+
+```
+rcctl enable php83_fpm
+rcctl start php83_fpm
+```
+
+If you want Shaarli to be able to do outgoing connections to fetch remote content, you need to make some changes in the chroot directory to make it work, everything is explained in the file `/usr/local/share/doc/pkg-readmes/php-INSTALLED.VERSION`.
+
+## Configure httpd
+
+This guide won't cover the setup for TLS as it's always the same procedure, and it may depend on how you prefer to generate the TLS certificates.
+
+Create the file `/etc/httpd.conf` and add the following content, make sure to replace all the caps text with real values:
+
+```
+server "YOUR_HOSTNAME_HERE" {
+    listen on * port 80
+
+    # don't rewrite for assets (fonts, images)
+    location "/tpl/*" {
+        root "/Shaarli/"
+    }
+
+    location "/doc/*" {
+        root "/Shaarli/"
+    }
+
+    location "/cache/*" {
+        root "/Shaarli/"
+    }
+
+    location "*.php" {
+        fastcgi socket "/run/php-fpm.sock"
+        root "/Shaarli"
+    } 
+
+    location "*index.php*" {
+        root "/Shaarli"
+        fastcgi socket "/run/php-fpm.sock"
+    } 
+
+    location match "/(.*)" {
+        request rewrite "/index.php%1"
+    }
+
+    location "/*" {
+        root "/Shaarli"
+    }
+}
+```
+
+Enable and start httpd
+
+```
+rcctl enable httpd
+rcctl start httpd
+```
+
+## Configure your firewall
+
+If you configured PF to block by default, you have to open the ports 80 and also 443 if you enable HTTPS.
+
+# Installing Shaarli
+
+Now you should have a working Shaarli upon opening `http://YOUR_HOSTNAME_HERE/index.php/`, all lights should be green, and you are now able to configure the instance as you wish.
+
+# Conclusion
+
+Shaarli is a really handy piece of software, especially for active RSS readers who may have a huge stream of news to read.  What's cool is the share service, and you may allow some people to subscribe to your own feed.
+</pre>
+    
+  

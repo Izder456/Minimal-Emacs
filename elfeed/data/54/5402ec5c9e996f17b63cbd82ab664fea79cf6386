@@ -1,0 +1,129 @@
+<p>This is the third post in my toolchains adventures series. Please read the
+<a rel="noopener" target="_blank" href="https://www.cambus.net/diving-into-toolchains/">introduction</a> and the <a rel="noopener" target="_blank" href="https://www.cambus.net/toolchains-adventures-q3-2021/">Q3 2021 report</a> if you want to get more context
+about this journey.</p>
+<p>The fourth quarter of 2021 started out in the best possible way, as I've
+been granted commit access to the <strong>LLVM project</strong> on October 1st.</p>
+<p>During the first part of October, I did commit a couple of micro-optimizations
+to several compiler drivers along with small improvements in various places,
+as highlighted in the commit list at the end of this post.</p>
+<p>At the end of the month, I attended the OpenBSD h2k21 hackathon in Gouveia,
+Portugal.</p>
+<p>During the hackathon, I spent some time doing builds of LLVM from our base
+system to do measurements and evaluate if it could make sense to build our
+toolchain with <a rel="noopener" target="_blank" href="https://clang.llvm.org/docs/ThinLTO.html">ThinLTO</a> optimizations enabled. While full LTO builds
+would be out of the question as our developers regularly build snapshots
+of the base system (and often on laptops), <strong>ThinLTO</strong> typically achieves
+a good compromise between optimizations and resources usage.</p>
+<p>Unfortunately, my experiment didn't prove conclusive, and I quickly grew tired
+of waiting hours between each run to check the results. I used LLVM 11.1.0 at
+the time, and retesting more recently with LLVM 13.0.0 on a 4 CPUs virtual
+machine with 16GB of RAM gave similar results. Running <code>time make -j4</code> in 
+<code>/usr/src/gnu/usr.bin/clang</code> after applying modifications to enable building
+with ThinLTO resulted in a 7.3% increase in build time. Then, using the newly
+built ThinLTO optimized toolchain, I rebuilt an optimized LLVM again and
+the build was only 1.1% faster than the previous run.</p>
+<p>Those preliminary benchmarks only measuring build time make me think there
+is little point in enabling ThinLTO alone at this time, and that it should
+be coupled with PGO (<strong>Profile-guided optimization</strong>) to be worth considering.</p>
+<p>For the record, I used the following <a href="/files/openbsd/thinlto.diff">diff</a> to rebuild LLVM in base:</p>
+<pre data-lang="sh" style="background-color:#272822;color:#f8f8f2;" class="language-sh "><code class="language-sh" data-lang="sh"><span>Index: gnu/usr.bin/clang/Makefile.inc
+</span><span style="color:#f92672;">=</span><span style="color:#e6db74;">==================================================================
+</span><span>RCS file: /cvs/src/gnu/usr.bin/clang/Makefile.inc,v
+</span><span>retrieving revision 1.25
+</span><span>diff</span><span style="font-style:italic;color:#fd971f;"> -u -p -r1</span><span>.25 Makefile.inc
+</span><span>--- gnu/usr.bin/clang/Makefile.inc	21 Aug 2021 03:00:02</span><span style="font-style:italic;color:#fd971f;"> -0000</span><span>	1.25
+</span><span>+++ gnu/usr.bin/clang/Makefile.inc	24 Oct 2021 16:18:15</span><span style="font-style:italic;color:#fd971f;"> -0000
+</span><span>@@</span><span style="font-style:italic;color:#fd971f;"> -46</span><span>,6 +46,11 @@ CXXFLAGS+=</span><span style="font-style:italic;color:#fd971f;">	-fomit-frame-pointer
+</span><span> NOPIE_FLAGS</span><span style="color:#f92672;">=	</span><span>-fPIE
+</span><span> .endif
+</span><span> 
+</span><span>+# ThinLTO
+</span><span>+.if ${MACHINE_ARCH} == </span><span style="color:#e6db74;">&quot;amd64&quot;
+</span><span>+CXXFLAGS</span><span style="color:#f92672;">+=	</span><span>-flto</span><span style="color:#f92672;">=</span><span style="color:#e6db74;">thin
+</span><span>+.endif
+</span><span>+
+</span><span> CPPFLAGS</span><span style="color:#f92672;">+=	</span><span>-D__STDC_LIMIT_MACROS</span><span style="font-style:italic;color:#fd971f;"> -D__STDC_CONSTANT_MACROS </span><span>\
+</span><span style="font-style:italic;color:#fd971f;"> 		-D__STDC_FORMAT_MACROS
+</span></code></pre>
+<p>The next thing I did was checking usage of <strong>.gnu.warning.</strong>* sections in our
+C library. For an introduction to these sections, please refer to this
+<a rel="noopener" target="_blank" href="https://ninjalj.blogspot.com/2011/11/your-own-linker-warnings-using-gnu.html">article</a>.</p>
+<p>At the time of writing, <strong>libc functions</strong> for which we have .gnu.warning.*
+sections are:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>.gnu.warning.strcpy:
+</span><span>	strcpy() is almost always misused, please use strlcpy()
+</span><span>.gnu.warning.stpcpy:
+</span><span>	stpcpy() is dangerous; do not use it
+</span><span>.gnu.warning.wcscat:
+</span><span>	wcscat() is almost always misused, please use wcslcat()
+</span><span>.gnu.warning.sprintf:
+</span><span>	sprintf() is often misused, please use snprintf()
+</span><span>.gnu.warning.tempnam:
+</span><span>	tempnam() possibly used unsafely; consider using mkstemp()
+</span><span>.gnu.warning.vsprintf:
+</span><span>	vsprintf() is often misused, please use vsnprintf()
+</span><span>.gnu.warning.mktemp:
+</span><span>	mktemp() possibly used unsafely; consider using mkstemp()
+</span><span>.gnu.warning.strcat:
+</span><span>	strcat() is almost always misused, please use strlcat()
+</span><span>.gnu.warning.wcscpy:
+</span><span>	wcscpy() is almost always misused, please use wcslcpy()
+</span><span>.gnu.warning.rand_r:
+</span><span>	rand_r() is not random, it is deterministic.
+</span><span>.gnu.warning.rand:
+</span><span>	rand() may return deterministic values, is that what you want?
+</span><span>.gnu.warning.getwd:
+</span><span>	getwd() possibly used unsafely; consider using getcwd()
+</span><span>.gnu.warning.random:
+</span><span>	random() may return deterministic values, is that what you want?
+</span><span>.gnu.warning.tmpnam:
+</span><span>	tmpnam() possibly used unsafely; consider using mkstemp()
+</span></code></pre>
+<p>Support for emitting linker warnings when using a symbol for which a
+.gnu.warning.symbol section exists is implemented in GNU linkers (ld and
+gold), but currently not in LLVM's LLD linker. Since we switched to LLD
+as the default linker on most of OpenBSD architectures, those warnings are
+not emitted anymore for a majority of users.</p>
+<p>I thus sent a <a rel="noopener" target="_blank" href="https://marc.info/?l=openbsd-tech&amp;m=163507853319867&amp;w=2">diff</a> to remove mentions of <strong>ld</strong> warning messages for the
+mktemp(3), tmpnam(3), and tempnam(3) manual pages, but it was suggested that
+we should instead try to get <strong>LLD</strong> to support this feature instead.
+After discussing the matter with other developers during h2k21, this
+is indeed the consensus.</p>
+<p>On the last day of the hackathon, I packaged <a rel="noopener" target="_blank" href="https://openports.pl/path/devel/elfcat">elfcat</a>, which is a neat
+ELF visualizer generating interactive HTML files from ELF binaries.</p>
+<p>In November, I built <a rel="noopener" target="_blank" href="https://github.com/fcambus/gwcheck">gwcheck</a>, a small tool to display .gnu.warning.*
+sections names in <strong>ELF objects</strong> along with their content, in order to check
+which other projects used them. So far, aside from OpenBSD, it turned out that
+FreeBSD, NetBSD, and DragonFly all use these sections in their libc, and that
+glibc, Newlib, diet libc, uClibc do as well. I then added a comment about my
+findings in the LLVM bug tracker <a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/issues/41353#issuecomment-981013806">issue</a> about adding support in LLD to
+generate linker warnings when encountering them.</p>
+<p>Regarding LLVM itself, I added support in <strong>llvm-readobj</strong> for reading <strong>ELF
+core notes</strong> for both OpenBSD and NetBSD. Notes generated in those core files
+provide additional information about the kernel state and CPU registers.
+These notes are described in the core(5) manual pages for each of those
+operating systems. Here is a link to the <a rel="noopener" target="_blank" href="https://man.openbsd.org/core.5">OpenBSD</a> version, and here is
+one for the <a rel="noopener" target="_blank" href="https://man.netbsd.org/core.5">NetBSD</a> counterpart.</p>
+<p>I have not much to report in Pkgsrc land for this quarter, the only
+toolchains related <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/UfXqJMaMEgq2SQkD">commit</a> I got the chance to make was for updating
+the <a rel="noopener" target="_blank" href="https://github.com/rui314/mold">mold</a> linker to the 1.0.0 version.</p>
+<p>That's all for now. I absolutely would like to continue exploring the topic,
+but I feel there is only so much I can do on my free time. Maybe I should
+start considering working in the field full-time?</p>
+<p>LLVM commits:</p>
+<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>2021-12-20</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/f6ba5c4d5f228366a016534e7d1cf099d274fced">f6ba5c4</a></td><td>[llvm-readobj] Check ELFType value first when checking for OpenBSD notes</td></tr>
+<tr><td>2021-11-29</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/878ff1f9f85f6c539efb9b8c00978011d381f278">878ff1f</a></td><td>[llvm-readobj] Add support for machine-independent NetBSD ELF core notes</td></tr>
+<tr><td>2021-11-24</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/69deb1371fd4cd2fbf37a82cbc21df79c6d51c70">69deb13</a></td><td>[clang][scan-build] Use cc/c++ instead of gcc/g++ on FreeBSD</td></tr>
+<tr><td>2021-11-02</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/650311737eee207171f2407da8ecea780863fa1f">6503117</a></td><td>[llvm-readobj] Add support for reading OpenBSD ELF core notes</td></tr>
+<tr><td>2021-10-30</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/6ecd4a4d01a3f71dc6590194dd00f96550c2ab04">6ecd4a4</a></td><td>[clang][scan-build] Use uname -s to detect the operating system</td></tr>
+<tr><td>2021-10-21</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/b471e25a59241b6b60e75494ca7b8d775a4131a2">b471e25</a></td><td>[clang] Support __float128 on DragonFlyBSD</td></tr>
+<tr><td>2021-10-21</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/9635b2951da18ade951341f7ec6b9a7b8eb7cba3">9635b29</a></td><td>[docs] Fix broken link rendering in the LLVM Coding Standards</td></tr>
+<tr><td>2021-10-16</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/4d7c7d87e46e3589594aa789c543e2a8b667d3f2">4d7c7d8</a></td><td>[docs] Mention DragonFlyBSD as a supported platform for LLVM</td></tr>
+<tr><td>2021-10-15</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/ecef0359538ca54a5374dbf3547a395adc326bbe">ecef035</a></td><td>[Driver][NetBSD] Use Triple reference instead of ToolChain.getTriple()</td></tr>
+<tr><td>2021-10-14</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/8ecbcd058fbd552375fda614f36a1e01755c2620">8ecbcd0</a></td><td>[Driver][Darwin] Use T reference instead of getToolChain().getTriple()</td></tr>
+<tr><td>2021-10-14</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/f7a3214306cb83c350a89e2247f67983dbd792ea">f7a3214</a></td><td>[Driver][WebAssembly] Use ToolChain reference instead of getToolChain()</td></tr>
+<tr><td>2021-10-09</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/6417260a57dd4292ce91f2357479831e3fcf177e">6417260</a></td><td>[Driver][OpenBSD] Use ToolChain reference instead of getToolChain()</td></tr>
+<tr><td>2021-10-08</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/1f90b365bd626e5d7d963106692143699c69f616">1f90b36</a></td><td>[Driver][NetBSD] Use ToolChain reference instead of getToolChain()</td></tr>
+<tr><td>2021-10-06</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/f0ffff43b765ee0484e5303edc82f9e528a3547e">f0ffff4</a></td><td>[CMake] Fix typo in error message for LLD in bootstrap builds</td></tr>
+</tbody></table>

@@ -1,0 +1,78 @@
+<p>This is the seventh post in my toolchains adventures series. Please check
+the previous posts in the <a rel="noopener" target="_blank" href="https://www.cambus.net/categories/toolchains/">toolchains</a> category for more context about
+this journey. There was no Q4 2022 report as there wasn't really anything
+worthwhile to write about, only some usual Pkgsrc and OpenBSD toolchains
+related ports updates.</p>
+<p>In Pkgsrc land, I updated binutils to the <a rel="noopener" target="_blank" href="https://freshbsd.org/netbsd/pkgsrc/commit/dN9V4mUrHJtW2y9E">2.40</a> version, mold to the
+<a rel="noopener" target="_blank" href="https://freshbsd.org/netbsd/pkgsrc/commit/ivaZRYk0LoHV509E">1.9.0</a>, <a rel="noopener" target="_blank" href="https://freshbsd.org/netbsd/pkgsrc/commit/IoMgZLpXsiHSkjaE">1.10.0</a>, <a rel="noopener" target="_blank" href="https://freshbsd.org/netbsd/pkgsrc/commit/PPR6qELWZLG2qIaE">1.10.1</a>, and <a rel="noopener" target="_blank" href="https://freshbsd.org/netbsd/pkgsrc/commit/cMGTIsiVQ2gTQuhE">1.11.0</a> versions, patchelf
+to the <a rel="noopener" target="_blank" href="https://freshbsd.org/netbsd/pkgsrc/commit/jsJ98FRLoGZhw69E">0.17.2</a> version, and finally pax-utils to the <a rel="noopener" target="_blank" href="https://freshbsd.org/netbsd/pkgsrc/commit/rQ2YR1F6eLsDNA8E">1.3.6</a> and
+the <a rel="noopener" target="_blank" href="https://freshbsd.org/netbsd/pkgsrc/commit/TaiNkvpMLQ2BkmbE">1.3.7</a> ones. I also updated the NetBSD system call table in GDB
+to add the eventfd(2) and timerfd(2) syscalls which were added back in 2021.</p>
+<p>Regarding OpenBSD, I updated binutils to the <a rel="noopener" target="_blank" href="https://freshbsd.org/openbsd/ports/commit/ahb3gh2E3c0M6VbM">2.40</a> version and enabled
+the build of <em>gas</em>, for which I also pushed support for ARM upstream. While
+there, I added support upstream for the <strong>PT_OPENBSD_MUTABLE</strong> segment type
+to <em>readelf</em>. Lastly, I packaged and <a rel="noopener" target="_blank" href="https://freshbsd.org/openbsd/ports/commit/KYYIJZhH4gtbct2t">imported pax-utils</a> into the ports
+collection.</p>
+<p>In early February, I attended <strong>FOSDEM 2023</strong> in Brussels and had the
+opportunity to attend some talks in the <a rel="noopener" target="_blank" href="https://fosdem.org/2023/schedule/track/llvm/">LLVM devroom</a> as well as some
+toolchains related ones in the <a rel="noopener" target="_blank" href="https://fosdem.org/2023/schedule/track/risc_v/">RISC-V</a> and <a rel="noopener" target="_blank" href="https://fosdem.org/2023/schedule/track/binary_tools/">Binary Tools</a> devrooms.</p>
+<p>Lately, I've been exploring using alternative linkers in Pkgsrc. By default,
+the host system default linker will be used, which happens to be <strong>GNU ld</strong>
+on NetBSD and most Linux distributions.</p>
+<p>Thanks to work done by pho@ and the <a rel="noopener" target="_blank" href="https://mail-index.netbsd.org/tech-pkg/2022/01/19/msg025960.html">instructions</a> he posted on the
+<strong>tech-pkg</strong> mailing list, it was already possible to use <strong>mold</strong> within
+Pkgsrc, by adding these directives in the <em>etc/mk.conf</em> configuration file:</p>
+<pre data-lang="sh" style="background-color:#272822;color:#f8f8f2;" class="language-sh "><code class="language-sh" data-lang="sh"><span>LD</span><span style="color:#f92672;">=			</span><span>/usr/pkg/bin/mold
+</span><span>LDFLAGS</span><span style="color:#f92672;">+=		</span><span>-Wl,-L/usr/lib
+</span><span>CWRAPPERS_PREPEND.cc</span><span style="color:#f92672;">+=	</span><span>-B/usr/pkg/libexec/mold
+</span><span>CWRAPPERS_PREPEND.cxx</span><span style="color:#f92672;">+=	</span><span>-B/usr/pkg/libexec/mold
+</span></code></pre>
+<p>I wanted to also try using <strong>LLD</strong> (the LLVM linker), and modified the
+<a rel="noopener" target="_blank" href="https://pkgsrc.se/devel/lld">devel/lld</a> package to add a symlink in <em>${PREFIX}/libexec</em> so that it
+can be used in Pkgsrc.</p>
+<p>While mold can be used as a linker when using both GCC and Clang, for LLD
+one must use Clang as a compiler, using the <em>PKGSRC_COMPILER</em> directive.
+The reason for this is that LLD does not support the <em>-dc</em> and <em>-dp</em> options.</p>
+<p>The following directives must be added in the <em>etc/mk.conf</em> configuration
+file:</p>
+<pre data-lang="sh" style="background-color:#272822;color:#f8f8f2;" class="language-sh "><code class="language-sh" data-lang="sh"><span>PKGSRC_COMPILER</span><span style="color:#f92672;">=	</span><span>clang
+</span><span>
+</span><span>LD</span><span style="color:#f92672;">=			</span><span>/usr/pkg/bin/lld
+</span><span>LDFLAGS</span><span style="color:#f92672;">+=		</span><span>-Wl,-L/usr/lib
+</span><span>CWRAPPERS_PREPEND.cc</span><span style="color:#f92672;">+=	</span><span>-B/usr/pkg/libexec/lld
+</span><span>CWRAPPERS_PREPEND.cxx</span><span style="color:#f92672;">+=	</span><span>-B/usr/pkg/libexec/lld
+</span></code></pre>
+<p>Verifying that a binary was produced by mold or LLD can be done using
+<em>readelf</em>.</p>
+<p>On the mold binary linked with mold itself:</p>
+<pre data-lang="sh" style="background-color:#272822;color:#f8f8f2;" class="language-sh "><code class="language-sh" data-lang="sh"><span>readelf</span><span style="font-style:italic;color:#fd971f;"> -p</span><span> .comment mold
+</span><span>
+</span><span>String dump of section </span><span style="color:#e6db74;">&#39;.comment&#39;</span><span>:
+</span><span>  </span><span style="color:#66d9ef;">[</span><span>     0]  mold 1.10.1 (compatible with GNU ld)
+</span><span>  </span><span style="color:#66d9ef;">[</span><span>    25]  GCC: (NetBSD nb1 20220722) 10.4.0
+</span><span>  </span><span style="color:#66d9ef;">[</span><span>    47]  GCC: (nb1 20220722) 10.4.0
+</span></code></pre>
+<p>And on the lld binary linked with LLD itself:</p>
+<pre data-lang="sh" style="background-color:#272822;color:#f8f8f2;" class="language-sh "><code class="language-sh" data-lang="sh"><span>readelf</span><span style="font-style:italic;color:#fd971f;"> -p</span><span> .comment lld
+</span><span>
+</span><span>String dump of section </span><span style="color:#e6db74;">&#39;.comment&#39;</span><span>:
+</span><span>  </span><span style="color:#66d9ef;">[</span><span>     0]  clang version 15.0.7
+</span><span>  </span><span style="color:#66d9ef;">[</span><span>    16]  Linker: LLD 15.0.7
+</span><span>  </span><span style="color:#66d9ef;">[</span><span>    29]  GCC: (NetBSD nb1 20220722) 10.4.0
+</span></code></pre>
+<p>As usual, I’ve also been busy reading different material, and adding new
+resources to <a rel="noopener" target="_blank" href="https://www.toolchains.net/">toolchains.net</a>.</p>
+<p>That’s all for now, happy Spring 2023 everyone!</p>
+<p>binutils and GDB commits:</p>
+<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>2023-03-23</td><td><a rel="noopener" target="_blank" href="https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=80251d4185048c6391b74abe96c754e8a536b35f">80251d4</a></td><td>Add support to readelf for the PT_OPENBSD_MUTABLE segment type</td></tr>
+<tr><td>2023-03-17</td><td><a rel="noopener" target="_blank" href="https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=152d9c48a29685752ce06a0248a3f0f490c5660a">152d9c4</a></td><td>Update the NetBSD system call table to add eventfd(2) and timerfd(2)</td></tr>
+<tr><td>2023-01-20</td><td><a rel="noopener" target="_blank" href="https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=2e175383bfe010c05c55fb19e29b5c0665229a9c">2e17538</a></td><td>Add OpenBSD ARM GAS support</td></tr>
+</tbody></table>
+<p>LLVM commits</p>
+<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>2023-03-19</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/8510cf9fc1a431b70737b2b046007d318c62b7a8">8510cf9</a></td><td>[compiler-rt] Add missing #else clause to fix the build on NetBSD</td></tr>
+<tr><td>2023-03-16</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/245f26a430aa92050e2d1bf3ca7add76dcbe23c2">245f26a</a></td><td>[docs] Document &quot;PGO&quot; (Profile-Guided Optimization) in the lexicon</td></tr>
+<tr><td>2023-03-15</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/d8df8710e127f8f8ff0714afdecba450ce591d9d">d8df871</a></td><td>[compiler-rt] Point UndefinedBehaviorSanitizer link to its own page</td></tr>
+<tr><td>2023-02-10</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/5cec69bb43bc375dabe0d26e9a7aee1c71d00d3f">5cec69b</a></td><td>[clang] Update Clang version from 16 to 17 in scan-build.1</td></tr>
+</tbody></table>

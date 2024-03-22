@@ -1,0 +1,11 @@
+
+        <ul>
+    <li>pkg_add -u speedup in -current, now you can upgrade at ludicrous speed</li>
+    <li>IP forwarding is now parallelized</li>
+    <li>Many new packages landed in -current</li>
+    <li>Many links to read</li>
+    <li>Don't forget to update your 7.1 system with <code>syspatch</code> and packages with <code>pkg_add -u</code>
+</ul>
+</article>
+    
+    

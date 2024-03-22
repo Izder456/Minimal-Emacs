@@ -1,0 +1,70 @@
+<p>I've been wanting to learn more about compilers and toolchains in general
+for a while now. In June 2016, I asked about <a rel="noopener" target="_blank" href="https://twitter.com/fcambus/status/744799252145070080">recommended readings on lexers
+and parsers</a> on Twitter. However, I have to confess that I didn't go
+forward with reading the Dragon Book.</p>
+<p>Instead, I got involved as a developer in the <a rel="noopener" target="_blank" href="https://www.openbsd.org/">OpenBSD</a> and <a rel="noopener" target="_blank" href="https://www.netbsd.org/">NetBSD</a>
+projects, and witnessing the evolution of toolchains within those systems
+played a big role in maintaining my interest and fascination in the topic.
+In retrospect, it now becomes apparent that the work I did on porting
+and packaging software for those systems really helped to put in perspective
+how the different parts of the toolchains interact together to produce
+binaries.</p>
+<p>Approximately one year ago, I asked again on Twitter whether I knew <a rel="noopener" target="_blank" href="https://twitter.com/fcambus/status/1249468322883796994">anyone
+having worked on compilers and toolchains professionally</a> to get real
+world advice on how to gain expertise in the field. I got several interesting
+answers and started to collect and read more resources on the topic.
+Some of the links I collected ended up on <a rel="noopener" target="_blank" href="https://www.toolchains.net/">toolchains.net</a>, a collection
+of toolchain resources which I put online in February.</p>
+<p>But the answer that resonate the most with me was <a rel="noopener" target="_blank" href="https://twitter.com/hyc_symas/status/1249474322701451265">Howard's advice to
+learn by doing</a>. Because I seem to be the kind of person who need to
+see some concrete results in order to keep motivated, that's exactly what
+I decided to do.</p>
+<p>I started by doing some cleanups in the <a rel="noopener" target="_blank" href="https://www.gnu.org/software/binutils/">binutils</a> package in NetBSD's
+pkgsrc, which resulted in a <a rel="noopener" target="_blank" href="https://www.freshbsd.org/?q=binutils&amp;committer%5B%5D=fcambus">series of commits</a>:</p>
+<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>2020-12-20</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/ca38479f6b0fcc13f14fefc86cc1739767f9bc39">ca38479</a></td><td>Remove now unneeded OpenBSD specific checks in gold</td></tr>
+<tr><td>2020-12-15</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/7263eeeda8ff66f7b3cd54b3a62743d52f98494b">7263eee</a></td><td>Add missing TEST_DEPENDS on devel/dejagnu</td></tr>
+<tr><td>2020-12-14</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/b1637da54ae4c3860352f1851cb570fca8af1d6f">b1637da</a></td><td>Don't use hard-coded -ldl in the gold test suite.</td></tr>
+<tr><td>2020-12-13</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/146def2d48eac2a72159ca4a40492a1f6f91e8c8">146def2</a></td><td>Remove apparently unneeded patch for libiberty</td></tr>
+<tr><td>2020-12-12</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/6b347a938fed8568337c818c669418729cefde5f">6b347a9</a></td><td>Remove CFLAGS.OpenBSD+= -Wno-bounded directive</td></tr>
+<tr><td>2020-12-11</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/f53b2d8ae2dd5747bdc29c0575ab8fcae26bd735">f53b2d8</a></td><td>Remove now unneeded patch dropping hidden symbols warning</td></tr>
+<tr><td>2020-12-10</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/b0373808d471e15967274264affbf8deac0a3022">b037380</a></td><td>Enable building gold on Linux</td></tr>
+<tr><td>2020-12-03</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/75d00bc3616276133b55e68d900e32b61fbfb23c">75d00bc</a></td><td>Remove now unneeded workaround for binutils 2.24</td></tr>
+<tr><td>2020-12-03</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/adfee3096ef0366c9dbda13be5074c1267ff022a">adfee30</a></td><td>Drop all Bitrig related patches</td></tr>
+</tbody></table>
+<p>Meanwhile, I also got the opportunity to update our package and apply
+security fixes:</p>
+<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>2021-02-11</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/761e000686bc37c9791ccc34f63ede3e32b49675">761e000</a></td><td>Update to binutils 2.36.1</td></tr>
+<tr><td>2021-01-27</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/ba983e5c5ee6ce131e7399200b7493b2f7efa726">ba983e5</a></td><td>Update to binutils 2.36</td></tr>
+<tr><td>2021-01-07</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/7aef5c0311e2d423ae3f985dec1009fef7b112f2">7aef5c0</a></td><td>Add upstream fixes for CVE-2020-35448</td></tr>
+<tr><td>2020-12-06</td><td><a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/99fdf3900a96fca988b1eb8e3ee5031f7ffad11a">99fdf39</a></td><td>Update to binutils 2.35.1</td></tr>
+</tbody></table>
+<p>I eventually took <a rel="noopener" target="_blank" href="https://github.com/NetBSD/pkgsrc/commit/d7146b45a9b7e78524e14f493cd5835c3334f52c">maintainership</a> of binutils in Pkgsrc.</p>
+<p>Building it repeatedly with different compilers exposed different warnings,
+and I've also run builds through Clang's static analyzer.</p>
+<p>All of this resulted in the opportunity to contribute to <a rel="noopener" target="_blank" href="https://sourceware.org/git/?p=binutils-gdb.git;a=search;s=Frederic+Cambus;st=author">binutils</a> itself:</p>
+<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>2021-04-14</td><td><a rel="noopener" target="_blank" href="https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=5f47741bf633596475bb8fbb0ed304be318362cd">5f47741</a></td><td>Remove unneeded tests for definitions of NT_NETBSDCORE values</td></tr>
+<tr><td>2021-04-12</td><td><a rel="noopener" target="_blank" href="https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=0fa29e2deea19a33fec7f1e5a5cf49b94f93b2f8">0fa29e2</a></td><td>Remove now unneeded #ifdef check for NT_NETBSD_PAX</td></tr>
+<tr><td>2021-03-12</td><td><a rel="noopener" target="_blank" href="https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=be3b926d8d2dde16a55e9e303fadf95164e13ebf">be3b926</a></td><td>Add values for NetBSD .note.netbsd.ident notes (PaX)</td></tr>
+<tr><td>2021-01-26</td><td><a rel="noopener" target="_blank" href="https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=e37709f0901fe6f2410094151002bab3d123df85">e37709f</a></td><td>Fix a double free in objcopy's memory freeing code</td></tr>
+</tbody></table>
+<p>Most recently, I also wrote a couple of blog posts on the topic:</p>
+<ul>
+<li><a rel="noopener" target="_blank" href="https://www.cambus.net/the-state-of-toolchains-in-netbsd/">The state of toolchains in NetBSD</a></li>
+<li><a rel="noopener" target="_blank" href="https://www.cambus.net/speedbuilding-llvm-clang-in-5-minutes/">Speedbuilding LLVM/Clang in 5 minutes</a></li>
+<li><a rel="noopener" target="_blank" href="https://www.cambus.net/speedbuilding-llvm-clang-in-2-minutes-on-arm/">Speedbuilding LLVM/Clang in 2 minutes on ARM</a></li>
+<li><a rel="noopener" target="_blank" href="https://www.cambus.net/the-state-of-toolchains-in-openbsd/">The state of toolchains in OpenBSD</a></li>
+<li><a rel="noopener" target="_blank" href="https://www.cambus.net/playing-with-djgpp-and-gcc-10-on-dos/">Playing with DJGPP and GCC 10 on DOS</a></li>
+</ul>
+<p>And the journey continues. I'm following a different path from traditional
+compiler courses starting with lexers and parsers, and doing the opposite
+curriculum somehow, starting from binaries instead. I will be focusing on the
+final stages of the pipeline for now: compiling assembly to machine code
+and producing binaries.</p>
+<p>My next steps are to read the full <a rel="noopener" target="_blank" href="https://refspecs.linuxfoundation.org/elf/elf.pdf">ELF specification</a>, followed by
+the <a rel="noopener" target="_blank" href="https://linker.iecc.com">Linkers and Loader</a> book, and then refresh my ASM skills. My
+favorite course at university was the computer architecture one and
+especially its MIPS assembly part, so I'm looking to revisit the subject
+but with ARM64 assembly this time.</p>

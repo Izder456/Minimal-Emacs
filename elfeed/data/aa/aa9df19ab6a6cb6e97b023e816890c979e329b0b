@@ -1,0 +1,23 @@
+<p>This is the fourth post in my toolchains adventures series. Please check
+the previous posts in the <a rel="noopener" target="_blank" href="https://www.cambus.net/categories/toolchains/">toolchains</a> category for more context about
+this journey.</p>
+<p>In Pkgsrc land, I packaged and <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/ONXyoaS20LgUgeoD">imported</a> <a rel="noopener" target="_blank" href="https://wiki.gentoo.org/wiki/Hardened/PaX_Utilities">pax-utils</a>, and updated
+mold to the <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/8HAjm8hb8Z5bGWmD">1.0.1</a>, <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/gCygLxtROQYf5QqD">1.0.2</a>, <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/iMqv11CYyAdIgVqD">1.0.3</a>, <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/jO3WmDjWC7FWLttD">1.1</a>, and <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/AUn1aWVIkZxz2qvD">1.1.1</a>
+versions. Since version 1.0.2, mold can now link NetBSD object files thanks
+to work done by pho@.</p>
+<p>I also <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/LXtgdsrYLXmMVzoD">committed</a> upstream fix for <a rel="noopener" target="_blank" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45078">CVE-2021-45078</a> in binutils to
+fix an out-of-bounds write, and imported our <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/nRgl5kGXb1YmNTpD">NetBSD/aarch64 support
+patches</a> for ld from the NetBSD's src repository.
+This fixes the build on NetBSD/aarch64. I then <a rel="noopener" target="_blank" href="https://www.freshbsd.org/netbsd/pkgsrc/commit/PkHjNNvGrHgjS4sD">updated</a> the package to
+the 2.38 version which was <a rel="noopener" target="_blank" href="https://marc.info/?l=binutils&amp;m=164441341718811&amp;w=2">released</a> in February.</p>
+<p>I don't have much to report on the LLVM side, I only made two documentation
+related commits this quarter. However, I have a few things I plan to look at,
+so I should hopefully have more to report next time.</p>
+<p>Besides that, I've been mostly busy reading different material, and
+adding a lot of new resources to <a rel="noopener" target="_blank" href="https://www.toolchains.net">toolchains.net</a>.</p>
+<p>That's all for now, happy Spring 2022 everyone!</p>
+<p>LLVM commits:</p>
+<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>2022-03-23</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/45c673816e1867ab7af3e63efd6af3ca44293b17">45c6738</a></td><td>[compiler-rt] Remove forgotten mention of SVN modules, LLVM now uses Git</td></tr>
+<tr><td>2022-03-21</td><td><a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/bc01d8fbcfd3f07e2139e898eef48349187ab64f">bc01d8f</a></td><td>[compiler-rt] Remove mentions of AuroraUX in code comments and docs</td></tr>
+</tbody></table>

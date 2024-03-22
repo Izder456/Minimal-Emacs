@@ -1,0 +1,67 @@
+<p>As far as static analyzers are concerned, one of the most important point
+to consider is filtering out false positives as much as possible, in order
+for the reports to be actionable.</p>
+<p>This is an area on which <strong>Coverity</strong> did an excellent job, and likely a
+major reason why they got so popular within the open source community,
+despite being a closed-source product.</p>
+<p>LLVM has the <strong>LLVM_ENABLE_Z3_SOLVER</strong> build option, which allows building
+LLVM against the <a rel="noopener" target="_blank" href="https://github.com/Z3Prover/z3">Z3 constraint solver</a>.</p>
+<p>It is documented as follow:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>LLVM_ENABLE_Z3_SOLVER:BOOL
+</span><span>    If enabled, the Z3 constraint solver is activated for the Clang static analyzer.
+</span><span>    A recent version of the z3 library needs to be available on the system.
+</span></code></pre>
+<p>The option is enabled in the Debian 11 package (clang-tools-11), but not
+in Fedora 36 or Ubuntu 22.04 ones. I added a build option (not enabled by
+default) to the <a rel="noopener" target="_blank" href="https://pkgsrc.se/lang/llvm">llvm</a> and <a rel="noopener" target="_blank" href="https://pkgsrc.se/lang/clang">clang</a> packages in Pkgsrc, and successfully
+built Z3 enabled packages on NetBSD.</p>
+<p>For Pkgsrc users, add the following in <em>mk.conf</em>, and build <strong>lang/clang</strong>:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>PKG_OPTIONS.llvm=	z3
+</span><span>PKG_OPTIONS.clang=	z3
+</span></code></pre>
+<p>There are two ways of using Z3 with the Clang Static Analyzer, and to
+demonstrate them, let's reuse the small demo snippet from the <a rel="noopener" target="_blank" href="https://arxiv.org/abs/1810.12041">SMT-Based
+Refutation of Spurious Bug Reports in the Clang Static Analyzer</a> paper.</p>
+<pre data-lang="c" style="background-color:#272822;color:#f8f8f2;" class="language-c "><code class="language-c" data-lang="c"><span style="font-style:italic;color:#66d9ef;">unsigned int </span><span style="color:#a6e22e;">func</span><span>(</span><span style="font-style:italic;color:#66d9ef;">unsigned int </span><span style="font-style:italic;color:#fd971f;">a</span><span>) {
+</span><span>	</span><span style="font-style:italic;color:#66d9ef;">unsigned int </span><span style="color:#f92672;">*</span><span>z </span><span style="color:#f92672;">= </span><span style="color:#ae81ff;">0</span><span>;
+</span><span>
+</span><span>	</span><span style="color:#f92672;">if </span><span>((a </span><span style="color:#f92672;">&amp; </span><span style="color:#ae81ff;">1</span><span>) </span><span style="color:#f92672;">&amp;&amp; </span><span>((a </span><span style="color:#f92672;">&amp; </span><span style="color:#ae81ff;">1</span><span>) </span><span style="color:#f92672;">^</span><span style="color:#ae81ff;">1</span><span>))
+</span><span>		</span><span style="color:#f92672;">return *</span><span>z; </span><span style="color:#75715e;">// unreachable
+</span><span>
+</span><span>	</span><span style="color:#f92672;">return </span><span style="color:#ae81ff;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>For each method, we can use Clang directly on a given translation
+unit or use <strong>scan-build</strong>.</p>
+<p>The first way is using Z3 as an external constraint solver:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>$ clang --analyze -Xanalyzer -analyzer-constraints=z3 main.c
+</span><span>
+</span><span>$ scan-build -constraints z3 clang -c main.c
+</span><span>scan-build: Using &#39;/usr/lib/llvm-11/bin/clang&#39; for static analysis
+</span><span>scan-build: Analysis run complete.
+</span><span>scan-build: Removing directory &#39;/tmp/scan-build-2022-06-21-171854-18215-1&#39; because it contains no reports.
+</span><span>scan-build: No bugs found.
+</span></code></pre>
+<p>This is a lot slower than the default, and the <a rel="noopener" target="_blank" href="https://github.com/llvm/llvm-project/commit/714b50eb2df5c3b8391a82418352764c32c1d258">commit</a> which documented
+the feature mentions a ~15x slowdown over the built-in constraint solver.</p>
+<p>The second way is using the default range based solver but having Z3 do
+refutation to filter out false positives, which is a lot faster:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>$ clang --analyze -Xanalyzer -analyzer-config -Xanalyzer crosscheck-with-z3=true main.c
+</span><span>
+</span><span>$ scan-build -analyzer-config crosscheck-with-z3=true clang -c main.c
+</span><span>scan-build: Using &#39;/usr/lib/llvm-11/bin/clang&#39; for static analysis
+</span><span>scan-build: Analysis run complete.
+</span><span>scan-build: Removing directory &#39;/tmp/scan-build-2022-06-21-171924-18226-1&#39; because it contains no reports.
+</span><span>scan-build: No bugs found.
+</span></code></pre>
+<p>Again, no bugs found. How boring.</p>
+<p>We can verify what happens if we run the analyzer without involving Z3 at all:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>$ clang --analyze main.c
+</span><span>main.c:5:9: warning: Dereference of null pointer (loaded from variable &#39;z&#39;) [core.NullDereference]
+</span><span>        return *z; // unreachable
+</span><span>               ^~
+</span><span>1 warning generated.
+</span></code></pre>
+<p>We get a false positive, because the default constraint solver cannot
+reason about bitwise operations (among other things), and report an
+unreachable NULL pointer dereference.</p>

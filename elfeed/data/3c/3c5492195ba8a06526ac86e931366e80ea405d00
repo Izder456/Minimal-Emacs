@@ -1,0 +1,45 @@
+<p>I recently discovered that it's surprisingly easy to customize the NetBSD
+boot loader banner, simply by adding some directives in the <strong>boot.cfg</strong>
+configuration file.</p>
+<p>Here is the relevant part of the <a rel="noopener" target="_blank" href="https://man.netbsd.org/boot.cfg.5">boot.cfg(5)</a> manual page:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>     banner   The text from banner lines is displayed instead of the standard
+</span><span>              welcome text by the boot loader.  Up to 12 lines can be defined.
+</span><span>              No special character sequences are recognised, so to specify a
+</span><span>              blank line, a banner line with no value should be given.
+</span></code></pre>
+<p>Back in 2014, I published some <a rel="noopener" target="_blank" href="https://www.cambus.net/netbsd-ascii-logos/">NetBSD ASCII logos</a> to be used as <em>motd</em>
+or as <em>/etc/issue</em>, but they are higher than 12 lines so using them would
+either require raising the allowed lines limit (likely not a good idea),
+or resizing them. I then remembered I had requested some Amiga style
+<a rel="noopener" target="_blank" href="https://16colo.rs/pack/break_02/h7-os-logos.txt">logos for Linux and *BSD</a>, which were released by h7 in Break's second
+artpack in 2013.</p>
+<p>So we can simply append this in <em>/boot.cfg</em>:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>banner=         _______ ______       ___      _________  ____       __________
+</span><span>banner=__ _____/      //    _/___ __/   \_____\__     /_/  _//______\___     /\_______
+</span><span>banner=--/   _ \     //    _/    \\      _/    |/_   /\______    /    |/    /  \- -- -
+</span><span>banner=_/     \      \     \     //      \     |_/    /    |/    \    /     \  /
+</span><span>banner=\______/      /\_____\_____\______/\____      //    : ____/____      /\/
+</span><span>banner= \     \_____/  \     \     \     \ \  \_____/ \______/\  \   \_____/  \
+</span><span>banner=h7\_____\    \  /\___________\_____\/\__\    \  \     \ \______\    \dS!
+</span><span>banner=------ - \____\/ - --( n e t b s d )-- - \____\/ \_____\/ - --- \____\/ -------
+</span></code></pre>
+<p>And enjoy some stylish Amiga ASCII art after the next reboot:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>         _______ ______       ___      _________  ____       __________
+</span><span>__ _____/      //    _/___ __/   \_____\__     /_/  _//______\___     /\_______
+</span><span>--/   _ \     //    _/    \\      _/    |/_   /\______    /    |/    /  \- -- -
+</span><span>_/     \      \     \     //      \     |_/    /    |/    \    /     \  /
+</span><span>\______/      /\_____\_____\______/\____      //    : ____/____      /\/
+</span><span> \     \_____/  \     \     \     \ \  \_____/ \______/\  \   \_____/  \
+</span><span>h7\_____\    \  /\___________\_____\/\__\    \  \     \ \______\    \dS!
+</span><span>------ - \____\/ - --( n e t b s d )-- - \____\/ \_____\/ - --- \____\/ -------
+</span><span>
+</span><span>     1. Boot normally
+</span><span>     2. Boot single user
+</span><span>     3. Drop to boot prompt
+</span><span>
+</span><span>Choose an option; RETURN for default; SPACE to stop countdown.
+</span><span>Option 1 will be chosen in 2 seconds.
+</span></code></pre>
+<p>Lastly, here is the PNG version converted with <a rel="noopener" target="_blank" href="https://www.ansilove.org">Ansilove</a>, in full Topaz
+glory:</p>
+<p><img src="/content/2022/05/h7-netbsd.png" alt="NetBSD ASCII Logo" /></p>

@@ -1,0 +1,189 @@
+<p>Back in 2017, I bought two used HP thin clients on a local auction site, the
+<a rel="noopener" target="_blank" href="https://www.parkytowers.me.uk/thin/hp/t5570/">t5570e</a> and the <a rel="noopener" target="_blank" href="https://www.parkytowers.me.uk/thin/hp/t510/">t510</a>, both of them powered by VIA x86-64 CPUs. In
+this article, I will focus on the t510, which is the more powerful of the two.</p>
+<p>The CPU in this machine is a <strong>VIA Eden X2 U4200</strong>, which is a dual-core
+<strong>x86-64</strong> CPU running at 1GHz released in 2011. For those interested about
+the status of those CPUs, I wrote an article about <a rel="noopener" target="_blank" href="https://www.cambus.net/the-future-of-via-x86-processors/">the future of VIA x86
+processors</a> back in 2018.</p>
+<p>The machine came equipped with 4GB of RAM and a 16GB SATA module from Apacer
+which I replaced with a SSD. On the plus side, those machines are fanless and
+all x86-64 VIA CPUs have the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/VIA_PadLock">PadLock</a> features, making them an interesting
+alternative to older Celerons which were lacking <strong>AES-NI</strong> support. On the
+minus side, the CPU is quite slow and the power consumption of the device is
+not that light.</p>
+<p>Xenocara works on this machine using the <a rel="noopener" target="_blank" href="https://cgit.freedesktop.org/openchrome/xf86-video-openchrome">openchrome</a> driver, which I
+updated to version <a rel="noopener" target="_blank" href="https://www.freshbsd.org/openbsd/xenocara/commit/63bx9z1nqXyscwsa">0.6.176</a> back in 2018 in order to fix display issues
+on my system, thanks to matthieu@ who was kind enough to give me some
+pointers about the process. I then updated it to the <a rel="noopener" target="_blank" href="https://www.freshbsd.org/openbsd/xenocara/commit/BHwf7TMIp1fZSvYE">0.6.182</a> version
+in 2019, and finally to the <a rel="noopener" target="_blank" href="https://www.freshbsd.org/openbsd/xenocara/commit/jJnb7elWE6Y81VPL">0.6.409</a> version a couple days ago.</p>
+<p>Here is the result of a quick <strong>md5 -t</strong> benchmark:</p>
+<pre data-lang="sh" style="background-color:#272822;color:#f8f8f2;" class="language-sh "><code class="language-sh" data-lang="sh"><span>MD5 time trial.  Processing 10000 10000-byte blocks...
+</span><span>Digest = 52e5f9c9e6f656f3e1800dfa5579d089
+</span><span>Time   = 1.000000 seconds
+</span><span>Speed  = 100000000.000000 bytes/second
+</span></code></pre>
+<p>Here is the result of the <strong>sha1 -t</strong> benchmark:</p>
+<pre data-lang="sh" style="background-color:#272822;color:#f8f8f2;" class="language-sh "><code class="language-sh" data-lang="sh"><span>SHA1 time trial.  Processing 10000 10000-byte blocks...
+</span><span>Digest = 74a57b897cc581defa5b3a359fa762a1b83a60e8
+</span><span>Time   = 1.800000 seconds
+</span><span>Speed  = 55555555.555556 bytes/second
+</span></code></pre>
+<p>For the record, LibreSSL speed benchmark results are available <a href="/files/openbsd/openssl-speed-via-eden-x2.txt">here</a>.</p>
+<p>System message buffer (dmesg output):</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>OpenBSD 7.0-current (GENERIC.MP) #117: Wed Nov 24 01:03:57 MST 2021
+</span><span>    deraadt@amd64.openbsd.org:/usr/src/sys/arch/amd64/compile/GENERIC.MP
+</span><span>real mem = 4143775744 (3951MB)
+</span><span>avail mem = 4002222080 (3816MB)
+</span><span>random: good seed from bootblocks
+</span><span>mpath0 at root
+</span><span>scsibus0 at mpath0: 256 targets
+</span><span>mainbus0 at root
+</span><span>bios0 at mainbus0: SMBIOS rev. 2.6 @ 0xfd6d0 (36 entries)
+</span><span>bios0: vendor American Megatrends Inc. version &quot;786R11 v1.05&quot; date 06/03/2013
+</span><span>bios0: Hewlett-Packard HP t510 Thin Client
+</span><span>acpi0 at bios0: ACPI 4.0
+</span><span>acpi0: sleep states S0 S5
+</span><span>acpi0: tables DSDT FACP APIC MCFG OEMB HPET SSDT
+</span><span>acpi0: wakeup devices NP2S(S0) NP3S(S0) USB0(S0) USB1(S0) USB2(S0) USB3(S0) EHCI(S0) SBRG(S5) P0P4(S5) AZAL(S0)
+</span><span>acpitimer0 at acpi0: 3579545 Hz, 24 bits
+</span><span>acpimadt0 at acpi0 addr 0xfee00000: PC-AT compat
+</span><span>cpu0 at mainbus0: apid 0 (boot processor)
+</span><span>cpu0: VIA Eden X2 U4200 @ 1.0+ GHz, 1000.19 MHz, 06-0f-0d
+</span><span>cpu0: FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,CFLUSH,ACPI,MMX,FXSR,SSE,SSE2,SS,HTT,TM,PBE,SSE3,MWAIT,VMX,EST,TM2,SSSE3,CX16,xTPR,SSE4.1,POPCNT,NXE,LONG,LAHF,PERF
+</span><span>cpu0: 64KB 64b/line 16-way I-cache, 64KB 64b/line 16-way D-cache, 1MB 64b/line 16-way L2 cache
+</span><span>cpu0: ITLB 128 4KB entries 8-way
+</span><span>cpu0: DTLB 128 4KB entries 8-way
+</span><span>mtrr: Pentium Pro MTRR support, 8 var ranges, 88 fixed ranges
+</span><span>cpu0: apic clock running at 200MHz
+</span><span>cpu0: RNG AES AES-CTR SHA1 SHA256 RSA
+</span><span>cpu0: mwait min=64, max=64, C-substates=0.2.2.2.2, IBE
+</span><span>cpu1 at mainbus0: apid 2 (application processor)
+</span><span>cpu1: VIA Eden X2 U4200 @ 1.0+ GHz, 1000.05 MHz, 06-0f-0d
+</span><span>cpu1: FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,CFLUSH,ACPI,MMX,FXSR,SSE,SSE2,SS,HTT,TM,PBE,SSE3,MWAIT,VMX,EST,TM2,SSSE3,CX16,xTPR,SSE4.1,POPCNT,NXE,LONG,LAHF,PERF
+</span><span>cpu1: 64KB 64b/line 16-way I-cache, 64KB 64b/line 16-way D-cache, 1MB 64b/line 16-way L2 cache
+</span><span>cpu1: ITLB 128 4KB entries 8-way
+</span><span>cpu1: DTLB 128 4KB entries 8-way
+</span><span>cpu1: disabling user TSC (skew=-220)
+</span><span>ioapic0 at mainbus0: apid 3 pa 0xfec00000, version 3, 24 pins
+</span><span>ioapic1 at mainbus0: apid 4 pa 0xfecc0000, version 3, 24 pins
+</span><span>acpimcfg0 at acpi0
+</span><span>acpimcfg0: addr 0xe0000000, bus 0-255
+</span><span>acpihpet0 at acpi0: 14318179 Hz
+</span><span>acpiprt0 at acpi0: bus 0 (PCI0)
+</span><span>acpiprt1 at acpi0: bus 1 (NBP0)
+</span><span>acpiprt2 at acpi0: bus 2 (NBP1)
+</span><span>acpiprt3 at acpi0: bus 3 (NBP2)
+</span><span>acpiprt4 at acpi0: bus 5 (NBP3)
+</span><span>acpiprt5 at acpi0: bus 6 (P0P4)
+</span><span>acpipci0 at acpi0 PCI0
+</span><span>acpicmos0 at acpi0
+</span><span>acpibtn0 at acpi0: SLPB
+</span><span>acpibtn1 at acpi0: PWRB
+</span><span>acpicpu0 at acpi0: C1(1000@1 halt), PSS
+</span><span>acpicpu1 at acpi0: C1(1000@1 halt), PSS
+</span><span>acpipwrres0 at acpi0: URP1
+</span><span>acpipwrres1 at acpi0: URP2
+</span><span>acpipwrres2 at acpi0: FDDP
+</span><span>acpipwrres3 at acpi0: LPTP
+</span><span>cpu0: Enhanced SpeedStep 1000 MHz: speeds: 1000, 900, 800 MHz
+</span><span>pci0 at mainbus0 bus 0
+</span><span>pchb0 at pci0 dev 0 function 0 &quot;VIA VX900 Host&quot; rev 0x80
+</span><span>pchb1 at pci0 dev 0 function 1 &quot;VIA VX900 Error Reporting&quot; rev 0x00
+</span><span>pchb2 at pci0 dev 0 function 2 &quot;VIA VX900 Host&quot; rev 0x00
+</span><span>pchb3 at pci0 dev 0 function 3 &quot;VIA VX900 DRAM&quot; rev 0x00
+</span><span>pchb4 at pci0 dev 0 function 4 &quot;VIA VX900 Host&quot; rev 0x00
+</span><span>pchb5 at pci0 dev 0 function 5 &quot;VIA VX900 APIC&quot; rev 0x00
+</span><span>pchb6 at pci0 dev 0 function 6 &quot;VIA VX900 Scratch&quot; rev 0x00
+</span><span>pchb7 at pci0 dev 0 function 7 &quot;VIA VX900 Host&quot; rev 0x00
+</span><span>vga1 at pci0 dev 1 function 0 &quot;VIA Chrome9 HD&quot; rev 0x00
+</span><span>wsdisplay0 at vga1 mux 1: console (80x25, vt100 emulation)
+</span><span>wsdisplay0: screen 1-5 added (80x25, vt100 emulation)
+</span><span>ppb0 at pci0 dev 3 function 0 &quot;VIA VX900 PCIE&quot; rev 0x00: msi
+</span><span>pci1 at ppb0 bus 1
+</span><span>ppb1 at pci0 dev 3 function 1 &quot;VIA VX900 PCIE&quot; rev 0x00: msi
+</span><span>pci2 at ppb1 bus 2
+</span><span>ppb2 at pci0 dev 3 function 2 &quot;VIA VX900 PCIE&quot; rev 0x00: msi
+</span><span>pci3 at ppb2 bus 3
+</span><span>ppb3 at pci0 dev 3 function 3 &quot;VIA VX900 PCIE&quot; rev 0x00: msi
+</span><span>pci4 at ppb3 bus 5
+</span><span>bge0 at pci4 dev 0 function 0 &quot;Broadcom BCM57780&quot; rev 0x01, BCM57780 A1 (0x57780001): msi, address c8:cb:b8:1f:42:6a
+</span><span>brgphy0 at bge0 phy 1: BCM57780 10/100/1000baseT PHY, rev. 1
+</span><span>pchb8 at pci0 dev 3 function 4 &quot;VIA VX900 PCIE&quot; rev 0x00
+</span><span>pciide0 at pci0 dev 15 function 0 &quot;VIA VX900 IDE&quot; rev 0x00: ATA133, channel 0 configured to compatibility, channel 1 configured to compatibility
+</span><span>wd0 at pciide0 channel 0 drive 1: &lt;M4-CT128M4SSD1&gt;
+</span><span>wd0: 16-sector PIO, LBA48, 122104MB, 250069680 sectors
+</span><span>wd0(pciide0:0:1): using PIO mode 4, Ultra-DMA mode 5
+</span><span>pciide0: channel 1 disabled (no drives)
+</span><span>uhci0 at pci0 dev 16 function 0 &quot;VIA VT83C572 USB&quot; rev 0xa0: apic 3 int 20
+</span><span>uhci1 at pci0 dev 16 function 1 &quot;VIA VT83C572 USB&quot; rev 0xa0: apic 3 int 22
+</span><span>uhci2 at pci0 dev 16 function 2 &quot;VIA VT83C572 USB&quot; rev 0xa0: apic 3 int 21
+</span><span>uhci3 at pci0 dev 16 function 3 &quot;VIA VT83C572 USB&quot; rev 0xa0: apic 3 int 23
+</span><span>ehci0 at pci0 dev 16 function 4 &quot;VIA VT6202 USB&quot; rev 0x90: apic 3 int 23
+</span><span>usb0 at ehci0: USB revision 2.0
+</span><span>uhub0 at usb0 configuration 1 interface 0 &quot;VIA EHCI root hub&quot; rev 2.00/1.00 addr 1
+</span><span>viapm0 at pci0 dev 17 function 0 &quot;VIA VX900 ISA&quot; rev 0x00: SMI
+</span><span>iic0 at viapm0
+</span><span>pchb9 at pci0 dev 17 function 7 &quot;VIA VX800 Host&quot; rev 0x00
+</span><span>ppb4 at pci0 dev 19 function 0 &quot;VIA VX800&quot; rev 0x00
+</span><span>pci5 at ppb4 bus 6
+</span><span>azalia0 at pci0 dev 20 function 0 &quot;VIA HD Audio&quot; rev 0x20: msi
+</span><span>azalia0: codecs: VIA/0x0397
+</span><span>audio0 at azalia0
+</span><span>usb1 at uhci0: USB revision 1.0
+</span><span>uhub1 at usb1 configuration 1 interface 0 &quot;VIA UHCI root hub&quot; rev 1.00/1.00 addr 1
+</span><span>usb2 at uhci1: USB revision 1.0
+</span><span>uhub2 at usb2 configuration 1 interface 0 &quot;VIA UHCI root hub&quot; rev 1.00/1.00 addr 1
+</span><span>usb3 at uhci2: USB revision 1.0
+</span><span>uhub3 at usb3 configuration 1 interface 0 &quot;VIA UHCI root hub&quot; rev 1.00/1.00 addr 1
+</span><span>usb4 at uhci3: USB revision 1.0
+</span><span>uhub4 at usb4 configuration 1 interface 0 &quot;VIA UHCI root hub&quot; rev 1.00/1.00 addr 1
+</span><span>isa0 at mainbus0
+</span><span>isadma0 at isa0
+</span><span>com0 at isa0 port 0x3f8/8 irq 4: ns16550a, 16 byte fifo
+</span><span>pckbc0 at isa0 port 0x60/5 irq 1 irq 12
+</span><span>pckbd0 at pckbc0 (kbd slot)
+</span><span>wskbd0 at pckbd0: console keyboard, using wsdisplay0
+</span><span>pcppi0 at isa0 port 0x61
+</span><span>spkr0 at pcppi0
+</span><span>lpt0 at isa0 port 0x378/4 irq 7
+</span><span>vmm0 at mainbus0: VMX (using slow L1TF mitigation)
+</span><span>dt: 445 probes
+</span><span>vscsi0 at root
+</span><span>scsibus1 at vscsi0: 256 targets
+</span><span>softraid0 at root
+</span><span>scsibus2 at softraid0: 256 targets
+</span><span>root on wd0a (4561d3363de7f2a6.a) swap on wd0b dump on wd0b
+</span></code></pre>
+<p>Sensors output:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span>$ sysctl hw.sensors
+</span><span>hw.sensors.cpu0.temp0=49.00 degC
+</span></code></pre>
+<p>PCI device data:</p>
+<pre style="background-color:#272822;color:#f8f8f2;"><code><span># pcidump
+</span><span>Domain /dev/pci0:
+</span><span> 0:0:0: VIA VX900 Host
+</span><span> 0:0:1: VIA VX900 Error Reporting
+</span><span> 0:0:2: VIA VX900 Host
+</span><span> 0:0:3: VIA VX900 DRAM
+</span><span> 0:0:4: VIA VX900 Host
+</span><span> 0:0:5: VIA VX900 APIC
+</span><span> 0:0:6: VIA VX900 Scratch
+</span><span> 0:0:7: VIA VX900 Host
+</span><span> 0:1:0: VIA Chrome9 HD
+</span><span> 0:3:0: VIA VX900 PCIE
+</span><span> 0:3:1: VIA VX900 PCIE
+</span><span> 0:3:2: VIA VX900 PCIE
+</span><span> 0:3:3: VIA VX900 PCIE
+</span><span> 0:3:4: VIA VX900 PCIE
+</span><span> 0:15:0: VIA VX900 IDE
+</span><span> 0:16:0: VIA VT83C572 USB
+</span><span> 0:16:1: VIA VT83C572 USB
+</span><span> 0:16:2: VIA VT83C572 USB
+</span><span> 0:16:3: VIA VT83C572 USB
+</span><span> 0:16:4: VIA VT6202 USB
+</span><span> 0:17:0: VIA VX900 ISA
+</span><span> 0:17:7: VIA VX800 Host
+</span><span> 0:19:0: VIA VX800
+</span><span> 0:20:0: VIA HD Audio
+</span><span> 5:0:0: Broadcom BCM57780
+</span></code></pre>

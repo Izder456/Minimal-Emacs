@@ -884,6 +884,9 @@ If the new path's directories does not exist, create them."
     backupFilePath))
 (setq make-backup-file-name-function 'iz/backup-file-name)
 
+;; disable size hinting
+(setq frame-resize-pixelwise t)
+
 ;; save minibuffer history
 (savehist-mode 1)
 

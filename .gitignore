@@ -12,6 +12,9 @@
 # eshell
 eshell/*
 
+# elfeed
+elfeed/*
+
 # Backup files
 *~
 

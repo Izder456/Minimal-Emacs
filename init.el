@@ -16,59 +16,75 @@
   (warning-minimum-level :error))
 
 (use-package evil
-  :ensure t
-  :init
-  (setq evil-want-keybinding nil)
-  (setq evil-vsplit-window-right t)
-  (setq evil-split-window-below t)
-  (evil-mode)
-  :config
-  ;; Delete without register
-  (evil-define-operator evil-delete-without-register (beg end type yank-handler)
+ :ensure t
+ :init
+ ;; Configure evil to not bind its own keybindings
+ (setq evil-want-keybinding nil)
+ ;; Set window splitting behavior
+ (setq evil-vsplit-window-right t)
+ (setq evil-split-window-below t)
+ ;; Enable evil mode
+ (evil-mode)
+ :config
+ ;; Define a custom operator to delete without affecting the register
+ (evil-define-operator evil-delete-without-register (beg end type yank-handler)
     (interactive "<R><y>")
     (evil-delete beg end type ?_ yank-handler))
-  (define-key evil-normal-state-map (kbd "d") 'evil-delete-without-register)
-  (define-key evil-visual-state-map (kbd "d") 'evil-delete-without-register)
-  (define-key evil-normal-state-map (kbd "D") 'evil-delete)
-  (define-key evil-visual-state-map (kbd "D") 'evil-delete)
-
-  (with-eval-after-load 'evil-maps
+ ;; Bind the custom delete operator to 'd' in normal and visual states
+ (define-key evil-normal-state-map (kbd "d") 'evil-delete-without-register)
+ (define-key evil-visual-state-map (kbd "d") 'evil-delete-without-register)
+ ;; Bind 'D' to the default evil delete in normal and visual states
+ (define-key evil-normal-state-map (kbd "D") 'evil-delete)
+ (define-key evil-visual-state-map (kbd "D") 'evil-delete)
+ ;; Disable certain keys in motion state to prevent accidental key presses
+ (with-eval-after-load 'evil-maps
     (define-key evil-motion-state-map (kbd "SPC") nil)
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
-
-  (evil-set-undo-system 'undo-tree))
+ ;; Set the undo system to undo-tree for a more powerful undo experience
+ (evil-set-undo-system 'undo-tree))
 
 (use-package evil-collection
-  :ensure t
-  :after evil
-  :config
-  (setq evil-collection-mode-list '(dashboard dired ibuffer))
-  (evil-collection-init))
+ :ensure t
+ :after evil
+ :config
+ ;; Initialize evil-collection with a specific list of modes
+ (setq evil-collection-mode-list '(dashboard dired ibuffer))
+ (evil-collection-init))
 
+;; Set the location of the custom file and load it if it exists
 (setq-default custom-file
-	      (expand-file-name "custom.el" user-emacs-directory))
+              (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
-  (load custom-file))
+ (load custom-file))
+
+;; Ensure customizations are loaded immediately
+(setq custom-initialize-delay nil)
 
 (defun set-exec-path-from-shell-PATH ()
-  (interactive)
-  (let ((path-from-shell (replace-regexp-in-string
+ "Synchronize Emacs' exec-path with the PATH environment variable from the shell."
+ (interactive)
+ (let ((path-from-shell (replace-regexp-in-string
                           "[ \t\n]*$" "" (shell-command-to-string
-                                          "$SHELL --login -c 'echo $PATH'"
-                                          ))))
+                                          (concat "$SHELL --login -c 'echo "
+                                                 (shell-quote-argument "$PATH")
+                                                 "'")))))
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 
 (set-exec-path-from-shell-PATH)
 
 (use-package undo-tree
-  :ensure t
-  :config
-  (global-undo-tree-mode)
-  ;; I don't want random files in my directories for the undo-tree,
-  ;; so unify them under this directory
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree"))))
+ :ensure t
+ :config
+ ;; Enable undo-tree globally
+ (global-undo-tree-mode)
+ ;; Set the directory for undo-tree history files
+ ;; This helps keep the Emacs configuration directory clean
+ (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree")))
+ ;; Ensure the undo-tree directory exists
+ (unless (file-exists-p "~/.emacs.d/undo-tree")
+    (make-directory "~/.emacs.d/undo-tree" t)))
 
 (use-package editorconfig
   :ensure t
@@ -76,33 +92,39 @@
   (editorconfig-mode 1))
 
 (use-package general
-  :config
-  (general-evil-setup)
+ :config
+ ;; Integrate general with evil-mode
+ (general-evil-setup)
 
-  ;; set up 'SPC' as the global leader key
-  (general-create-definer iz/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC" ;; set leader
-    :global-prefix "M-SPC") ;; access leader in insert mode
+ ;; Set up 'SPC' as the global leader key
+ (general-create-definer iz/leader-keys
+   :states '(normal insert visual emacs)
+   :keymaps 'override
+   :prefix "SPC" ;; set leader
+   :global-prefix "M-SPC") ;; access leader in insert mode
 
-  (iz/leader-keys
-    "b" '(:ignore t :wk "buffer")
-    "bb" '(switch-to-buffer :wk "Switch buffer")
-    "bk" '(kill-this-buffer :wk "Kill this buffer")
-    "bn" '(next-buffer :wk "Next buffer")
-    "bp" '(previous-buffer :wk "Previous buffer")
-    "br" '(revert-buffer :wk "Reload buffer"))
-  (iz/leader-keys
-    "t"  '(:ignore t :wk "neotree")
-    "tn" '(neotree-toggle :wk "Open neotree")))
-;; zoom in and out
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
-(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
-;; man fuck minibuffers and their 3 esc quits
-(global-set-key [escape] 'keyboard-escape-quit)
+ ;; Buffer commands
+ (iz/leader-keys
+   "b" '(:ignore t :wk "buffer")
+   "bb" '(switch-to-buffer :wk "Switch buffer")
+   "bk" '(kill-this-buffer :wk "Kill this buffer")
+   "bn" '(next-buffer :wk "Next buffer")
+   "bp" '(previous-buffer :wk "Previous buffer")
+   "br" '(revert-buffer :wk "Reload buffer"))
+
+ ;; Neotree commands
+ (iz/leader-keys
+   "t" '(:ignore t :wk "neotree")
+   "tn" '(neotree-toggle :wk "Open neotree"))
+
+ ;; Zoom in and out
+ (global-set-key (kbd "C-+") 'text-scale-increase)
+ (global-set-key (kbd "C--") 'text-scale-decrease)
+ (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+ (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+
+ ;; Minibuffer quits
+ (global-set-key [escape] 'keyboard-escape-quit))
 
 (use-package which-key
   :init
@@ -409,50 +431,32 @@
 (use-package flycheck-raku
   :ensure t)
 
-(use-package rust-mode
-  :ensure t
-  :defer t)
-(use-package yaml-mode
-  :ensure t
-  :defer t)
-(use-package json-mode
-  :ensure t
-  :defer t)
-(use-package forth-mode
-  :ensure t
-  :defer t)
-(use-package cider
-  :ensure t
-  :defer t)
-(use-package elixir-mode
-  :ensure t
-  :defer t)
-(use-package inf-elixir
-  :ensure t
-  :defer t)
-(use-package geiser
-  :ensure t
-  :defer t)
-(use-package raku-mode
-  :ensure t
-  :defer t)
-(use-package geiser-chicken
-  :ensure t
-  :defer t
-  :hook ((scheme-mode . geiser-mode)))
-(use-package clojure-mode
-  :ensure t
-  :defer t)
-(use-package hy-mode
-  :ensure t
-  :defer t)
-(use-package sly
-  :ensure t
-  :defer t)
-(use-package markdown-mode
-  :ensure t
-  :defer t
-  :hook ((markdown-mode . visual-line-mode)))
+;; Ensure packages are installed and deferred
+(defun iz/ensure-defer (package)
+ `(use-package ,package
+     :ensure t
+     :defer t))
+
+;; Programming languages and modes
+(iz/ensure-defer 'rust-mode)
+(iz/ensure-defer 'yaml-mode)
+(iz/ensure-defer 'json-mode)
+(iz/ensure-defer 'forth-mode)
+(iz/ensure-defer 'elixir-mode)
+(iz/ensure-defer 'inf-elixir)
+(iz/ensure-defer 'raku-mode)
+(iz/ensure-defer 'clojure-mode)
+(iz/ensure-defer 'hy-mode)
+(iz/ensure-defer 'markdown-mode)
+
+;; Lisp and Scheme
+(iz/ensure-defer 'cider)
+(iz/ensure-defer 'geiser)
+(iz/ensure-defer 'geiser-chicken)
+(iz/ensure-defer 'sly)
+
+;; Clojure
+(iz/ensure-defer 'clojure-mode)
 
 ;; format
 (use-package astyle
@@ -483,7 +487,7 @@
 (defun elixir-inf-switch ()
   "switch to inf elixir window"
   (interactive)
-  (let ((bufs (mapchar #'buffer-name (buffer-list))))
+  (let ((bufs (mapcar #'buffer-name (buffer-list))))
     (elixir-inf-helper bufs)))
 
 (general-define-key
@@ -625,75 +629,42 @@
 (setq org-edit-src-content-indentation 0)
 
 (defun load-my-fonts (frame)
-  (select-frame frame)
-  (set-face-attribute 'default nil
+ (select-frame frame)
+ (set-face-attribute 'default nil
                       :font "Spleen"
                       :weight 'regular
                       :height 120)
-  (set-face-attribute 'fixed-pitch nil
+ (set-face-attribute 'fixed-pitch nil
                       :font "Spleen"
                       :weight 'regular
                       :height 120)
-  (set-face-attribute 'variable-pitch nil
+ (set-face-attribute 'variable-pitch nil
                       :font "Freeserif"
                       :weight 'regular
-                      :height 1.2)
-
-  ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-block nil
-                        :foreground nil
-                        :inherit 'fixed-pitch)
-    (set-face-attribute 'org-table nil
-                        :inherit 'fixed-pitch)
-    (set-face-attribute 'org-formula nil
-                        :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil
-                        :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim nil
-                        :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-special-keyword nil
-                        :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil
-                        :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil
-                        :inherit 'fixed-pitch)))
+                      :height 1.2))
 
 (if (daemonp)
     (add-hook 'after-make-frame-functions #'load-my-fonts)
-  (load-my-fonts (selected-frame)))
-
-(set-face-attribute 'default nil
-                    :font "Spleen"
-                    :weight 'regular
-                    :height 120)
-(set-face-attribute 'fixed-pitch nil
-                    :font "Spleen"
-                    :weight 'regular
-                    :height 120)
-(set-face-attribute 'variable-pitch nil
-                    :font "Freeserif"
-                    :weight 'regular
-                    :height 1.2)
+ (load-my-fonts (selected-frame)))
 
 ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
 (with-eval-after-load 'org-faces
-  (set-face-attribute 'org-block nil
+ (set-face-attribute 'org-block nil
                       :foreground nil
                       :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil
+ (set-face-attribute 'org-table nil
                       :inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula nil
+ (set-face-attribute 'org-formula nil
                       :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil
+ (set-face-attribute 'org-code nil
                       :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil
+ (set-face-attribute 'org-verbatim nil
                       :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil
+ (set-face-attribute 'org-special-keyword nil
                       :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil
+ (set-face-attribute 'org-meta-line nil
                       :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil
+ (set-face-attribute 'org-checkbox nil
                       :inherit 'fixed-pitch))
 
 ;; Set org-mode to use Variable pitch

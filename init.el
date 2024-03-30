@@ -423,32 +423,54 @@
 (use-package flycheck-raku
   :ensure t)
 
-;; Ensure packages are installed and deferred
-(defun iz/ensure-defer (package)
- `(use-package ,package
-     :ensure t
-     :defer t))
-
 ;; Programming languages and modes
-(iz/ensure-defer 'rust-mode)
-(iz/ensure-defer 'yaml-mode)
-(iz/ensure-defer 'json-mode)
-(iz/ensure-defer 'forth-mode)
-(iz/ensure-defer 'elixir-mode)
-(iz/ensure-defer 'inf-elixir)
-(iz/ensure-defer 'raku-mode)
-(iz/ensure-defer 'clojure-mode)
-(iz/ensure-defer 'hy-mode)
-(iz/ensure-defer 'markdown-mode)
+(use-package rust-mode
+  :ensure t
+  :defer t)
+(use-package yaml-mode
+  :ensure t
+  :defer t)
+(use-package json-mode
+  :ensure t
+  :defer t)
+(use-package forth-mode
+  :ensure t
+  :defer t)
+(use-package elixir-mode
+  :ensure t
+  :defer t)
+(use-package inf-elixir
+  :ensure t
+  :defer t)
+(use-package raku-mode
+  :ensure t
+  :defer t)
+(use-package clojure-mode
+  :ensure t
+  :defer t)
+(use-package hy-mode
+  :ensure t
+  :defer t)
+(use-package markdown-mode
+  :ensure t
+  :defer t)
 
 ;; Lisp and Scheme
-(iz/ensure-defer 'cider)
-(iz/ensure-defer 'geiser)
-(iz/ensure-defer 'geiser-chicken)
-(iz/ensure-defer 'sly)
+(use-package cider
+  :ensure t
+  :defer t)
+(use-package geiser
+  :ensure t
+  :defer t)
+(use-package geiser-chicken
+  :ensure t
+  :defer t)
+(use-package sly
+  :ensure t
+  :defer t)
 
 ;; Clojure
-(iz/ensure-defer 'clojure-mode)
+(use-package clojure-mode)
 
 ;; format
 (use-package astyle
@@ -504,11 +526,6 @@
 
 ;; Common Lisp
 (setq inferior-lisp-program "sbcl")
-(add-hook 'list-mode-hook 'sly)
-
-;; Clojure
-(add-hook 'clojure-mode 'cider-jack-in-clj)
-(add-hook 'clojurescript-mode 'cider-jack-in-cljs)
 
 ;; Perl
 (defalias 'perl-mode 'cperl-mode)

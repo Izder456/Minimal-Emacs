@@ -7,7 +7,7 @@
  '(elfeed-feeds
    '("https://dataswamp.org/~solene/rss-html.xml" "https://webzine.puffy.cafe/atom.xml" "https://www.cambus.net/atom.xml"))
  '(package-selected-packages
-   '(doom-themes clhs astyle markdown-mode sly hy-mode geiser-chicken raku-mode geiser inf-elixir elixir-mode forth-mode json-mode yaml-mode rust-mode flycheck-raku flycheck-clojure flycheck-elixir flycheck-ocaml flycheck-rust flycheck-projectile flycheck elfeed-dashboard elfeed hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-appear org-auto-tangle toc-org org-superstar denote which-key general editorconfig undo-tree evil-collection evil))
+   '(elcord doom-themes clhs astyle markdown-mode sly hy-mode geiser-chicken raku-mode geiser inf-elixir elixir-mode forth-mode json-mode yaml-mode rust-mode flycheck-raku flycheck-clojure flycheck-elixir flycheck-ocaml flycheck-rust flycheck-projectile flycheck elfeed-dashboard elfeed hl-todo vterm-toggle vterm neotree nyan-mode doom-modeline beacon rainbow-mode rainbow-delimiters projectile company-prescient ivy-prescient prescient counsel company-box frame-local company all-the-icons-ivy-rich all-the-icons-dired all-the-icons dashboard org-appear org-auto-tangle toc-org org-superstar denote which-key general editorconfig undo-tree evil-collection evil))
  '(tags-apropos-additonal-actions '(("Common Lisp" clhs-doc clhs-symbols))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

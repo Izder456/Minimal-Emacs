@@ -100,7 +100,7 @@
  (setq evil-vsplit-window-right t)
  (setq evil-split-window-below t)
  ;; Enable evil mode
- (evil-mode)
+ (evil-mode 1)
  :config
  ;; Define a custom operator to delete without affecting the register
  (evil-define-operator evil-delete-without-register (beg end type yank-handler)
@@ -118,7 +118,12 @@
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
  ;; Set the undo system to undo-tree for a more powerful undo experience
- (evil-set-undo-system 'undo-tree))
+ (evil-set-undo-system 'undo-tree)
+ :bind
+ (:map evil-motion-state-map
+       ("s" . 'evil-avy-goto-char-2))
+ (:map evil-normal-state-map
+       ("s" . nil)))
 
 (use-package evil-collection
  :ensure t

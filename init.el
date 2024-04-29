@@ -592,8 +592,8 @@
 	(c "https://github.com/tree-sitter/tree-sitter-c")
 	(cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
 
-(set-frame-parameter (selected-frame) 'alpha '(95 . 85))
-(add-to-list 'default-frame-alist '(alpha . (95 . 85)))
+(set-frame-parameter (selected-frame) 'alpha '(100 . 95))
+(add-to-list 'default-frame-alist '(alpha . (100 . 95)))
 (defun toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))

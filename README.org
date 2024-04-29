@@ -743,8 +743,8 @@ Shows your mouse when you make large movements
 * Aesthetics
 ** Trans(Parency) 🏳️‍⚧️
 #+begin_src elisp :tangle init.el
-(set-frame-parameter (selected-frame) 'alpha '(95 . 85))
-(add-to-list 'default-frame-alist '(alpha . (95 . 85)))
+(set-frame-parameter (selected-frame) 'alpha '(100 . 95))
+(add-to-list 'default-frame-alist '(alpha . (100 . 95)))
 (defun toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))

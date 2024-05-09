@@ -390,7 +390,12 @@
    (expand-file-name "elfeed" user-emacs-directory)
    (elfeed-show-entry-switch 'display-buffer))
   :bind
-  ("C-c w e" . elfeed))
+  ("C-c w e" . elfeed)
+  :config
+  (setq elfeed-feeds
+	'("https://xkcd.com/rss.xml"
+	  "https://dataswamp.org/~solene/rss.xml"
+	  "https://undeadly.org/cgi?action=rss")))
 
 (use-package elfeed-dashboard
   :ensure t
@@ -413,11 +418,6 @@
   :config
   (with-eval-after-load 'rust-mode
     (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
-(use-package flycheck-ocaml
-  :ensure t
-  :config
-  (with-eval-after-load 'ocaml-mode
-    (add-hook 'flycheck-mode-hook #'flycheck-ocaml-setup)))
 (use-package flycheck-elixir
   :ensure t
   :config
@@ -428,125 +428,75 @@
 (use-package flycheck-raku
   :ensure t)
 
-;; Programming languages and modes
-(use-package rust-mode
+;; Config modes
+(use-package yaml-mode ;; Insecure Pythonic config format
   :ensure t
   :defer t)
-(use-package yaml-mode
-  :ensure t
-  :defer t)
-(use-package json-mode
-  :ensure t
-  :defer t)
-(use-package forth-mode
-  :ensure t
-  :defer t)
-(use-package elixir-mode
-  :ensure t
-  :defer t)
-(use-package inf-elixir
-  :ensure t
-  :defer t)
-(use-package raku-mode
-  :ensure t
-  :defer t)
-(use-package clojure-mode
-  :ensure t
-  :defer t)
-(use-package hy-mode
-  :ensure t
-  :defer t)
-(use-package markdown-mode
+(use-package json-mode ;; Annoying JS config format
   :ensure t
   :defer t)
 
-;; Lisp and Scheme
-(use-package cider
-  :ensure t
-  :defer t)
-(use-package geiser
-  :ensure t
-  :defer t)
-(use-package geiser-chicken
-  :ensure t
-  :defer t)
-(use-package sly
+;; Markdown
+(use-package markdown-mode ;; For those not blessed by ORG-Mode
   :ensure t
   :defer t)
 
-;; Clojure
-(use-package clojure-mode)
-
-;; format
-(use-package astyle
+;; Programming Languages
+(use-package rust-mode ;; C++ Replacer
   :ensure t
-  :when (executable-find "astyle")
-  :hook (c-mode-common . astyle-on-save-mode))
+  :defer t)
+(use-package forth-mode ;; Hey, I'm weird too
+  :ensure t
+  :defer t)
+(use-package raku-mode ;; Perl, but somehow worse
+  :ensure t
+  :defer t)
+(use-package elixir-mode ;; Ruby, if it was functional
+  :ensure t
+  :defer t)
 
-;; for Common Lisp hyperspec
-(use-package clhs
+;; Lisps
+(use-package clojure-mode ;; Lisp on the JVM
+  :ensure t
+  :defer t)
+(use-package hy-mode ;; Lisp on Python
+  :ensure t
+  :defer t)
+(use-package fennel-mode ;; Lisp on Lua
+  :ensure t
+  :defer t)
+
+;; REPLs
+(use-package inf-elixir ;; Inferior Mode for Elixir
+  :ensure t
+  :defer t)
+(use-package cider ;; REPL for Clojure 
+  :ensure t
+  :defer t)
+(use-package geiser ;; REPL for scheme
+  :ensure t
+  :defer t)
+(use-package geiser-chicken ;; Chicken for Geiser
+  :ensure t
+  :defer t
+  :config
+  (setq scheme-program-name "chicken-csi -:c")
+  (setq geiser-chicken-binary "chicken-csi")
+  (add-hook 'geiser-mode-hook 'geiser-chicken))
+(use-package sly ;; REPL for CL
+  :ensure t
+  :defer t
+  :config
+  (setq inferior-lisp-program "sbcl"))
+
+;; Misc Programming Stuffs
+(use-package clhs ;; Common Lisp Hyperspec
   :ensure t
   :config
   (autoload 'clhc-doc "clhs" "Get doc on ANSI CL" t)
   (define-key help-map "\C-l" 'clhs-doc)
   (custom-set-variables
    '(tags-apropos-additonal-actions '(("Common Lisp" clhs-doc clhs-symbols)))))
-
-;; Elixir
-(defun elixir-inf-helper (lis)
-  "find terminal and switch to term buffer"
-  (cond
-   ((eq '() lis)
-    (inf-elixir-set-repl))
-   ((string= (car lis) "Inf-Elixir")
-    (switch-to-buffer-other-window (car lis)))
-   (t
-    (elixir-inf-helper (cdr lis)))))
-
-(defun elixir-inf-switch ()
-  "switch to inf elixir window"
-  (interactive)
-  (let ((bufs (mapcar #'buffer-name (buffer-list))))
-    (elixir-inf-helper bufs)))
-
-(general-define-key
- :keymaps 'inf-elixir-mode-map
- :prefix "C-c"
- "C-z" '(previous-multiframe-window :which-key "other-window"))
-
-(general-define-key
- :keymaps 'elixir-mode-map
- "C-<return>" '(inf-elixir-send-line :which-key "send line"))
-
-(general-define-key
- :keymaps 'elixir-mode-map
- :prefix "C-c"
- "C-c" '(inf-elixir-send-buffer :which-key "elixir inf send-buffer")
- "C-z" '(elixir-inf-switch :which-key "elixir inf switch"))
-
-;; Chicken Scheme
-(setq scheme-program-name "chicken-csi -:c")
-(setq geiser-chicken-binary "chicken-csi")
-(add-hook 'geiser-mode-hook 'geiser-chicken)
-
-;; Common Lisp
-(setq inferior-lisp-program "sbcl")
-
-;; Perl
-(defalias 'perl-mode 'cperl-mode)
-(setq cperl-invalid-face nil
-      cperl-electric-keywords t
-      cperl-auto-newlin t
-      cperl-indent-level 2
-      cperl-indent-parens-as-block t
-      cperl-close-paren-offset -2
-      cperl-continued-statement-offset 2
-      cperl-tab-always-indent t)
-
-;; CC-mode
-(setq c-default-style "bsd"
-      c-basic-offset 2)
-(c-set-offset 'comment-intro 0)
 
 (use-package eglot
   :ensure t

@@ -9,6 +9,9 @@
 *plstore
 *flycheck*
 
+# elfeed
+url/*
+
 # eshell
 eshell/*
 
@@ -23,6 +26,7 @@ elfeed/*
 
 # Cache
 .cache
+*cache*
 
 # history
 history

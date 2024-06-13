@@ -66,10 +66,15 @@
 ;; Ensure customizations are loaded immediately
 (setq custom-initialize-delay nil)
 
-(use-package exec-path-from-shell
-  :ensure t
-  :config
-  (exec-path-from-shell-initialize))
+(setenv "PATH"
+        (concat
+	 (concat (getenv "HOME") ".local/bin") path-separator
+	 (concat (getenv "HOME") ".gems/bin") path-separator
+	 (concat (getenv "HOME") ".go/bin") path-separator
+	 (concat (getenv "HOME") "go/bin") path-separator
+	 (concat (getenv "HOME") ".cargo/bin") path-separator
+	 "/usr/local/jdk-1.8.0/bin" path-separator
+         (getenv "PATH")))
 
 (use-package undo-tree
  :ensure t
@@ -93,26 +98,23 @@
  ;; Integrate general with evil-mode
  (general-evil-setup)
 
- ;; Set up 'SPC' as the global leader key
+ ;; Set up 'C-x' as the global leader key
  (general-create-definer iz/leader-keys
-   :states '(normal insert visual emacs)
+   :states '(normal insert visual emacs command)
    :keymaps 'override
-   :prefix "SPC" ;; set leader
-   :global-prefix "M-SPC") ;; access leader in insert mode
+   :prefix "C-x" ;; set leader
+   :global-prefix "C-x") ;; access leader in insert mode
 
  ;; Buffer commands
  (iz/leader-keys
-   "b" '(:ignore t :wk "buffer")
-   "bb" '(switch-to-buffer :wk "Switch buffer")
-   "bk" '(kill-this-buffer :wk "Kill this buffer")
-   "bn" '(next-buffer :wk "Next buffer")
-   "bp" '(previous-buffer :wk "Previous buffer")
-   "br" '(revert-buffer :wk "Reload buffer"))
+   "k" '(kill-this-buffer :wk "Kill this buffer")
+   "n" '(other-window :wk "Cycle Windows")
+   "S" '(evil-window-vnew :wk "Vertial buffer split")
+   "s" '(evil-window-new :wk "Horizontal buffer split"))
 
  ;; Neotree commands
  (iz/leader-keys
-   "t" '(:ignore t :wk "neotree")
-   "tn" '(neotree-toggle :wk "Open neotree"))
+   "t" '(neotree-toggle :wk "Open neotree"))
 
  ;; Zoom in and out
  (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -141,11 +143,12 @@
         which-key-allow-imprecise-window-fit t
         which-key-separator " → " ))
 
-(setq erc-prompt (lambda () (concat "λP." "(P " (buffer-name) ")"))
+(setq erc-prompt (lambda () (concat "<" (buffer-name) ">"))
       erc-server "irc.libera.chat"
       erc-nick "izder456"
       erc-user-full-name "izder456"
-      erc-autojoin-channels-alist '(("irc.libera.chat" "#openbsd-gaming" "#openbsd" "#clojure" "#lisp"))
+      erc-autojoin-channels-alist '(("irc.libera.chat" "#openbsd-gaming" "#openbsd" "#gaygeeks")
+				    ("147.185.221.20" "#general"))
       erc-auto-query 'bury
       erc-fill-column 128
       erc-fill-function 'erc-fill-static
@@ -403,6 +406,8 @@
   (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
   (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links))
 
+(setq scheme-program-name "chicken-csi -:c")
+(setq geiser-chicken-binary "chicken-csi")
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
@@ -454,6 +459,9 @@
 (use-package elixir-mode ;; Ruby, if it was functional
   :ensure t
   :defer t)
+(use-package d-mode
+  :ensure t
+  :defer t)
 
 ;; Lisps
 (use-package clojure-mode ;; Lisp on the JVM
@@ -480,8 +488,6 @@
   :ensure t
   :defer t
   :config
-  (setq scheme-program-name "chicken-csi -:c")
-  (setq geiser-chicken-binary "chicken-csi")
   (add-hook 'geiser-mode-hook 'geiser-chicken))
 (use-package sly ;; REPL for CL
   :ensure t
@@ -497,6 +503,15 @@
   (define-key help-map "\C-l" 'clhs-doc)
   (custom-set-variables
    '(tags-apropos-additonal-actions '(("Common Lisp" clhs-doc clhs-symbols)))))
+
+(use-package auto-virtualenv ;; For Python/Hy
+  :ensure t
+  :init
+  (use-package pyvenv
+    :ensure t)
+  :config
+  (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
+  (add-hook 'projectile-after-switch-project-hook 'auto-virtualenv-set-virtualenv))
 
 (use-package eglot
   :ensure t

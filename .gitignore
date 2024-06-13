@@ -18,6 +18,9 @@ eshell/*
 # elfeed
 elfeed/*
 
+# data files
+*.data
+
 # Backup files
 *~
 

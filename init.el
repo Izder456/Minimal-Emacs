@@ -108,14 +108,21 @@
  ;; Buffer commands
  (iz/leader-keys
    "k" '(kill-this-buffer :wk "Kill this buffer")
-   "n" '(other-window :wk "Cycle Windows")
-   "S" '(evil-window-vnew :wk "Vertial buffer split")
-   "s" '(evil-window-new :wk "Horizontal buffer split"))
+   "n" '(evil-next-buffer :wk "Cycle Windows")
+   "S" '(evil-window-vnew :wk "Vertical buffer split")
+   "s" '(evil-window-new :wk "Horizontal buffer split")
+   "<up>" '(evil-window-up :wk "Switch to upper buffer")
+   "<down>" '(evil-window-down :wk "Switch to lower buffer")
+   "<left>" '(evil-window-left :wk "Switch to left buffer")
+   "<right>" '(evil-window-right :wk "Switch to right buffer"))
 
  ;; Neotree commands
  (iz/leader-keys
    "t" '(neotree-toggle :wk "Open neotree"))
 
+ ;; Tab-switching
+ (global-set-key (kbd "C-<tab>") 'evil-window-mru)
+ 
  ;; Zoom in and out
  (global-set-key (kbd "C-+") 'text-scale-increase)
  (global-set-key (kbd "C--") 'text-scale-decrease)
@@ -200,8 +207,8 @@
   (setq initial-buffer-choice 'dashboard-open)
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
-  (setq dashboard-banner-logo-title "Giygas cannot think rationally anymore, and he isn't even aware of what he is doing now.")
-  (setq dashboard-startup-banner "~/.emacs.d/giegue.png")  ;; use custom image as banner
+  (setq dashboard-banner-logo-title "Cos I'm a lonely soul, and I got no friend on this road. And I'm a Mystery Jack, the lines on my hands tell me I'm on track.")
+  (setq dashboard-startup-banner "~/.emacs.d/hantyumi.png")  ;; use custom image as banner
   (setq dashboard-center-content t) ;; set to 't' for centered content
   (setq dashboard-items '((recents . 5)
                           (projects . 3)

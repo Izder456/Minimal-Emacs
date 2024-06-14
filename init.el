@@ -175,12 +175,15 @@
   (org-mode . org-superstar-mode)
   :config
   (setq org-superstar-special-todo-items t)
-  (setq org-superstar-headline-bullets-list '(
-                                              "ƛ"
-                                              "☭"
-                                              "⛮"
-                                              "⯪"
-                                              "ℵ"))
+  (setq org-superstar-headline-bullets-list '("ƛ"
+					      "ꙮ"
+					      "ꙭ"
+					      "ꙫ"
+					      "ꙩ"
+					      "о"
+					      "ы"
+					      "ъ"
+					      "ь"))
   ;; disables leading bullets
   (setq org-superstar-leading-bullet ?\s)
   (setq org-indent-mode-turns-on-hiding-stars nil))
@@ -189,13 +192,6 @@
   :hook
   (org-mode . toc-org-mode)
   :commands toc-org-enable)
-
-(use-package org-auto-tangle
-  :defer t
-  :hook
-  ((org-mode . org-auto-tangle-mode))
-  :config
-  (setq org-auto-tangle-default t))
 
 (use-package org-appear
   :hook
@@ -310,6 +306,7 @@
 
 (use-package rainbow-delimiters
   :hook ((prog-mode . rainbow-delimiters-mode)
+         (text-mode . rainbow-delimiters-mode)
          (sly-mode . rainbow-delimiters-mode)
          (cider-mode . rainbow-delimiters-mode)
          (geiser-mode . rainbow-delimiters-mode)
@@ -447,6 +444,9 @@
 (use-package json-mode ;; Annoying JS config format
   :ensure t
   :defer t)
+(use-package toml-mode ;; Good format
+  :ensure t
+  :defer t)
 
 ;; Markdown
 (use-package markdown-mode ;; For those not blessed by ORG-Mode
@@ -457,6 +457,9 @@
 (use-package rust-mode ;; C++ Replacer
   :ensure t
   :defer t)
+(use-package d-mode ;; Real C++ Replacer
+  :ensure t
+  :defer t)
 (use-package forth-mode ;; Hey, I'm weird too
   :ensure t
   :defer t)
@@ -464,9 +467,6 @@
   :ensure t
   :defer t)
 (use-package elixir-mode ;; Ruby, if it was functional
-  :ensure t
-  :defer t)
-(use-package d-mode
   :ensure t
   :defer t)
 

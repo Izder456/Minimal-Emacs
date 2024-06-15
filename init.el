@@ -306,7 +306,6 @@
 
 (use-package rainbow-delimiters
   :hook ((prog-mode . rainbow-delimiters-mode)
-         (text-mode . rainbow-delimiters-mode)
          (sly-mode . rainbow-delimiters-mode)
          (cider-mode . rainbow-delimiters-mode)
          (geiser-mode . rainbow-delimiters-mode)

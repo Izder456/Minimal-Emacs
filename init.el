@@ -468,6 +468,10 @@
 (use-package elixir-mode ;; Ruby, if it was functional
   :ensure t
   :defer t)
+(use-package crystal-mode
+  :ensure t
+  :defer t)
+
 
 ;; Lisps
 (use-package clojure-mode ;; Lisp on the JVM

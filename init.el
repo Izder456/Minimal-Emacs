@@ -73,7 +73,7 @@
 	 (concat (getenv "HOME") ".go/bin") path-separator
 	 (concat (getenv "HOME") "go/bin") path-separator
 	 (concat (getenv "HOME") ".cargo/bin") path-separator
-	 "/usr/local/jdk-1.8.0/bin" path-separator
+	 "/usr/local/jdk-17/bin" path-separator
          (getenv "PATH")))
 
 (use-package undo-tree

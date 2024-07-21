@@ -157,9 +157,6 @@
 	       (not (string-match "^\\*\\*\\*" msg)))
       (shell-command (concat "notify-send 'ERC' '" msg "'"))))
   (add-hook 'erc-text-matched-hook 'erc-mention)
-  (add-hook 'window-configuration-change-hook
-	    '(lambda ()
-	       (setq erc-fill-column (- (window-width) 2))))
   :custom
   (erc)
   (erc-prompt (lambda () (concat "[" (buffer-name) "]")))

@@ -174,7 +174,6 @@
   (erc-kill-server-buffer-on-quit t)
   (erc-interpret-mirc-color t)
   (erc-fill-function 'erc-fill-static)
-  (erc-fill-static-center 22)
   (erc-timestamp-format "[%H:%M] ")
   (erc-fill-prefix      "       + "))
 

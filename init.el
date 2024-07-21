@@ -150,16 +150,33 @@
         which-key-allow-imprecise-window-fit t
         which-key-separator " → " ))
 
-(setq erc-prompt (lambda () (concat "<" (buffer-name) ">"))
-      erc-server "irc.libera.chat"
-      erc-nick "izder456"
-      erc-user-full-name "izder456"
-      erc-autojoin-channels-alist '(("irc.libera.chat" "#openbsd-gaming" "#openbsd" "#gaygeeks")
-				    ("147.185.221.20" "#general"))
-      erc-auto-query 'bury
-      erc-fill-column 128
-      erc-fill-function 'erc-fill-static
-      erc-fill-static-center 20)
+(use-package erc
+  :preface
+  (defun erc-mention (match-type nickuserhost msg)
+    (when (and (eq match-type 'current-nick)
+	       (not (string-match "^\\*\\*\\*" msg)))
+      (shell-command (concat "notify-send 'ERC' '" msg "'"))))
+  (add-hook 'erc-text-matched-hook 'erc-mention)
+  (add-hook 'window-configuration-change-hook
+	    '(lambda ()
+	       (setq erc-fill-column (- (window-width) 2))))
+  :custom
+  (erc)
+  (erc-prompt (lambda () (concat "[" (buffer-name) "]")))
+  (erc-server "irc.libera.chat")
+  (erc-nick "izder456")
+  (erc-user-full-name "izder456")
+  (erc-autojoin-channels-alist '(("Libera.chat" "#openbsd-gaming" "#openbsd" "#gaygeeks" "#linux+bsd")
+                                 ("irc.atl.chat" "#general" "#support")))
+  (erc-auto-query 'bury)
+  (erc-kill-buffer-on-part t)
+  (erc-kill-queries-on-quit t)
+  (erc-kill-server-buffer-on-quit t)
+  (erc-interpret-mirc-color t)
+  (erc-fill-function 'erc-fill-static)
+  (erc-fill-static-center 22)
+  (erc-timestamp-format "[%H:%M] ")
+  (erc-fill-prefix      "       + "))
 
 (use-package denote
   :pin gnu

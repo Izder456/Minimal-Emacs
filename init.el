@@ -150,12 +150,19 @@
         which-key-allow-imprecise-window-fit t
         which-key-separator " → " ))
 
+(defvar notify-program "notify-send")
+
+(defun notify-send (title message)
+  (start-process "notify" " notify"
+		 notify-program "--expire-time=4000" title message))
+
 (use-package erc
   :preface
   (defun erc-mention (match-type nickuserhost msg)
     (when (and (eq match-type 'current-nick)
 	       (not (string-match "^\\*\\*\\*" msg)))
-      (shell-command (concat "notify-send 'ERC' '" msg "'"))))
+      (notify-send "(IRC)"
+		   (format "PING! %s" msg))))
   (add-hook 'erc-text-matched-hook 'erc-mention)
   :custom
   (erc)
@@ -172,6 +179,21 @@
   (erc-interpret-mirc-color t)
   (erc-timestamp-format "[%H:%M] ")
   (erc-fill-prefix      "       + "))
+
+(use-package jabber
+  :preface
+  (defun jabber-notify (from buf text proposed-alert)
+    (when (or jabber-message-alert-same-buffer
+	      (not (memq (selected-window) (get-buffer-window-list buf))))
+      (if (jabber-muc-sender-p from)
+	  (notify-send (format "(PM) %s"
+			       (jabber-jid-displayname (jabber-jid-user from)))
+		       (format "%s: %s" (jabber-jid-resource from) text))
+	(notify-send (format "%s" (jabber-jid-displayname from))
+		     test))))
+  (add-hook 'jabber-alert-message-hooks 'jabber-notify)
+  :custom
+  (jabber-mode-line-mode 1))
 
 (use-package denote
   :pin gnu
@@ -701,9 +723,6 @@ If the new path's directories does not exist, create them."
 ;; disable size hinting
 (setq frame-resize-pixelwise t)
 
-;; save minibuffer history
-(savehist-mode 1)
-
 (setq-default left-margin-width 5 right-margin-width 5) ; Define new widths.
 (set-window-buffer nil (current-buffer)) ; Use them now.
 
@@ -718,13 +737,16 @@ If the new path's directories does not exist, create them."
 ;; the gtk stuff
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(scroll-bar-mode -1)
+(scroll-bar-mode 1)
 
+(setq history-length 25)     ;; History Length
+(savehist-mode 1)            ;; Save history
+(save-place-mode 1)          ;; Save place in files
 (delete-selection-mode 1)    ;; You can select text and delete it by typing.
-(electric-indent-mode 1)
+(electric-indent-mode 1)     ;; Indents
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
-
-(global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
+(global-auto-revert-mode 1)  ;; Automatically show changes if the file has changed
+(recentf-mode 1)             ;; File history
 
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)

@@ -193,8 +193,10 @@
   (erc-fill-disable))
 
 (use-package erc-hl-nicks
+  :ensure t
   :after erc)
 (use-package erc-image
+  :ensure t
   :after erc)
 
 (use-package jabber
@@ -709,6 +711,7 @@
                       :inherit 'fixed-pitch))
 
 (use-package unicode-fonts
+  :ensure t
   :config
   (unicode-fonts-setup))
 

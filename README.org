@@ -283,8 +283,10 @@ for editor consistency
   (erc-fill-disable))
 
 (use-package erc-hl-nicks
+  :ensure t
   :after erc)
 (use-package erc-image
+  :ensure t
   :after erc)
 
 (use-package jabber
@@ -857,6 +859,7 @@ Shows your mouse when you make large movements
                       :inherit 'fixed-pitch))
 
 (use-package unicode-fonts
+  :ensure t
   :config
   (unicode-fonts-setup))
 

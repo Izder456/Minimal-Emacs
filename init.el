@@ -163,7 +163,8 @@
   	       (not (string-match "^\\*\\*\\*" msg)))
       (notify-send "(IRC)"
   		   (format "PING! %s" msg))))
-  (add-hook 'erc-text-matched-hook 'erc-mention)
+  :hook
+  (erc-text-matched-hook . erc-mention)
   :custom
   (erc-hide-list '("JOIN" "PART" "QUIT"))
   (erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
@@ -180,9 +181,13 @@
   (erc-kill-queries-on-quit t)
   (erc-kill-server-buffer-on-quit t)
   (erc-interpret-mirc-color t)
+  (erc-fill-function nil)
+  (erc-fill-mode nil)
   :config
   (add-to-list 'erc-modules 'notifications)
   (add-to-list 'erc-modules 'spelling)
+  (add-to-list 'erc-modules 'image)
+  (add-to-list 'erc-modules 'hl-nicks)
   (erc-services-mode 1)
   (erc-update-modules)
   (erc-fill-disable))
@@ -203,7 +208,8 @@
 		       (format "%s: %s" (jabber-jid-resource from) text))
 	(notify-send (format "%s" (jabber-jid-displayname from))
 		     test))))
-  (add-hook 'jabber-alert-message-hooks 'jabber-notify)
+  :hook
+  (jabber-alert-message-hooks . jabber-notify)
   :custom
   (jabber-mode-line-mode 1))
 
@@ -702,6 +708,10 @@
  (set-face-attribute 'org-checkbox nil
                       :inherit 'fixed-pitch))
 
+(use-package unicode-fonts
+  :config
+  (unicode-fonts-setup))
+
 ;; Set org-mode to use Variable pitch
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
@@ -759,6 +769,7 @@ If the new path's directories does not exist, create them."
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
 (global-auto-revert-mode 1)  ;; Automatically show changes if the file has changed
 (recentf-mode 1)             ;; File history
+(prettify-symbols-mode 1)    ;; Combine symbold
 
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)

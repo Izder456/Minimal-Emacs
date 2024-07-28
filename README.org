@@ -250,13 +250,16 @@ for editor consistency
   :preface
   (defun erc-mention (match-type nickuserhost msg)
     (when (and (eq match-type 'current-nick)
-	       (not (string-match "^\\*\\*\\*" msg)))
+  	       (not (string-match "^\\*\\*\\*" msg)))
       (notify-send "(IRC)"
-		   (format "PING! %s" msg))))
+  		   (format "PING! %s" msg))))
   (add-hook 'erc-text-matched-hook 'erc-mention)
   :custom
-  (erc)
-  (erc-prompt (lambda () (concat "[" (buffer-name) "]")))
+  (erc-hide-list '("JOIN" "PART" "QUIT"))
+  (erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
+  (erc-lurker-threshold-time 43200)
+  (erc-track-exclude-types '("JOIN" "MODE" "NICK" "PART" "QUIT"
+			     "324" "329" "332" "333" "353" "477"))
   (erc-server "irc.libera.chat")
   (erc-nick "izder456")
   (erc-user-full-name "izder456")
@@ -267,8 +270,17 @@ for editor consistency
   (erc-kill-queries-on-quit t)
   (erc-kill-server-buffer-on-quit t)
   (erc-interpret-mirc-color t)
-  (erc-timestamp-format "[%H:%M] ")
-  (erc-fill-prefix      "       + "))
+  :config
+  (add-to-list 'erc-modules 'notifications)
+  (add-to-list 'erc-modules 'spelling)
+  (erc-services-mode 1)
+  (erc-update-modules)
+  (erc-fill-disable))
+
+(use-package erc-hl-nicks
+  :after erc)
+(use-package erc-image
+  :after erc)
 
 (use-package jabber
   :preface

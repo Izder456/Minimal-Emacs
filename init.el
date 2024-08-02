@@ -94,48 +94,84 @@
   (editorconfig-mode 1))
 
 (use-package general
- :config
- ;; Integrate general with evil-mode
- (general-evil-setup)
+  :config
+  ;; Integrate general with evil-mode
+  (general-evil-setup)
 
- ;; Set up 'C-x' as the global leader key
- (general-create-definer iz/leader-keys
-   :states '(normal insert visual emacs command)
-   :keymaps 'override
-   :prefix "C-x" ;; set leader
-   :global-prefix "C-x") ;; access leader in insert mode
+  ;; Set up 'C-x' as the global leader key
+  (general-create-definer iz/leader-keys
+    :states '(normal insert visual emacs command)
+    :keymaps 'override
+    :prefix "C-x" ;; set leader
+    :global-prefix "C-x") ;; access leader in insert mode
 
- ;; Buffer commands
- (iz/leader-keys
-   "k" '(kill-this-buffer :wk "Kill this buffer")
-   "n" '(evil-next-buffer :wk "Cycle Windows")
-   "S" '(evil-window-vnew :wk "Vertical buffer split")
-   "s" '(evil-window-new :wk "Horizontal buffer split")
-   "<up>" '(evil-window-up :wk "Switch to upper buffer")
-   "<down>" '(evil-window-down :wk "Switch to lower buffer")
-   "<left>" '(evil-window-left :wk "Switch to left buffer")
-   "<right>" '(evil-window-right :wk "Switch to right buffer"))
+  ;; Buffer commands
+  (iz/leader-keys
+    "k" '(kill-this-buffer :wk "Kill this buffer")
+    "n" '(evil-next-buffer :wk "Cycle Windows")
+    "S" '(evil-window-vnew :wk "Vertical buffer split")
+    "s" '(evil-window-new :wk "Horizontal buffer split")
+    "<up>" '(evil-window-up :wk "Switch to upper buffer")
+    "<down>" '(evil-window-down :wk "Switch to lower buffer")
+    "<left>" '(evil-window-left :wk "Switch to left buffer")
+    "<right>" '(evil-window-right :wk "Switch to right buffer"))
 
- ;; Neotree commands
- (iz/leader-keys
-   "t" '(neotree-toggle :wk "Open neotree"))
+  ;; Neotree commands
+  (iz/leader-keys
+    "t" '(neotree-toggle :wk "Open neotree"))
 
- ;; Tab-switching
- (global-set-key (kbd "C-<tab>") 'evil-window-mru)
- 
- ;; Zoom in and out
- (global-set-key (kbd "C-+") 'text-scale-increase)
- (global-set-key (kbd "C--") 'text-scale-decrease)
- (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
- (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+  ;; Tab-switching
+  (global-set-key (kbd "C-<tab>") 'evil-window-mru)
+  
+  ;; Zoom in and out
+  (global-set-key (kbd "C-+") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+  (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+  (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
- ;; Minibuffer quits
- (global-set-key [escape] 'keyboard-escape-quit))
+  ;; Minibuffer quits
+  (global-set-key [escape] 'keyboard-escape-quit)
+
+  ;; Additional window management commands
+  (iz/leader-keys
+    "w" '(:ignore t :wk "Window Management")
+    "ww" '(delete-other-windows :wk "Delete other windows")
+    "wd" '(delete-window :wk "Delete window")
+    "ws" '(split-window-below :wk "Split window horizontally")
+    "wv" '(split-window-right :wk "Split window vertically")
+    "wo" '(other-window :wk "Switch to other window")
+    "wu" '(winner-undo :wk "Undo window change")
+    "wr" '(winner-redo :wk "Redo window change"))
+
+  ;; Enable winner-mode for undo/redo window configurations
+  (winner-mode 1)
+
+  ;; Resize windows
+  (global-set-key (kbd "C-x 7") 'partial-size-window)
+  (global-set-key (kbd "C-x 8") 'partial-size-window-h)
+
+  ;; Define functions for resizing windows
+  (defun partial-size-window ()
+    "Set the two split windows to 70% and 30% vertically."
+    (interactive)
+    (let ((size (- (truncate (* .70 (frame-height))) (window-height))))
+      (if (> size 0)
+          (enlarge-window size))))
+
+  (defun partial-size-window-h ()
+    "Set the two split windows to 70% and 30% horizontally."
+    (interactive)
+    (let ((size (- (truncate (* .70 (frame-width))) (window-width))))
+      (if (> size 0)
+          (enlarge-window-horizontally size)))))
 
 (use-package which-key
   :init
   (which-key-mode 1)
   :ensure t
+  :init
+  (which-key-mode)
+  (which-key-setup-minibuffer)
   :config
   (setq which-key-side-window-location 'bottom
         which-key-sort-order #'which-key-key-order-alpha
@@ -279,79 +315,54 @@
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
   (setq all-the-icons-dired-monochrome nil))
 
-(use-package all-the-icons-ivy-rich
-  :ensure t
-  :init (all-the-icons-ivy-rich-mode 1))
-
-(use-package company
-  :ensure t
-  :defer 2
-  :diminish
-  :custom
-  (company-begin-commands '(self-insert-command))
-  (company-idle-delay .05)
-  (company-minimum-prefix-length 2)
-  (company-show-numbers t)
-  (company-tooltip-align-annotations 't)
-  :config
-  (global-company-mode)
-  (setq lsp-completion-provider :capf))
+(use-package nerd-icons
+  :ensure t)
 
 (use-package frame-local
   :ensure t)
 
-(use-package company-box
+(use-package corfu 
   :ensure t
-  :after company frame-local
-  :hook (company-mode . company-box-mode))
+  :init (global-corfu-mode)
+  :custom
+  (corfu-cycle t)
+  (corfu-preselect 'prompt)
+  (corfu-quit-at-boundary nil)
+  (corfu-quit-no-match t)
+  (corfu-auto t)
+  :bind
+  (:map corfu-map
+	("TAB" . corfu-next)
+	([tab] . corfu-next)
+	("S-TAB" . corfu-previous)
+	([backtab] . corfu-previous)))
 
-(use-package counsel
+(use-package vertico
   :ensure t
-  :after ivy
-  :diminish
-  :config
-  (counsel-mode)
-  (setq ivy-initial-inputs-alist nil)) ;; removes starting ^ regex in M-x
+  :hook
+  (after-init . vertico-mode))
 
-(use-package ivy
+(use-package orderless
+  :ensure t
+  :init
+  (setq completion-styles '(orderless partial-completion basic)
+        completion-category-defaults nil
+        completion-category-overrides nil))
+
+(use-package consult
   :ensure t
   :bind
-  ;; ivy-resume resumes the last Ivy-based completion.
-  (("C-c C-r" . ivy-resume)
-   ("C-x B" . ivy-switch-buffer-other-window))
-  :diminish
-  :custom
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq enable-recursive-minibuffers t)
-  :config
-  (ivy-mode))
+  (("C-x w" . consult-mode-command)
+   ("C-x RET". consult-buffer)
+   ("C-x g" . consult-goto-line)
+   ("C-c f" . consult-fd)
+   ("C-x r" .  consult-ripgrep)
+   ("C-s" . consult-line))
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :init)
 
-(use-package ivy-rich
-  :after ivy
-  :ensure t
-  :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
-  :custom
-  (ivy-virtual-abbreviate 'full
-                          ivy-rich-switch-buffer-align-virtual-buffer t
-                          ivy-rich-path-style 'abbrev)
-  :config
-  (ivy-set-display-transformer 'ivy-switch-buffer
-                               'ivy-rich-switch-buffer-transformer))
-(use-package prescient
+(use-package consult-hoogle
   :ensure t)
-
-(use-package ivy-prescient
-  :after counsel
-  :ensure t
-  :config
-  (ivy-prescient-mode))
-
-(use-package company-prescient
-  :after company
-  :ensure t
-  :config
-  (company-prescient-mode))
 
 (use-package projectile
   :ensure t
@@ -376,14 +387,9 @@
   :config
   (beacon-mode))
 
-(use-package doom-modeline
+(use-package mood-line
   :ensure t
-  :init (doom-modeline-mode 1))
-
-(use-package nyan-mode
-  :ensure t
-  :config
-  (nyan-mode))
+  :hook (after-init . mood-line-mode))
 
 (use-package neotree
   :config
@@ -588,38 +594,16 @@
   ((rust-mode . eglot)
    (clojure-mode . eglot)))
 
-(setq treesit-font-lock-level 4)
+;; LSP
+(setq completion-category-overrides '((eglot (styles orderless))
+                                      (eglot-capf (styles orderless))))
 
-;; Tell Emacs to prefer the treesitter mode
-;; You'll want to run the command `M-x treesit-install-language-grammar' before editing.
-(setq major-mode-remap-alist
-      '((yaml-mode . yaml-ts-mode)
-        (bash-mode . bash-ts-mode)
-        (js-mode . js-ts-mode)
-        (typescript-mode . typescript-ts-mode)
-        (rust-mode . rust-ts-mode)
-        (go-mode . go-ts-mode)
-        (json-mode . json-ts-mode)
-        (css-mode . css-ts-mode)
-        (python-mode . python-ts-mode)))
-
-(setq treesit-language-source-alist
-      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-	(ocaml "https://github.com/tree-sitter/tree-sitter-ocaml")
-	(perl "https://github.com/tree-sitter-perl/tree-sitter-perl")
-	(css "https://github.com/tree-sitter/tree-sitter-css")
-	(go "https://github.com/tree-sitter/tree-sitter-go")
-	(rust "https://github.com/tree-sitter/tree-sitter-rust")
-	(html "https://github.com/tree-sitter/tree-sitter-html")
-	(ruby "https://github.com/tree-sitter/tree-sitter-ruby")
-	(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-	(json "https://github.com/tree-sitter/tree-sitter-json")
-	(python "https://github.com/tree-sitter/tree-sitter-python")
-	(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-	(java "https://github.com/tree-sitter/tree-sitter-java")
-	(scala "https://github.com/tree-sitter/tree-sitter-scala")
-	(c "https://github.com/tree-sitter/tree-sitter-c")
-	(cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (set-frame-parameter (selected-frame) 'alpha '(100 . 95))
 (add-to-list 'default-frame-alist '(alpha . (100 . 95)))
@@ -670,6 +654,14 @@
 (setq org-return-follows-link t)
 ;; Stop src blocks from auto indenting
 (setq org-edit-src-content-indentation 0)
+
+(set-charset-priority 'unicode)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
 
 (defun load-my-fonts (frame)
  (select-frame frame)
@@ -772,7 +764,53 @@ If the new path's directories does not exist, create them."
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
 (global-auto-revert-mode 1)  ;; Automatically show changes if the file has changed
 (recentf-mode 1)             ;; File history
-(prettify-symbols-mode 1)    ;; Combine symbold
+(prettify-symbols-mode 1)    ;; Combine symbols
+
+(setq native-comp-async-report-warnings-errors 'silent
+      byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
+      idle-update-delay 1.0
+      bidi-display-reordering 'left-to-right
+      bidi-paragraph-direction 'left-to-right
+      bidi-inhibit-bpa 1
+      cursor-in-non-selected-windows nil
+      highlight-nonselected-windows nil
+      fast-but-imprecise-scrolling t
+      inhibit-compacting-font-caches t
+      custom-safe-themes t)
+
+(setq-default
+ indent-tabs-mode nil
+ jit-lock-defer-time 0
+ window-combination-resize t
+ history-delete-duplicates t)
+
+(setq display-time-24hr-format t
+      truncate-lines t
+      tab-width 2
+      fill-column 80
+      line-move-visual t
+      frame-resize-pixelwise t
+      window-resize-pixelwise nil
+      split-width-threshold 80
+      create-lockfiles nil
+      make-backup-files nil
+      ;; But in case the user does enable it, some sensible defaults:
+      version-control t     ; number each backup file
+      backup-by-copying t   ; instead of renaming current file (clobbers links)
+      delete-old-versions t ; clean up after itself
+      kept-old-versions 5
+      kept-new-versions 5
+      backup-directory-alist (list (cons "." (concat user-emacs-directory "backup/")))
+      display-time-default-load-average nil
+      inhibit-startup-message t
+      confirm-kill-processes nil
+      load-prefer-newer t
+      x-select-enable-clipboard t
+      split-width-threshold 1)
+
+(setq-default inhibit-startup-echo-area-message (user-login-name)
+              display-line-numbers-width 3
+              inhibit-major-mode 'fundamental-mode)
 
 ;; i want line numbers when i program !!
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)

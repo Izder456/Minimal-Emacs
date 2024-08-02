@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(erc-hl-nicks yaml-mode which-key vterm-toggle undo-tree toml-mode toc-org sly rust-mode raku-mode rainbow-mode rainbow-delimiters org-superstar org-auto-tangle org-appear obsidian nyan-mode nim-mode neotree json-mode janet-mode jabber ivy-prescient inf-elixir hy-mode hl-todo general geiser-chicken forth-mode flycheck-rust flycheck-raku flycheck-projectile flycheck-ocaml flycheck-elixir flycheck-clojure fennel-mode exec-path-from-shell evil-collection ement elixir-mode elfeed-dashboard elcord eglot editorconfig doom-themes doom-modeline denote dashboard d-mode crystal-mode counsel company-prescient company-box clhs beacon auto-virtualenv astyle all-the-icons-ivy-rich all-the-icons-dired))
+   '(unicode-fonts treesit-auto mood-line consult-hoogle consult orderless vertico corfu erc-image yaml-mode which-key vterm-toggle undo-tree toml-mode toc-org sly rust-mode raku-mode rainbow-mode rainbow-delimiters org-superstar org-auto-tangle org-appear obsidian nyan-mode nim-mode neotree json-mode janet-mode jabber ivy-prescient inf-elixir hy-mode hl-todo general geiser-chicken forth-mode flycheck-rust flycheck-raku flycheck-projectile flycheck-ocaml flycheck-elixir flycheck-clojure fennel-mode exec-path-from-shell evil-collection erc-hl-nicks ement elixir-mode elfeed-dashboard elcord eglot editorconfig doom-themes doom-modeline denote dashboard d-mode crystal-mode counsel company-prescient company-box clhs beacon auto-virtualenv astyle all-the-icons-ivy-rich all-the-icons-dired))
  '(tags-apropos-additonal-actions '(("Common Lisp" clhs-doc clhs-symbols))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

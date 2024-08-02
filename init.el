@@ -220,8 +220,10 @@
   (erc-fill-function nil)
   (erc-fill-mode nil)
   :config
-  (add-to-list 'erc-modules 'notifications)
   (add-to-list 'erc-modules 'spelling)
+  (add-to-list 'erc-modules 'match)
+  (add-to-list 'erc-modules 'sound)
+  (add-to-list 'erc-modules 'smiley)
   (add-to-list 'erc-modules 'image)
   (add-to-list 'erc-modules 'hl-nicks)
   (erc-services-mode 1)
@@ -318,6 +320,9 @@
 (use-package nerd-icons
   :ensure t)
 
+(use-package emojify
+  :hook (after-init . global-emojify-mode))
+
 (use-package frame-local
   :ensure t)
 
@@ -387,9 +392,9 @@
   :config
   (beacon-mode))
 
-(use-package mood-line
+(use-package doom-modeline
   :ensure t
-  :hook (after-init . mood-line-mode))
+  :init (doom-modeline-mode 1))
 
 (use-package neotree
   :config
@@ -784,7 +789,7 @@ If the new path's directories does not exist, create them."
  window-combination-resize t
  history-delete-duplicates t)
 
-(setq display-time-24hr-format t
+(setq display-time-24hr-format nil
       truncate-lines t
       tab-width 2
       fill-column 80

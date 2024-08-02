@@ -5,6 +5,9 @@
 # Packaging
 .cask
 
+# emojis
+*emojis*
+
 # extra crap
 *plstore
 *flycheck*

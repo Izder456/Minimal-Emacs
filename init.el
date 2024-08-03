@@ -671,11 +671,11 @@
 (defun load-my-fonts (frame)
  (select-frame frame)
  (set-face-attribute 'default nil
-                      :font "Spleen"
+                      :font "Spleen 8x16"
                       :weight 'regular
                       :height 120)
  (set-face-attribute 'fixed-pitch nil
-                      :font "Spleen"
+                      :font "Spleen 8x16"
                       :weight 'regular
                       :height 120)
  (set-face-attribute 'variable-pitch nil

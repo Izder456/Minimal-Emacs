@@ -94,6 +94,8 @@
   (editorconfig-mode 1))
 
 (use-package general
+  :after evil
+  :after consult
   :config
   ;; Integrate general with evil-mode
   (general-evil-setup)
@@ -120,8 +122,14 @@
   (iz/leader-keys
     "t" '(neotree-toggle :wk "Open neotree"))
 
-  ;; Tab-switching
-  (global-set-key (kbd "C-<tab>") 'evil-window-mru)
+  ;; Consult
+  (iz/leader-keys
+    "RET" '(consult-buffer :wk "Consult Buffer Swap")
+    "b"   '(consult-buffer :wk "Consult Buffer Swap")
+    "g"   '(consult-goto-line :wk "Consult Goto"))
+
+    ;; Tab-switching
+  (global-set-key (kbd "M-<tab>") 'evil-window-mru)
   
   ;; Zoom in and out
   (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -131,17 +139,6 @@
 
   ;; Minibuffer quits
   (global-set-key [escape] 'keyboard-escape-quit)
-
-  ;; Additional window management commands
-  (iz/leader-keys
-    "w" '(:ignore t :wk "Window Management")
-    "ww" '(delete-other-windows :wk "Delete other windows")
-    "wd" '(delete-window :wk "Delete window")
-    "ws" '(split-window-below :wk "Split window horizontally")
-    "wv" '(split-window-right :wk "Split window vertically")
-    "wo" '(other-window :wk "Switch to other window")
-    "wu" '(winner-undo :wk "Undo window change")
-    "wr" '(winner-redo :wk "Redo window change"))
 
   ;; Enable winner-mode for undo/redo window configurations
   (winner-mode 1)
@@ -356,14 +353,6 @@
 
 (use-package consult
   :ensure t
-  :bind
-  (("C-x w" . consult-mode-command)
-   ("C-x RET" . consult-buffer)
-   ("C-x b" . consult-buffer)
-   ("C-x g" . consult-goto-line)
-   ("C-c f" . consult-fd)
-   ("C-x" . consult-ripgrep)
-   ("C-s" . consult-line))
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init)
 
@@ -672,11 +661,11 @@
 (defun load-my-fonts (frame)
  (select-frame frame)
  (set-face-attribute 'default nil
-                      :font "Spleen 8x16"
+                      :font "Spleen"
                       :weight 'regular
                       :height 120)
  (set-face-attribute 'fixed-pitch nil
-                      :font "Spleen 8x16"
+                      :font "Spleen"
                       :weight 'regular
                       :height 120)
  (set-face-attribute 'variable-pitch nil

@@ -42,12 +42,7 @@
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
  ;; Set the undo system to undo-tree for a more powerful undo experience
- (evil-set-undo-system 'undo-tree)
- :bind
- (:map evil-motion-state-map
-       ("s" . 'evil-avy-goto-char-2))
- (:map evil-normal-state-map
-       ("s" . nil)))
+ (evil-set-undo-system 'undo-tree))
 
 (use-package evil-collection
  :ensure t
@@ -107,6 +102,21 @@
     :prefix "C-x" ;; set leader
     :global-prefix "C-x") ;; access leader in insert mode
 
+  ;; Define functions for resizing windows
+  (defun partial-size-window ()
+    "Set the two split windows to 70% and 30% vertically."
+    (interactive)
+    (let ((size (- (truncate (* .70 (frame-height))) (window-height))))
+      (if (> size 0)
+          (enlarge-window size))))
+
+  (defun partial-size-window-h ()
+    "Set the two split windows to 70% and 30% horizontally."
+    (interactive)
+    (let ((size (- (truncate (* .70 (frame-width))) (window-width))))
+      (if (> size 0)
+          (enlarge-window-horizontally size))))
+  
   ;; Buffer commands
   (iz/leader-keys
     "k" '(kill-this-buffer :wk "Kill this buffer")
@@ -116,7 +126,9 @@
     "<up>" '(evil-window-up :wk "Switch to upper buffer")
     "<down>" '(evil-window-down :wk "Switch to lower buffer")
     "<left>" '(evil-window-left :wk "Switch to left buffer")
-    "<right>" '(evil-window-right :wk "Switch to right buffer"))
+    "<right>" '(evil-window-right :wk "Switch to right buffer")
+    "r" '(partial-size-window :wk "Partial size window vertical")
+    "r" '(partial-size-window-h :wk "Partial size window horizontal"))
 
   ;; Neotree commands
   (iz/leader-keys
@@ -141,26 +153,7 @@
   (global-set-key [escape] 'keyboard-escape-quit)
 
   ;; Enable winner-mode for undo/redo window configurations
-  (winner-mode 1)
-
-  ;; Resize windows
-  (global-set-key (kbd "C-x 7") 'partial-size-window)
-  (global-set-key (kbd "C-x 8") 'partial-size-window-h)
-
-  ;; Define functions for resizing windows
-  (defun partial-size-window ()
-    "Set the two split windows to 70% and 30% vertically."
-    (interactive)
-    (let ((size (- (truncate (* .70 (frame-height))) (window-height))))
-      (if (> size 0)
-          (enlarge-window size))))
-
-  (defun partial-size-window-h ()
-    "Set the two split windows to 70% and 30% horizontally."
-    (interactive)
-    (let ((size (- (truncate (* .70 (frame-width))) (window-width))))
-      (if (> size 0)
-          (enlarge-window-horizontally size)))))
+  (winner-mode 1))
 
 (use-package which-key
   :init

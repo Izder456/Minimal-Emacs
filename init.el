@@ -358,10 +358,11 @@
   :ensure t
   :bind
   (("C-x w" . consult-mode-command)
-   ("C-x RET". consult-buffer)
+   ("C-x RET" . consult-buffer)
+   ("C-x b" . consult-buffer)
    ("C-x g" . consult-goto-line)
    ("C-c f" . consult-fd)
-   ("C-x r" .  consult-ripgrep)
+   ("C-x" . consult-ripgrep)
    ("C-s" . consult-line))
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init)

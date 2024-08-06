@@ -179,11 +179,10 @@
 (defvar notify-program "notify-send")
 
 (defun notify-send (title message)
-  (start-process "notify" " notify"
-		 notify-program "--expire-time=4000" title message))
+  (start-process-shell-command notify-program "--expire-time=4000" title message))
 
 (use-package erc
-  :preface
+  :init
   (defun erc-mention (match-type nickuserhost msg)
     (when (and (eq match-type 'current-nick)
   	       (not (string-match "^\\*\\*\\*" msg)))

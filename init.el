@@ -179,17 +179,21 @@
 (defvar notify-program "notify-send")
 
 (defun notify-send (title message)
-  (start-process-shell-command notify-program "--expire-time=4000" title message))
+  (start-process "notify" " notify"
+                 notify-program "--expire-time=4000" title message))
 
 (use-package erc
+  :demand t
   :init
   (defun erc-mention (match-type nickuserhost msg)
-    (when (and (eq match-type 'current-nick)
-  	       (not (string-match "^\\*\\*\\*" msg)))
+    (when (eq match-type 'current-nick)
       (notify-send "(IRC)"
   		   (format "PING! %s" msg))))
-  :hook
-  (erc-text-matched-hook . erc-mention)
+  (defun erc-clean-url (string)
+    (when (stringp string)
+      (replace-regexp-in-string "\\(?:?ex\\).*$" "" string)))
+  (add-hook 'erc-text-matched-hook 'erc-mention)
+  (add-hook 'erc-insert-pre-hook 'erc-clean-url)
   :custom
   (erc-hide-list '("JOIN" "PART" "QUIT"))
   (erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
@@ -227,7 +231,7 @@
   :after erc)
 
 (use-package jabber
-  :preface
+  :init
   (defun jabber-notify (from buf text proposed-alert)
     (when (or jabber-message-alert-same-buffer
 	      (not (memq (selected-window) (get-buffer-window-list buf))))
@@ -237,8 +241,7 @@
 		       (format "%s: %s" (jabber-jid-resource from) text))
 	(notify-send (format "%s" (jabber-jid-displayname from))
 		     test))))
-  :hook
-  (jabber-alert-message-hooks . jabber-notify)
+  (add-hook 'jabber-alert-message-hooks 'jabber-notify)
   :custom
   (jabber-mode-line-mode 1))
 

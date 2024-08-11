@@ -197,11 +197,23 @@
     (when (eq match-type 'current-nick)
       (notify-send "(IRC)"
   		   (format "PING! %s" msg))))
-  (defun erc-clean-url (string)
-    (when (stringp string)
-      (replace-regexp-in-string "\\(?:?ex\\).*$" "" string)))
+  (defun erc-clean-image-urls-in-buffer ()
+    "Clean URLs by removing trackers after image extensions in the current buffer."
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "\\(<\\)?\\(https?://[^ >]+\\)\\.\\(jpg\\|jpeg\\|png\\|gif\\|webp\\|mov\\|mp4\\|mkv\\)\\([^ >]*\\)\\(>\\)?" nil t)
+        (let ((prefix (match-string 1))
+              (url (match-string 2))
+              (extension (match-string 3))
+              (suffix (match-string 5)))
+          (replace-match (concat (or prefix "")
+                                 url
+                                 "."
+                                 extension
+                                 (or suffix "")
+                                 "\n\n"))))))
+  (add-hook 'erc-insert-post-hook 'erc-clean-image-urls-in-buffer)
   (add-hook 'erc-text-matched-hook 'erc-mention)
-  (add-hook 'erc-insert-modify-hook 'erc-clean-url)
   :custom
   (erc-hide-list '("JOIN" "PART" "QUIT"))
   (erc-lurker-hide-list '("JOIN" "PART" "QUIT"))

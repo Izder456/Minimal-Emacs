@@ -73,7 +73,7 @@
 	 "/usr/local/jdk-17/bin" path-separator
          (getenv "PATH")))
 
-(use-package undo-tree
+(use-package undo-tree-vf
   :ensure t
   :defer t
   :config

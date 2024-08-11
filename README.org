@@ -149,7 +149,7 @@
 #+end_src
 **** Undo Tree
 #+begin_src elisp :tangle init.el
-(use-package undo-tree
+(use-package undo-tree-vf
   :ensure t
   :defer t
   :config

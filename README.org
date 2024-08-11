@@ -286,7 +286,7 @@ for editor consistency
     (when (stringp string)
       (replace-regexp-in-string "\\(?:?ex\\).*$" "" string)))
   (add-hook 'erc-text-matched-hook 'erc-mention)
-  (add-hook 'erc-insert-pre-hook 'erc-clean-url)
+  (add-hook 'erc-insert-modify-hook 'erc-clean-url)
   :custom
   (erc-hide-list '("JOIN" "PART" "QUIT"))
   (erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
@@ -308,10 +308,10 @@ for editor consistency
   :config
   (add-to-list 'erc-modules 'spelling)
   (add-to-list 'erc-modules 'match)
-  (add-to-list 'erc-modules 'sound)
   (add-to-list 'erc-modules 'smiley)
   (add-to-list 'erc-modules 'image)
   (add-to-list 'erc-modules 'hl-nicks)
+  (setq erc-modules (remove 'stamp erc-modules))
   (erc-services-mode 1)
   (erc-update-modules)
   (erc-fill-disable))

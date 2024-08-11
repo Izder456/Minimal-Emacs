@@ -10,53 +10,55 @@
 				   ("nongnu" . 2)
 				   ("gnu" . 3)))
 (use-package use-package
+  :demand t
   :custom
   (use-package-always-ensure t)
   (package-native-compile t)
   (warning-minimum-level :error))
 
 (use-package evil
- :ensure t
- :init
- ;; Configure evil to not bind its own keybindings
- (setq evil-want-keybinding nil)
- ;; Set window splitting behavior
- (setq evil-vsplit-window-right t)
- (setq evil-split-window-below t)
- ;; Enable evil mode
- (evil-mode 1)
- :config
- ;; Define a custom operator to delete without affecting the register
- (evil-define-operator evil-delete-without-register (beg end type yank-handler)
+  :ensure t
+  :defer t
+  :init
+  ;; Configure evil to not bind its own keybindings
+  (setq evil-want-keybinding nil)
+  ;; Set window splitting behavior
+  (setq evil-vsplit-window-right t)
+  (setq evil-split-window-below t)
+  ;; Enable evil mode
+  (evil-mode 1)
+  :config
+  ;; Define a custom operator to delete without affecting the register
+  (evil-define-operator evil-delete-without-register (beg end type yank-handler)
     (interactive "<R><y>")
     (evil-delete beg end type ?_ yank-handler))
- ;; Bind the custom delete operator to 'd' in normal and visual states
- (define-key evil-normal-state-map (kbd "d") 'evil-delete-without-register)
- (define-key evil-visual-state-map (kbd "d") 'evil-delete-without-register)
- ;; Bind 'D' to the default evil delete in normal and visual states
- (define-key evil-normal-state-map (kbd "D") 'evil-delete)
- (define-key evil-visual-state-map (kbd "D") 'evil-delete)
- ;; Disable certain keys in motion state to prevent accidental key presses
- (with-eval-after-load 'evil-maps
+  ;; Bind the custom delete operator to 'd' in normal and visual states
+  (define-key evil-normal-state-map (kbd "d") 'evil-delete-without-register)
+  (define-key evil-visual-state-map (kbd "d") 'evil-delete-without-register)
+  ;; Bind 'D' to the default evil delete in normal and visual states
+  (define-key evil-normal-state-map (kbd "D") 'evil-delete)
+  (define-key evil-visual-state-map (kbd "D") 'evil-delete)
+  ;; Disable certain keys in motion state to prevent accidental key presses
+  (with-eval-after-load 'evil-maps
     (define-key evil-motion-state-map (kbd "SPC") nil)
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
- ;; Set the undo system to undo-tree for a more powerful undo experience
- (evil-set-undo-system 'undo-tree))
+  ;; Set the undo system to undo-tree for a more powerful undo experience
+  (evil-set-undo-system 'undo-tree))
 
 (use-package evil-collection
- :ensure t
- :after evil
- :config
- ;; Initialize evil-collection with a specific list of modes
- (setq evil-collection-mode-list '(dashboard dired ibuffer))
- (evil-collection-init))
+  :ensure t
+  :after evil
+  :config
+  ;; Initialize evil-collection with a specific list of modes
+  (setq evil-collection-mode-list '(dashboard dired ibuffer))
+  (evil-collection-init))
 
 ;; Set the location of the custom file and load it if it exists
 (setq-default custom-file
               (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
- (load custom-file))
+  (load custom-file))
 
 ;; Ensure customizations are loaded immediately
 (setq custom-initialize-delay nil)
@@ -72,25 +74,23 @@
          (getenv "PATH")))
 
 (use-package undo-tree
- :ensure t
- :config
- ;; Enable undo-tree globally
- (global-undo-tree-mode)
- ;; Set the directory for undo-tree history files
- ;; This helps keep the Emacs configuration directory clean
- (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree")))
- ;; Ensure the undo-tree directory exists
- (unless (file-exists-p "~/.emacs.d/undo-tree")
-    (make-directory "~/.emacs.d/undo-tree" t)))
+  :ensure t
+  :defer t
+  :config
+  (global-undo-tree-mode)
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree")))
+  (unless (file-exists-p "~/.emacs.d/undo-tree")
+    (make-directory "~/.emacs.d/undo-tree")))
 
 (use-package editorconfig
   :ensure t
+  :defer t
   :config
   (editorconfig-mode 1))
 
 (use-package general
-  :after evil
-  :after consult
+  :ensure t
+  :defer t
   :config
   ;; Integrate general with evil-mode
   (general-evil-setup)
@@ -140,8 +140,13 @@
     "b"   '(consult-buffer :wk "Consult Buffer Swap")
     "g"   '(consult-goto-line :wk "Consult Goto"))
 
-    ;; Tab-switching
-  (global-set-key (kbd "M-<tab>") 'evil-window-mru)
+  (iz/leader-keys
+    "C-p" '(popper-toggle :wk "Popper Toggle")
+    "M-p" '(popper-cycle :wk "Popper Cycle")
+    "C-M-p" '(popper-toggle-type :wk "Popper Toggle Type")) 
+
+  ;; Tab-switching
+  (global-set-key (kbd "C-<tab>") 'evil-window-mru)
   
   ;; Zoom in and out
   (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -156,6 +161,8 @@
   (winner-mode 1))
 
 (use-package which-key
+  :ensure t
+  :defer t
   :init
   (which-key-mode 1)
   :ensure t
@@ -183,7 +190,8 @@
                  notify-program "--expire-time=4000" title message))
 
 (use-package erc
-  :demand t
+  :ensure t
+  :defer t
   :init
   (defun erc-mention (match-type nickuserhost msg)
     (when (eq match-type 'current-nick)
@@ -225,12 +233,16 @@
 
 (use-package erc-hl-nicks
   :ensure t
+  :defer t
   :after erc)
 (use-package erc-image
   :ensure t
+  :defer t
   :after erc)
 
 (use-package jabber
+  :ensure t
+  :defer t
   :init
   (defun jabber-notify (from buf text proposed-alert)
     (when (or jabber-message-alert-same-buffer
@@ -248,6 +260,7 @@
 (use-package denote
   :pin gnu
   :ensure t
+  :defer t
   :config
   (setq denote-directory (expand-file-name "~/Documents/notes/denote/"))
   (setq denote-known-keywords '())
@@ -255,6 +268,8 @@
   (add-hook 'dired-mode-hook #'denote-dired-mode))
 
 (use-package org-superstar
+  :ensure t
+  :defer t
   :hook
   (org-mode . org-superstar-mode)
   :config
@@ -273,16 +288,21 @@
   (setq org-indent-mode-turns-on-hiding-stars nil))
 
 (use-package toc-org
+  :ensure t
+  :defer t
   :hook
   (org-mode . toc-org-mode)
   :commands toc-org-enable)
 
 (use-package org-appear
+  :ensure t
+  :defer t
   :hook
   (org-mode . org-appear-mode))
 
 (use-package dashboard
   :ensure t
+  :defer t
   :init
   (setq initial-buffer-choice 'dashboard-open)
   (setq dashboard-set-heading-icons t)
@@ -301,25 +321,32 @@
 
 (use-package all-the-icons
   :ensure t
+  :defer t
   :if (display-graphic-p))
+
+(use-package nerd-icons
+  :ensure t
+  :defer t)
+
+(use-package emojify
+  :ensure t
+  :defer t
+  :hook (after-init . global-emojify-mode))
 
 (use-package all-the-icons-dired
   :ensure t
+  :defer t
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
   (setq all-the-icons-dired-monochrome nil))
 
-(use-package nerd-icons
-  :ensure t)
-
-(use-package emojify
-  :hook (after-init . global-emojify-mode))
-
 (use-package frame-local
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package corfu 
   :ensure t
+  :defer t
   :init (global-corfu-mode)
   :custom
   (corfu-cycle t)
@@ -336,11 +363,13 @@
 
 (use-package vertico
   :ensure t
+  :defer t
   :hook
   (after-init . vertico-mode))
 
 (use-package orderless
   :ensure t
+  :defer t
   :init
   (setq completion-styles '(orderless partial-completion basic)
         completion-category-defaults nil
@@ -348,18 +377,24 @@
 
 (use-package consult
   :ensure t
+  :defer t
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init)
 
 (use-package consult-hoogle
-  :ensure t)
+  :ensure t
+  :defer t
+  :after consult)
 
 (use-package projectile
   :ensure t
+  :defer t
   :config
   (projectile-mode +1))
 
 (use-package rainbow-delimiters
+  :ensure t
+  :defer t
   :hook ((prog-mode . rainbow-delimiters-mode)
          (sly-mode . rainbow-delimiters-mode)
          (cider-mode . rainbow-delimiters-mode)
@@ -369,24 +404,30 @@
          (hy-mode . rainbow-delimiters-mode)))
 
 (use-package rainbow-mode
+  :ensure t
+  :defer t
   :diminish
   :hook org-mode prog-mode)
 
 (use-package beacon
   :ensure t
+  :defer t
   :config
   (beacon-mode))
 
 (use-package doom-modeline
   :ensure t
+  :defer t
   :init (doom-modeline-mode 1))
 
 (use-package neotree
+  :ensure t
+  :defer t
   :config
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (setq neo-smart-open t
         neo-show-hidden-files t
-        neo-window-width 30
+        neo-window-width 20
         neo-window-fixed-size nil
         inhibit-compacting-font-caches t
         projectile-switch-project-action 'neotree-projectile-action)
@@ -400,10 +441,12 @@
                   (setq auto-hscroll-mode nil)))))
 
 (use-package vterm
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package vterm-toggle
   :ensure t
+  :defer t
   :after vterm
   :config
   ;; When running programs in Vterm and in 'normal' mode, make sure that ESC
@@ -427,6 +470,7 @@
 
 (use-package hl-todo
   :ensure t
+  :defer t
   :hook ((org-mode . hl-todo-mode)
          (prog-mode . hl-todo-mode))
   :config
@@ -439,30 +483,14 @@
           ("NOTE"       success bold)
           ("DEPRECATED" font-lock-doc-face bold))))
 
-(use-package elfeed
+(use-package flyspell
   :ensure t
-  :custom
-  (elfeed-db-directory
-   (expand-file-name "elfeed" user-emacs-directory)
-   (elfeed-show-entry-switch 'display-buffer))
-  :bind
-  ("C-c w e" . elfeed)
-  :config
-  (setq elfeed-feeds
-	'("https://xkcd.com/rss.xml"
-	  "https://dataswamp.org/~solene/rss.xml"
-	  "https://undeadly.org/cgi?action=rss")))
-
-(use-package elfeed-dashboard
-  :ensure t
-  :config
-  (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
-  (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links))
-
-(setq scheme-program-name "chicken-csi -:c")
-(setq geiser-chicken-binary "chicken-csi")
-(add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  :defer t
+  :init
+  (setq scheme-program-name "chicken-csi -:c")
+  (setq geiser-chicken-binary "chicken-csi")
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 
 (use-package flycheck
   :ensure t
@@ -470,21 +498,26 @@
   :diminish
   :config (global-flycheck-mode))
 (use-package flycheck-projectile
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package flycheck-rust
   :ensure t
+  :defer t
   :config
   (with-eval-after-load 'rust-mode
     (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 (use-package flycheck-elixir
   :ensure t
+  :defer t
   :config
   (with-eval-after-load 'elixir-mode
     (add-hook 'elixir-mode-hook #'flycheck-elixir-setup)))
 (use-package flycheck-clojure
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package flycheck-raku
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; Config modes
 (use-package yaml-mode ;; Insecure Pythonic config format
@@ -558,6 +591,7 @@
 ;; Misc Programming Stuffs
 (use-package clhs ;; Common Lisp Hyperspec
   :ensure t
+  :defer t
   :config
   (autoload 'clhc-doc "clhs" "Get doc on ANSI CL" t)
   (define-key help-map "\C-l" 'clhs-doc)
@@ -566,6 +600,7 @@
 
 (use-package auto-virtualenv ;; For Python/Hy
   :ensure t
+  :defer t
   :init
   (use-package pyvenv
     :ensure t)
@@ -573,8 +608,29 @@
   (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
   (add-hook 'projectile-after-switch-project-hook 'auto-virtualenv-set-virtualenv))
 
+(use-package popper
+  :ensure t
+  :defer t
+  :init
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          help-mode
+          compilation-mode
+          eshell-mode
+          ielm-mode
+          "\\*sly-.*\\*"
+          cider-repl-mode
+          geiser-repl-mode
+          inf-elixir-mode
+          vterm-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))
+
 (use-package eglot
   :ensure t
+  :defer t
   :config
   (add-to-list 'eglot-server-programs '((clojure-mode . ("clojure-lsp"))))
   (add-to-list 'eglot-server-programs '((rust-mode . ("rust-analyzer"))))
@@ -589,6 +645,8 @@
                                       (eglot-capf (styles orderless))))
 
 (use-package treesit-auto
+  :ensure t
+  :defer t
   :custom
   (treesit-auto-install 'prompt)
   :config
@@ -654,46 +712,47 @@
 (prefer-coding-system 'utf-8)
 
 (defun load-my-fonts (frame)
- (select-frame frame)
- (set-face-attribute 'default nil
+  (select-frame frame)
+  (set-face-attribute 'default nil
                       :font "Spleen"
                       :weight 'regular
                       :height 120)
- (set-face-attribute 'fixed-pitch nil
+  (set-face-attribute 'fixed-pitch nil
                       :font "Spleen"
                       :weight 'regular
                       :height 120)
- (set-face-attribute 'variable-pitch nil
+  (set-face-attribute 'variable-pitch nil
                       :font "Freeserif"
                       :weight 'regular
                       :height 1.2))
 
 (if (daemonp)
     (add-hook 'after-make-frame-functions #'load-my-fonts)
- (load-my-fonts (selected-frame)))
+  (load-my-fonts (selected-frame)))
 
 ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
 (with-eval-after-load 'org-faces
- (set-face-attribute 'org-block nil
+  (set-face-attribute 'org-block nil
                       :foreground nil
                       :inherit 'fixed-pitch)
- (set-face-attribute 'org-table nil
+  (set-face-attribute 'org-table nil
                       :inherit 'fixed-pitch)
- (set-face-attribute 'org-formula nil
+  (set-face-attribute 'org-formula nil
                       :inherit 'fixed-pitch)
- (set-face-attribute 'org-code nil
+  (set-face-attribute 'org-code nil
                       :inherit '(shadow fixed-pitch))
- (set-face-attribute 'org-verbatim nil
+  (set-face-attribute 'org-verbatim nil
                       :inherit '(shadow fixed-pitch))
- (set-face-attribute 'org-special-keyword nil
+  (set-face-attribute 'org-special-keyword nil
                       :inherit '(font-lock-comment-face fixed-pitch))
- (set-face-attribute 'org-meta-line nil
+  (set-face-attribute 'org-meta-line nil
                       :inherit '(font-lock-comment-face fixed-pitch))
- (set-face-attribute 'org-checkbox nil
+  (set-face-attribute 'org-checkbox nil
                       :inherit 'fixed-pitch))
 
 (use-package unicode-fonts
   :ensure t
+  :defer t
   :config
   (unicode-fonts-setup))
 
@@ -744,7 +803,7 @@ If the new path's directories does not exist, create them."
 ;; the gtk stuff
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(scroll-bar-mode 1)
+(scroll-bar-mode -1)
 
 (setq history-length 25)     ;; History Length
 (savehist-mode 1)            ;; Save history
@@ -753,7 +812,6 @@ If the new path's directories does not exist, create them."
 (electric-indent-mode 1)     ;; Indents
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
 (global-auto-revert-mode 1)  ;; Automatically show changes if the file has changed
-(recentf-mode 1)             ;; File history
 (prettify-symbols-mode 1)    ;; Combine symbols
 
 (setq native-comp-async-report-warnings-errors 'silent

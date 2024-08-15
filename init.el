@@ -5,10 +5,10 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/"))
 
-(setq package-archive-priorities '(("jcs-elpa" . 0)
-				   ("melpa" . 1)
-				   ("nongnu" . 2)
-				   ("gnu" . 3)))
+(setq package-archive-priorities '(("nongnu" . 0)
+				   ("gnu" . 1)
+				   ("melpa" . 2)
+				   ("jcs-elpa" . 3)))
 (use-package use-package
   :demand t
   :custom
@@ -44,7 +44,7 @@
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
   ;; Set the undo system to undo-tree for a more powerful undo experience
-  (evil-set-undo-system 'undo-tree))
+  (evil-set-undo-system 'undo-fu))
 
 (use-package evil-collection
   :ensure t
@@ -73,14 +73,9 @@
 	 "/usr/local/jdk-17/bin" path-separator
          (getenv "PATH")))
 
-(use-package undo-tree-vf
+(use-package undo-fu
   :ensure t
-  :defer t
-  :config
-  (global-undo-tree-mode)
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree")))
-  (unless (file-exists-p "~/.emacs.d/undo-tree")
-    (make-directory "~/.emacs.d/undo-tree")))
+  :defer t)
 
 (use-package editorconfig
   :ensure t
@@ -147,7 +142,7 @@
 
   ;; Tab-switching
   (global-set-key (kbd "C-<tab>") 'evil-window-mru)
-  
+
   ;; Zoom in and out
   (global-set-key (kbd "C-+") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)

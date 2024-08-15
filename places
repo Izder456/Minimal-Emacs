@@ -1,7 +1,6 @@
 ;;; -*- coding: utf-8; mode: lisp-data -*-
-(("/home/izder456/.emacs.d/elpa/sly-1.0.43/test/sly-cl-indent-test.txt" . 18795)
+(("/home/izder456/Projects/Personal/crfetch/src/crfetch.cr" . 1077)
+ ("/home/izder456/.emacs.d/elpa/sly-1.0.43/test/sly-cl-indent-test.txt" . 18795)
  ("/home/izder456/.emacs.d/README.org" . 8989)
  ("/home/izder456/.dotfiles/README.org" . 9041)
- ("/home/izder456/.dotfiles/.fizshrc" . 686)
- ("/home/izder456/Projects/crfetch/README.org" . 1818)
- ("/home/izder456/Projects/crfetch/src/crfetch.cr" . 6803))
+ ("/home/izder456/.dotfiles/.fizshrc" . 686))

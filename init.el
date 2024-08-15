@@ -726,17 +726,21 @@
 (defun load-my-fonts (frame)
   (select-frame frame)
   (set-face-attribute 'default nil
-                      :font "Spleen"
-                      :weight 'regular
-                      :height 120)
+		      :font "Spleen"
+		      :weight 'regular
+		      :height 120)
+  (set-face-attribute 'bold nil
+		      :font "Spleen"
+		      :weight 'regular
+		      :height 120)
   (set-face-attribute 'fixed-pitch nil
-                      :font "Spleen"
-                      :weight 'regular
-                      :height 120)
+		      :font "Spleen"
+		      :weight 'regular
+		      :height 120)
   (set-face-attribute 'variable-pitch nil
-                      :font "Freeserif"
-                      :weight 'regular
-                      :height 1.2))
+		      :font "Freeserif"
+		      :weight 'regular
+		      :height 1.2))
 
 (if (daemonp)
     (add-hook 'after-make-frame-functions #'load-my-fonts)
@@ -745,22 +749,22 @@
 ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
 (with-eval-after-load 'org-faces
   (set-face-attribute 'org-block nil
-                      :foreground nil
-                      :inherit 'fixed-pitch)
+		      :foreground nil
+		      :inherit 'fixed-pitch)
   (set-face-attribute 'org-table nil
-                      :inherit 'fixed-pitch)
+		      :inherit 'fixed-pitch)
   (set-face-attribute 'org-formula nil
-                      :inherit 'fixed-pitch)
+		      :inherit 'fixed-pitch)
   (set-face-attribute 'org-code nil
-                      :inherit '(shadow fixed-pitch))
+		      :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-verbatim nil
-                      :inherit '(shadow fixed-pitch))
+		      :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-special-keyword nil
-                      :inherit '(font-lock-comment-face fixed-pitch))
+		      :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-meta-line nil
-                      :inherit '(font-lock-comment-face fixed-pitch))
+		      :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil
-                      :inherit 'fixed-pitch))
+		      :inherit 'fixed-pitch))
 
 (use-package unicode-fonts
   :ensure t

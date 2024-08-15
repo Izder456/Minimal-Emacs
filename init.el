@@ -388,11 +388,6 @@
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init)
 
-(use-package consult-hoogle
-  :ensure t
-  :defer t
-  :after consult)
-
 (use-package projectile
   :ensure t
   :defer t

@@ -488,11 +488,6 @@ Org bullets but better
   :defer t
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init)
-
-(use-package consult-hoogle
-  :ensure t
-  :defer t
-  :after consult)
 #+end_src
 ** Projectile
 #+begin_src elisp :tangle init.el

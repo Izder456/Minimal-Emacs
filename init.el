@@ -1,20 +1,54 @@
-(require 'package)
-;; Add the Melpa repository to the list of package sources
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")) ;; installed by default
-(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/")) ;; installed by default from Emacs 28 onwards
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/"))
+(defvar elpaca-installer-version 0.7)
+(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                              :ref nil :depth 1
+                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                              :build (:not elpaca--activate-package)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                 ,@(when-let ((depth (plist-get order :depth)))
+                                                     (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                 ,(plist-get order :repo) ,repo))))
+                 ((zerop (call-process "git" nil buffer t "checkout"
+                                       (or (plist-get order :ref) "--"))))
+                 (emacs (concat invocation-directory invocation-name))
+                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                 ((require 'elpaca))
+                 ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (load "./elpaca-autoloads")))
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
+;; Install use-package support
+(elpaca elpaca-use-package
+  ;; Enable :ensure use-package keyword.
+  (elpaca-use-package-mode)
+  ;; Assume :ensure t unless otherwise specified.
+  (setq elpaca-use-package-by-default t))
 
-(setq package-archive-priorities '(("nongnu" . 0)
-				   ("gnu" . 1)
-				   ("melpa" . 2)
-				   ("jcs-elpa" . 3)))
-(use-package use-package
-  :demand t
-  :custom
-  (use-package-always-ensure t)
-  (package-native-compile t)
-  (warning-minimum-level :error))
+;; Block until current queue processed.
+(elpaca-wait)
+
+(require 'eldoc)
+(require 'jsonrpc)
+(require 'eglot)
 
 (use-package evil
   :ensure t
@@ -155,29 +189,6 @@
   ;; Enable winner-mode for undo/redo window configurations
   (winner-mode 1))
 
-(use-package which-key
-  :ensure t
-  :defer t
-  :init
-  (which-key-mode 1)
-  :ensure t
-  :init
-  (which-key-mode)
-  (which-key-setup-minibuffer)
-  :config
-  (setq which-key-side-window-location 'bottom
-        which-key-sort-order #'which-key-key-order-alpha
-        which-key-sort-uppercase-first nil
-        which-key-add-column-padding 1
-        which-key-max-display-columns nil
-        which-key-min-display-lines 6
-        which-key-side-window-slot -10
-        which-key-side-window-max-height 0.25
-        which-key-idle-delay 0.8
-        which-key-max-description-length 25
-        which-key-allow-imprecise-window-fit t
-        which-key-separator " → " ))
-
 (defvar notify-program "notify-send")
 
 (defun notify-send (title message)
@@ -265,7 +276,6 @@
   (jabber-mode-line-mode 1))
 
 (use-package denote
-  :pin gnu
   :ensure t
   :defer t
   :config
@@ -442,34 +452,6 @@
                   (make-local-variable 'auto-hscroll-mode)
                   (setq auto-hscroll-mode nil)))))
 
-(use-package vterm
-  :ensure t
-  :defer t)
-
-(use-package vterm-toggle
-  :ensure t
-  :defer t
-  :after vterm
-  :config
-  ;; When running programs in Vterm and in 'normal' mode, make sure that ESC
-  ;; kills the program as it would in most standard terminal programs.
-  (evil-define-key 'normal vterm-mode-map (kbd "<escape>") 'vterm--self-insert)
-  (setq vterm-toggle-fullscreen-p nil)
-  (setq vterm-toggle-scope 'project)
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                   (let ((buffer (get-buffer buffer-or-name)))
-                     (with-current-buffer buffer
-                       (or (equal major-mode 'vterm-mode)
-                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 ;;(display-buffer-reuse-window display-buffer-in-direction)
-                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                 ;;(direction . bottom)
-                 ;;(dedicated . t) ;dedicated is supported in emacs27
-                 (reusable-frames . visible)
-                 (window-height . 0.4))))
-
 (use-package hl-todo
   :ensure t
   :defer t
@@ -484,15 +466,6 @@
           ("REVIEW"     font-lock-keyword-face bold)
           ("NOTE"       success bold)
           ("DEPRECATED" font-lock-doc-face bold))))
-
-(use-package flyspell
-  :ensure t
-  :defer t
-  :init
-  (setq scheme-program-name "chicken-csi -:c")
-  (setq geiser-chicken-binary "chicken-csi")
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 
 (use-package flycheck
   :ensure t
@@ -629,6 +602,15 @@
           vterm-mode))
   (popper-mode +1)
   (popper-echo-mode +1))
+
+(use-package jsonrpc
+  :ensure t)
+
+(use-package eldoc
+  :ensure t
+  :diminish eldoc-mode
+  :config
+  (global-eldoc-mode 1))
 
 (use-package eglot
   :ensure t
@@ -768,7 +750,6 @@
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (use-package doom-themes
-  :pin melpa
   :ensure t
   :config
   ;; Global settings (defaults)

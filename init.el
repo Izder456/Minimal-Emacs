@@ -136,7 +136,7 @@
 
 (use-package general
   :ensure t
-  :defer t
+  :demand t
   :config
   ;; Integrate general with evil-mode
   (general-evil-setup)
@@ -376,11 +376,11 @@
 
 (use-package frame-local
   :ensure t
-  :defer t)
+  :demand t)
 
 (use-package corfu 
   :ensure t
-  :defer t
+  :demand t
   :init (global-corfu-mode)
   :custom
   (corfu-cycle t)
@@ -397,13 +397,13 @@
 
 (use-package vertico
   :ensure t
-  :defer t
+  :demand t
   :hook
   (after-init . vertico-mode))
 
 (use-package orderless
   :ensure t
-  :defer t
+  :demand t
   :init
   (setq completion-styles '(orderless partial-completion basic)
         completion-category-defaults nil
@@ -411,7 +411,7 @@
 
 (use-package consult
   :ensure t
-  :defer t
+  :demand t
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init)
 

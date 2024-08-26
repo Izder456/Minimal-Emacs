@@ -217,7 +217,7 @@ for editor consistency
 #+begin_src elisp :tangle init.el
 (use-package general
   :ensure t
-  :defer t
+  :demand t
   :config
   ;; Integrate general with evil-mode
   (general-evil-setup)
@@ -475,11 +475,11 @@ Org bullets but better
 #+begin_src elisp :tangle init.el
 (use-package frame-local
   :ensure t
-  :defer t)
+  :demand t)
 
 (use-package corfu 
   :ensure t
-  :defer t
+  :demand t
   :init (global-corfu-mode)
   :custom
   (corfu-cycle t)
@@ -496,13 +496,13 @@ Org bullets but better
 
 (use-package vertico
   :ensure t
-  :defer t
+  :demand t
   :hook
   (after-init . vertico-mode))
 
 (use-package orderless
   :ensure t
-  :defer t
+  :demand t
   :init
   (setq completion-styles '(orderless partial-completion basic)
         completion-category-defaults nil
@@ -510,7 +510,7 @@ Org bullets but better
 
 (use-package consult
   :ensure t
-  :defer t
+  :demand t
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init)
 #+end_src

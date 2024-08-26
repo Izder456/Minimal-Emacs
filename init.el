@@ -50,6 +50,23 @@
 (require 'jsonrpc)
 (require 'eglot)
 
+;; Hardcore garbage collects
+(use-package gcmh
+  :ensure t
+  :demand t
+  :init
+  (gcmh-mode 1)
+  :config
+  (setq gcmh-idle-delay 5
+	gcmh-high-cons-threshold (* 16 1024 1024))) ; 16mb
+
+;; Replace with faster alternatives
+(use-package dash
+  :ensure t
+  :demand t
+  :config
+  (global-dash-fontify-mode))
+
 (use-package evil
   :ensure t
   :defer t
@@ -148,31 +165,31 @@
   
   ;; Buffer commands
   (iz/leader-keys
-    "k" '(kill-this-buffer :wk "Kill this buffer")
-    "n" '(evil-next-buffer :wk "Cycle Windows")
-    "S" '(evil-window-vnew :wk "Vertical buffer split")
-    "s" '(evil-window-new :wk "Horizontal buffer split")
-    "<up>" '(evil-window-up :wk "Switch to upper buffer")
-    "<down>" '(evil-window-down :wk "Switch to lower buffer")
-    "<left>" '(evil-window-left :wk "Switch to left buffer")
-    "<right>" '(evil-window-right :wk "Switch to right buffer")
-    "r" '(partial-size-window :wk "Partial size window vertical")
-    "r" '(partial-size-window-h :wk "Partial size window horizontal"))
+   "k" '(kill-this-buffer :wk "Kill this buffer")
+   "n" '(evil-next-buffer :wk "Cycle Windows")
+   "S" '(evil-window-vnew :wk "Vertical buffer split")
+   "s" '(evil-window-new :wk "Horizontal buffer split")
+   "<up>" '(evil-window-up :wk "Switch to upper buffer")
+   "<down>" '(evil-window-down :wk "Switch to lower buffer")
+   "<left>" '(evil-window-left :wk "Switch to left buffer")
+   "<right>" '(evil-window-right :wk "Switch to right buffer")
+   "r" '(partial-size-window :wk "Partial size window vertical")
+   "r" '(partial-size-window-h :wk "Partial size window horizontal"))
 
   ;; Neotree commands
   (iz/leader-keys
-    "t" '(neotree-toggle :wk "Open neotree"))
+   "t" '(neotree-toggle :wk "Open neotree"))
 
   ;; Consult
   (iz/leader-keys
-    "RET" '(consult-buffer :wk "Consult Buffer Swap")
-    "b"   '(consult-buffer :wk "Consult Buffer Swap")
-    "g"   '(consult-goto-line :wk "Consult Goto"))
+   "RET" '(consult-buffer :wk "Consult Buffer Swap")
+   "b"   '(consult-buffer :wk "Consult Buffer Swap")
+   "g"   '(consult-goto-line :wk "Consult Goto"))
 
   (iz/leader-keys
-    "C-p" '(popper-toggle :wk "Popper Toggle")
-    "M-p" '(popper-cycle :wk "Popper Cycle")
-    "C-M-p" '(popper-toggle-type :wk "Popper Toggle Type")) 
+   "C-p" '(popper-toggle :wk "Popper Toggle")
+   "M-p" '(popper-cycle :wk "Popper Cycle")
+   "C-M-p" '(popper-toggle-type :wk "Popper Toggle Type")) 
 
   ;; Tab-switching
   (global-set-key (kbd "C-<tab>") 'evil-window-mru)

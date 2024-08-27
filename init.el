@@ -46,10 +46,6 @@
 ;; Block until current queue processed.
 (elpaca-wait)
 
-(require 'eldoc)
-(require 'jsonrpc)
-(require 'eglot)
-
 ;; Hardcore garbage collects
 (use-package gcmh
   :ensure t
@@ -165,31 +161,31 @@
   
   ;; Buffer commands
   (iz/leader-keys
-   "k" '(kill-this-buffer :wk "Kill this buffer")
-   "n" '(evil-next-buffer :wk "Cycle Windows")
-   "S" '(evil-window-vnew :wk "Vertical buffer split")
-   "s" '(evil-window-new :wk "Horizontal buffer split")
-   "<up>" '(evil-window-up :wk "Switch to upper buffer")
-   "<down>" '(evil-window-down :wk "Switch to lower buffer")
-   "<left>" '(evil-window-left :wk "Switch to left buffer")
-   "<right>" '(evil-window-right :wk "Switch to right buffer")
-   "r" '(partial-size-window :wk "Partial size window vertical")
-   "r" '(partial-size-window-h :wk "Partial size window horizontal"))
+    "k" '(kill-this-buffer :wk "Kill this buffer")
+    "n" '(evil-next-buffer :wk "Cycle Windows")
+    "S" '(evil-window-vnew :wk "Vertical buffer split")
+    "s" '(evil-window-new :wk "Horizontal buffer split")
+    "<up>" '(evil-window-up :wk "Switch to upper buffer")
+    "<down>" '(evil-window-down :wk "Switch to lower buffer")
+    "<left>" '(evil-window-left :wk "Switch to left buffer")
+    "<right>" '(evil-window-right :wk "Switch to right buffer")
+    "r" '(partial-size-window :wk "Partial size window vertical")
+    "r" '(partial-size-window-h :wk "Partial size window horizontal"))
 
   ;; Neotree commands
   (iz/leader-keys
-   "t" '(neotree-toggle :wk "Open neotree"))
+    "t" '(neotree-toggle :wk "Open neotree"))
 
   ;; Consult
   (iz/leader-keys
-   "RET" '(consult-buffer :wk "Consult Buffer Swap")
-   "b"   '(consult-buffer :wk "Consult Buffer Swap")
-   "g"   '(consult-goto-line :wk "Consult Goto"))
+    "RET" '(consult-buffer :wk "Consult Buffer Swap")
+    "b"   '(consult-buffer :wk "Consult Buffer Swap")
+    "g"   '(consult-goto-line :wk "Consult Goto"))
 
   (iz/leader-keys
-   "C-p" '(popper-toggle :wk "Popper Toggle")
-   "M-p" '(popper-cycle :wk "Popper Cycle")
-   "C-M-p" '(popper-toggle-type :wk "Popper Toggle Type")) 
+    "C-p" '(popper-toggle :wk "Popper Toggle")
+    "M-p" '(popper-cycle :wk "Popper Cycle")
+    "C-M-p" '(popper-toggle-type :wk "Popper Toggle Type")) 
 
   ;; Tab-switching
   (global-set-key (kbd "C-<tab>") 'evil-window-mru)
@@ -397,9 +393,24 @@
 
 (use-package vertico
   :ensure t
-  :demand t
-  :hook
-  (after-init . vertico-mode))
+  :bind (:map vertico-map
+              ("C-j" . vertico-next)
+              ("C-k" . vertico-previous)
+              ("C-f" . vertico-exit)
+              :map minibuffer-local-map
+              ("M-h" . backward-kill-word))
+  :custom
+  (vertico-cycle t)
+  :init
+  (vertico-mode))
+
+(use-package marginalia
+  :after vertico
+  :ensure t
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init
+  (marginalia-mode))
 
 (use-package orderless
   :ensure t
@@ -449,26 +460,6 @@
   :defer t
   :init (doom-modeline-mode 1))
 
-(use-package neotree
-  :ensure t
-  :defer t
-  :config
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-  (setq neo-smart-open t
-        neo-show-hidden-files t
-        neo-window-width 20
-        neo-window-fixed-size nil
-        inhibit-compacting-font-caches t
-        projectile-switch-project-action 'neotree-projectile-action)
-  ;; truncate long file names in neotree
-  (add-hook 'neo-after-create-hook
-            #'(lambda (_)
-                (with-current-buffer (get-buffer neo-buffer-name)
-                  (setq truncate-lines t)
-                  (setq word-wrap nil)
-                  (make-local-variable 'auto-hscroll-mode)
-                  (setq auto-hscroll-mode nil)))))
-
 (use-package hl-todo
   :ensure t
   :defer t
@@ -510,6 +501,24 @@
 (use-package flycheck-raku
   :ensure t
   :defer t)
+
+(use-package magit
+  :ensure t
+  :defer t
+  :bind (("C-x g" . magit-status)
+         ("C-x M-g" . magit-dispatch)))
+
+(use-package magit-todos
+  :ensure t
+  :defer t
+  :after magit
+  :config
+  (magit-todos-mode))
+
+(use-package forge
+  :ensure t
+  :defer t
+  :after magit)
 
 ;; Config modes
 (use-package yaml-mode ;; Insecure Pythonic config format
@@ -615,22 +624,18 @@
           "\\*sly-.*\\*"
           cider-repl-mode
           geiser-repl-mode
-          inf-elixir-mode
-          vterm-mode))
+          inf-elixir-mode))
   (popper-mode +1)
   (popper-echo-mode +1))
 
-(use-package jsonrpc
-  :ensure t)
-
 (use-package eldoc
-  :ensure t
+  :ensure nil
   :diminish eldoc-mode
   :config
   (global-eldoc-mode 1))
 
 (use-package eglot
-  :ensure t
+  :ensure nil
   :defer t
   :config
   (add-to-list 'eglot-server-programs '((clojure-mode . ("clojure-lsp"))))
@@ -653,6 +658,37 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
+
+(use-package indent-guide
+  :ensure t
+  :defer t
+  :config
+  (indent-guide-global-mode)
+  (setq indent-guide-char ":")
+  (setq indent-guide-delay 0.1)
+  (set-face-background 'indent-guide-face "dimgray"))
+
+(use-package highlight-indent-guides
+  :ensure t
+  :defer t
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :config
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-character ?\|)
+  (setq highlight-indent-guides-responsive 'stack)
+  (setq highlight-indent-guides-delay 0.1))
+
+(use-package aggressive-indent
+  :ensure t
+  :defer t
+  :config
+  (global-aggressive-indent-mode 1)
+  ;; Customize when not to indent
+  (add-to-list
+   'aggressive-indent-dont-indent-if
+   '(and (derived-mode-p 'c++-mode)
+         (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+                             (thing-at-point 'line))))))
 
 (set-frame-parameter (selected-frame) 'alpha '(100 . 95))
 (add-to-list 'default-frame-alist '(alpha . (100 . 95)))
@@ -727,9 +763,9 @@
 		      :weight 'regular
 		      :height 120)
   (set-face-attribute 'variable-pitch nil
-		      :font "Freeserif"
+		      :font "Spleen"
 		      :weight 'regular
-		      :height 1.2))
+		      :height 120))
 
 (if (daemonp)
     (add-hook 'after-make-frame-functions #'load-my-fonts)

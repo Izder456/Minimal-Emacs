@@ -123,7 +123,7 @@
   (gcmh-mode 1)
   :config
   (setq gcmh-idle-delay 5
-	gcmh-high-cons-threshold (* 16 1024 1024))) ; 16mb
+	gcmh-high-cons-threshold (* 64 1024 1024))) ; 64mb
 
 ;; Replace with faster alternatives
 (use-package dash
@@ -317,6 +317,9 @@ for editor consistency
                                  "\n\n"))))))
   (add-hook 'erc-insert-post-hook 'erc-clean-image-urls-in-buffer)
   (add-hook 'erc-text-matched-hook 'erc-mention)
+  ;; Ensure erc buffers replace the current window
+  (add-to-list 'display-buffer-alist
+               '("^\\*erc\\*" . (display-buffer-same-window)))
   :custom
   (erc-hide-list '("JOIN" "PART" "QUIT"))
   (erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
@@ -997,6 +1000,7 @@ If the new path's directories does not exist, create them."
 (setq native-comp-async-report-warnings-errors 'silent
       byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
       idle-update-delay 1.0
+      warning-minimum-level :error ;; suppress all warnings
       bidi-display-reordering 'left-to-right
       bidi-paragraph-direction 'left-to-right
       bidi-inhibit-bpa 1

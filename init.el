@@ -407,13 +407,11 @@
 
 (use-package vertico
   :ensure t
-  :after jinx
-  :init
-  (add-to-list 'vertico-multiform-categories
-               '(jinx grid (vertico-grid-annotate . 20)))
+  :demand t
+  :custom
   (vertico-cycle t)
-  (vertico-mode 1)
-  (vertico-multiform-mode 1))
+  :init
+  (vertico-mode 1))
 
 (use-package marginalia
   :after vertico
@@ -731,7 +729,7 @@
 
 (use-package jinx
   :ensure t
-  :defer t
+  :demand t
   :hook (emacs-startup . global-jinx-mode)
   :bind (("M-$" . jinx-correct)
          ("C-M-$" . jinx-languages)))

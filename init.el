@@ -444,27 +444,29 @@
 (use-package rainbow-delimiters
   :ensure t
   :defer t
-  :hook ((prog-mode . rainbow-delimiters-mode)
-         (sly-mode . rainbow-delimiters-mode)
-         (ielm-mode . rainbow-delimiters-mode)
-         (cider-mode . rainbow-delimiters-mode)
-         (geiser-mode . rainbow-delimiters-mode)
-         (geiser-repl-mode . rainbow-delimiters-mode)
-         (inf-elixir-mode . rainbow-delimiters-mode)
-         (hy-mode . rainbow-delimiters-mode)))
+  :hook
+  '((prog-mode . rainbow-delimiters-mode)
+    (sly-mode . rainbow-delimiters-mode)
+    (ielm-mode . rainbow-delimiters-mode)
+    (cider-mode . rainbow-delimiters-mode)
+    (geiser-mode . rainbow-delimiters-mode)
+    (geiser-repl-mode . rainbow-delimiters-mode)
+    (inf-elixir-mode . rainbow-delimiters-mode)
+    (hy-mode . rainbow-delimiters-mode)))
 
 (use-package rainbow-mode
   :ensure t
   :defer t
   :diminish
-  :hook ((prog-mode . rainbow-mode)
-         (sly-mode . rainbow-mode)
-         (ielm-mode . rainbow-mode)
-         (cider-mode . rainbow-mode)
-         (geiser-mode . rainbow-mode)
-         (geiser-repl-mode . rainbow-mode)
-         (inf-elixir-mode . rainbow-mode)
-         (hy-mode . rainbow-mode)))
+  :hook
+  '((prog-mode . rainbow-mode)
+    (sly-mode . rainbow-mode)
+    (ielm-mode . rainbow-mode)
+    (cider-mode . rainbow-mode)
+    (geiser-mode . rainbow-mode)
+    (geiser-repl-mode . rainbow-mode)
+    (inf-elixir-mode . rainbow-mode)
+    (hy-mode . rainbow-mode)))
 
 (use-package beacon
   :ensure t
@@ -658,19 +660,21 @@
   :defer t
   :config
   (setq completion-category-overrides '((eglot (styles orderless))
-                                      (eglot-capf (styles orderless))))
-  (add-to-list 'eglot-server-programs '((clojure-mode . ("clojure-lsp"))))
-  (add-to-list 'eglot-server-programs '((rust-mode . ("rust-analyzer"))))
-  (add-to-list 'eglot-server-programs '((c++-mode . ("clangd"))))
-  (add-to-list 'eglot-server-programs '((c-mode . ("clangd"))))
-  :hook ((prog-mode . eglot-ensure)
-         (sly-mode . eglot-ensure)
-         (ielm-mode . eglot-ensure)
-         (cider-mode . eglot-ensure)
-         (geiser-mode . eglot-ensure)
-         (geiser-repl-mode . eglot-ensure)
-         (inf-elixir-mode . eglot-ensure)
-         (hy-mode . eglot-ensure)))
+                                        (eglot-capf (styles orderless))))
+  (mapc (lambda (server-program) (add-to-list 'eglot-server-programs server-program))
+        '((clojure-mode . ("clojure-lsp"))
+          (rust-mode . ("rust-analyzer"))
+          (c++-mode . ("clangd"))
+          (c-mode . ("clangd"))))
+  :hook
+  '((prog-mode . eglot-ensure)
+    (sly-mode . eglot-ensure)
+    (ielm-mode . eglot-ensure)
+    (cider-mode . eglot-ensure)
+    (geiser-mode . eglot-ensure)
+    (geiser-repl-mode . eglot-ensure)
+    (inf-elixir-mode . eglot-ensure)
+    (hy-mode . eglot-ensure)))
 
 (use-package treesit-auto
   :ensure t

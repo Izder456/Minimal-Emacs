@@ -182,11 +182,28 @@
     "b"   '(consult-buffer :wk "Consult Buffer Swap")
     "g"   '(consult-goto-line :wk "Consult Goto"))
 
+  ;; Corfu
   (iz/leader-keys
-    "C-p" '(popper-toggle :wk "Popper Toggle")
-    "M-p" '(popper-cycle :wk "Popper Cycle")
+    "TAB" '(corfu-next :wk "Corfu Next")
+    "S-TAB" '(corfu-previous :wk "Corfu Previous"))
+
+  ;; Vertico
+  (general-define-key
+   :keymaps 'vertico-map
+   "TAB" '(vertico-next :wk "Vertico Next")
+   "S-TAB" '(vertico-previous :wk "Vertico Previous"))
+  
+  ;; Popper
+  (iz/leader-keys
+    "p" '(popper-toggle :wk "Popper Toggle")
+    "C-p" '(popper-cycle :wk "Popper Cycle")
     "C-M-p" '(popper-toggle-type :wk "Popper Toggle Type")) 
 
+  ;; Magit
+  (iz/leader-keys
+    "g" '(magit-status :wk "Magit Status")
+    "M-g" '(magit-dispatch :wk "Magit Pull"))
+  
   ;; Tab-switching
   (global-set-key (kbd "C-<tab>") 'evil-window-mru)
 
@@ -386,26 +403,17 @@
   (corfu-preselect 'prompt)
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match t)
-  (corfu-auto t)
-  :bind
-  (:map corfu-map
-	("TAB" . corfu-next)
-	([tab] . corfu-next)
-	("S-TAB" . corfu-previous)
-	([backtab] . corfu-previous)))
+  (corfu-auto t))
 
 (use-package vertico
   :ensure t
-  :bind (:map vertico-map
-              ("C-j" . vertico-next)
-              ("C-k" . vertico-previous)
-              ("C-f" . vertico-exit)
-              :map minibuffer-local-map
-              ("M-h" . backward-kill-word))
-  :custom
-  (vertico-cycle t)
+  :after jinx
   :init
-  (vertico-mode))
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid (vertico-grid-annotate . 20)))
+  (vertico-cycle t)
+  (vertico-mode 1)
+  (vertico-multiform-mode 1))
 
 (use-package marginalia
   :after vertico
@@ -413,7 +421,7 @@
   :custom
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init
-  (marginalia-mode))
+  (marginalia-mode 1))
 
 (use-package orderless
   :ensure t
@@ -440,6 +448,7 @@
   :defer t
   :hook ((prog-mode . rainbow-delimiters-mode)
          (sly-mode . rainbow-delimiters-mode)
+         (ielm-mode . rainbow-delimiters-mode)
          (cider-mode . rainbow-delimiters-mode)
          (geiser-mode . rainbow-delimiters-mode)
          (geiser-repl-mode . rainbow-delimiters-mode)
@@ -450,7 +459,14 @@
   :ensure t
   :defer t
   :diminish
-  :hook org-mode prog-mode)
+  :hook ((prog-mode . rainbow-mode)
+         (sly-mode . rainbow-mode)
+         (ielm-mode . rainbow-mode)
+         (cider-mode . rainbow-mode)
+         (geiser-mode . rainbow-mode)
+         (geiser-repl-mode . rainbow-mode)
+         (inf-elixir-mode . rainbow-mode)
+         (hy-mode . rainbow-mode)))
 
 (use-package beacon
   :ensure t
@@ -507,9 +523,7 @@
 
 (use-package magit
   :ensure t
-  :defer t
-  :bind (("C-x g" . magit-status)
-         ("C-x M-g" . magit-dispatch)))
+  :defer t)
 
 (use-package magit-todos
   :ensure t
@@ -612,6 +626,10 @@
   (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
   (add-hook 'projectile-after-switch-project-hook 'auto-virtualenv-set-virtualenv))
 
+;; i want line numbers when i program !!
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'text-mode-hook 'visual-line-mode)
+
 (use-package popper
   :ensure t
   :defer t
@@ -641,17 +659,20 @@
   :ensure nil
   :defer t
   :config
+  (setq completion-category-overrides '((eglot (styles orderless))
+                                      (eglot-capf (styles orderless))))
   (add-to-list 'eglot-server-programs '((clojure-mode . ("clojure-lsp"))))
   (add-to-list 'eglot-server-programs '((rust-mode . ("rust-analyzer"))))
   (add-to-list 'eglot-server-programs '((c++-mode . ("clangd"))))
   (add-to-list 'eglot-server-programs '((c-mode . ("clangd"))))
-  :hook
-  ((rust-mode . eglot)
-   (clojure-mode . eglot)))
-
-;; LSP
-(setq completion-category-overrides '((eglot (styles orderless))
-                                      (eglot-capf (styles orderless))))
+  :hook ((prog-mode . eglot-ensure)
+         (sly-mode . eglot-ensure)
+         (ielm-mode . eglot-ensure)
+         (cider-mode . eglot-ensure)
+         (geiser-mode . eglot-ensure)
+         (geiser-repl-mode . eglot-ensure)
+         (inf-elixir-mode . eglot-ensure)
+         (hy-mode . eglot-ensure)))
 
 (use-package treesit-auto
   :ensure t
@@ -708,101 +729,110 @@
          '(85 . 50) '(100 . 100)))))
 (global-set-key (kbd "C-c t") 'toggle-transparency)
 
-;; org
+(use-package jinx
+  :ensure t
+  :defer t
+  :hook (emacs-startup . global-jinx-mode)
+  :bind (("M-$" . jinx-correct)
+         ("C-M-$" . jinx-languages)))
 
-(custom-set-faces
- '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
- '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
- '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
+(use-package org
+  :ensure t
+  :defer t
+  :init
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit outline-1 :height 1.1))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+   '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
+   '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
+   '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
 
-(setq org-display-custom-times t)
+  (setq org-display-custom-times t)
 
-(setq org-pretty-entities t)
-(setq org-use-sub-superscripts "{}")
-(setq org-hide-emphasis-markers t)
-(setq org-startup-with-inline-images t)
+  (setq org-pretty-entities t)
+  (setq org-use-sub-superscripts "{}")
+  (setq org-hide-emphasis-markers t)
+  (setq org-startup-with-inline-images t)
 
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-return-follows-link t)
-;; Stop src blocks from auto indenting
-(setq org-edit-src-content-indentation 0)
+  (setq org-return-follows-link t)
+  ;; Stop src blocks from auto indenting
+  (setq org-edit-src-content-indentation 0)
 
-(setq org-display-custom-times t)
+  (setq org-display-custom-times t)
 
-(setq org-pretty-entities t)
-(setq org-use-sub-superscripts "{}")
-(setq org-hide-emphasis-markers t)
-(setq org-startup-with-inline-images t)
+  (setq org-pretty-entities t)
+  (setq org-use-sub-superscripts "{}")
+  (setq org-hide-emphasis-markers t)
+  (setq org-startup-with-inline-images t)
 
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-return-follows-link t)
-;; Stop src blocks from auto indenting
-(setq org-edit-src-content-indentation 0)
+  (setq org-return-follows-link t)
+  ;; Stop src blocks from auto indenting
+  (setq org-edit-src-content-indentation 0)
+  :hook
+  '((org-mode-hook . org-indent-mode)))
 
-(set-charset-priority 'unicode)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(set-language-environment "UTF-8")
-(prefer-coding-system 'utf-8)
-
-(defun load-my-fonts (frame)
-  (select-frame frame)
-  (set-face-attribute 'default nil
-		      :font "Spleen"
-		      :weight 'regular
-		      :height 120)
-  (set-face-attribute 'bold nil
-		      :font "Spleen"
-		      :weight 'regular
-		      :height 120)
-  (set-face-attribute 'fixed-pitch nil
-		      :font "Spleen"
-		      :weight 'regular
-		      :height 120)
-  (set-face-attribute 'variable-pitch nil
-		      :font "Spleen"
-		      :weight 'regular
-		      :height 120))
-
-(if (daemonp)
-    (add-hook 'after-make-frame-functions #'load-my-fonts)
-  (load-my-fonts (selected-frame)))
-
-;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
-(with-eval-after-load 'org-faces
-  (set-face-attribute 'org-block nil
-		      :foreground nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula nil
-		      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil
-		      :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil
-		      :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil
-		      :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil
-		      :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil
-		      :inherit 'fixed-pitch))
+(use-package mixed-pitch
+  :ensure t
+  :defer t
+  :hook
+  (text-mode . mixed-pitch-mode))
 
 (use-package unicode-fonts
   :ensure t
-  :defer t
-  :config
-  (unicode-fonts-setup))
-
-;; Set org-mode to use Variable pitch
-(add-hook 'org-mode-hook 'variable-pitch-mode)
-(add-hook 'org-mode-hook 'visual-line-mode)
+  :demand t
+  :init
+  (unicode-fonts-setup)
+  (set-charset-priority 'unicode)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (set-language-environment "UTF-8")
+  (prefer-coding-system 'utf-8)
+  (defun load-my-fonts (frame)
+    (select-frame frame)
+    (set-face-attribute 'default nil
+		        :font "Spleen"
+		        :weight 'regular
+		        :height 120)
+    (set-face-attribute 'bold nil
+		        :font "Spleen"
+		        :weight 'regular
+		        :height 120)
+    (set-face-attribute 'fixed-pitch nil
+		        :font "Spleen"
+		        :weight 'regular
+		        :height 120)
+    (set-face-attribute 'variable-pitch nil
+		        :font "Spleen"
+		        :weight 'regular
+		        :height 120))
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions #'load-my-fonts)
+    (load-my-fonts (selected-frame)))
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-block nil
+		        :foreground nil
+		        :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil
+		        :inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil
+		        :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil
+		        :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil
+		        :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil
+		        :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil
+		        :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil
+		        :inherit 'fixed-pitch))
+  :hook
+  '((org-mode-hook . variable-pitch-mode)
+    (org-mode-hook . visual-line-mode)))
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (use-package doom-themes
@@ -903,7 +933,3 @@ If the new path's directories does not exist, create them."
 (setq-default inhibit-startup-echo-area-message (user-login-name)
               display-line-numbers-width 3
               inhibit-major-mode 'fundamental-mode)
-
-;; i want line numbers when i program !!
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'text-mode-hook 'visual-line-mode)

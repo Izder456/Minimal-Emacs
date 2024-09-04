@@ -381,7 +381,7 @@
 (use-package emojify
   :ensure t
   :defer t
-  :hook (after-init . global-emojify-mode))
+  :init (global-emojify-mode 1))
 
 (use-package all-the-icons-dired
   :ensure t

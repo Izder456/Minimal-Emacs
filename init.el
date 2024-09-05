@@ -183,21 +183,27 @@
     "g"   '(consult-goto-line :wk "Consult Goto"))
 
   ;; Corfu
-  (iz/leader-keys
-    "TAB" '(corfu-next :wk "Corfu Next")
-    "S-TAB" '(corfu-previous :wk "Corfu Previous"))
+  (general-add-hook
+   'corfu-mode-hook
+   (lambda ()
+     (general-define-key
+      :keymaps 'corfu-map
+      "tab" '(corfu-next :wk "corfu next")
+      "backtab" '(corfu-previous :wk "corfu previous"))))
 
   ;; Vertico
-  (general-define-key
-   :keymaps 'vertico-map
-   "TAB" '(vertico-next :wk "Vertico Next")
-   "S-TAB" '(vertico-previous :wk "Vertico Previous"))
+  (general-add-hook
+   'vertico-mode-hook
+   (lambda ()
+     (general-define-key
+      :keymaps 'vertico-map
+      "tab" '(vertico-next :wk "vertico next")
+      "backtab" '(vertico-previous :wk "vertico previous"))))
   
   ;; Popper
   (iz/leader-keys
-    "p" '(popper-toggle :wk "Popper Toggle")
-    "C-p" '(popper-cycle :wk "Popper Cycle")
-    "C-M-p" '(popper-toggle-type :wk "Popper Toggle Type")) 
+    "p" '(popper-toggle-type :wk "Popper Toggle")
+    "C-p" '(popper-cycle :wk "Popper Cycle"))
 
   ;; Magit
   (iz/leader-keys
@@ -381,7 +387,10 @@
 (use-package emojify
   :ensure t
   :defer t
-  :init (global-emojify-mode 1))
+  :init
+  (setq emojify-display-style "ascii")
+  (global-emojify-mode 1))
+
 
 (use-package all-the-icons-dired
   :ensure t
